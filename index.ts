@@ -7,6 +7,8 @@ async function test() {
   // Specific Disease Process
   const r = await copilot.getObjPrompt("Rheumatic fever");
 
+  // save to file output.txt
+  fs.writeFileSync("output.txt", r);
   console.log(r);
 }
 test();
@@ -86,25 +88,18 @@ function loadExcelSheet(filePath: string) {
     });
   });
 
-  return formattedJson;
+  // for each jsonResult System parameter into a key for the object
+  const jsonResultObject: any = {};
+  formattedJson.forEach((row: any) => {
+    if (!row["System"]) return;
+    jsonResultObject[row["System"]] = row;
+    delete row["System"];
+  });
+
+  return jsonResultObject;
 }
 
 // Example usage
-const filePath = "./Master_PACKRAT_2024.xlsx";
-
-const jsonResult = loadExcelSheet(filePath);
-
-// for each jsonResult System parameter into a key for the object
-const jsonResultObject: any = {};
-jsonResult.forEach((row: any) => {
-  if (!row["System"]) return;
-  jsonResultObject[row["System"]] = row;
-  delete row["System"];
-});
-
-// console.log(JSON.stringify(jsonResultObject, null, 2));
-
-// console.log(JSON.stringify(jsonResult, null, 2));
 
 const SYSTEMS_OPT = [
   "Cardiovascular",
@@ -121,3 +116,37 @@ const SYSTEMS_OPT = [
   "Hematology",
   "Infectious Diseases",
 ];
+
+const FIELDS_OPT = [
+  "History & Physical",
+  "Diagnostic Studies",
+  "Diagnosis",
+  "Clinical Intervention",
+  "Clinical Therapeutics",
+  "Health Maintenance",
+  "Scientific Concepts",
+];
+
+function perField(field: string = "Cardiovascular") {
+  const filePath = "./Master_PACKRAT_2024.xlsx";
+  const jsonResult = loadExcelSheet(filePath)[field];
+  FIELDS_OPT.map((field) => {
+    console.log(field, jsonResult);
+
+    const pickSections = [];
+
+    // sample from the jsonResult.Blueprint for the field "Specific Disease Process" at the frequency of the Frequency field
+    for (let i = 0; i < jsonResult[field]; i++) {
+      let f = jsonResult.Blueprint[i]["Specific Disease Process"]?.trim() || "";
+      if (f) f += " under ";
+      f += jsonResult.Blueprint[i]["Global Disease Process"]?.trim() || "";
+
+      pickSections.push(f);
+    }
+
+    console.log(pickSections);
+  });
+}
+
+// perField("Cardiovascular");
+// console.log(JSON.stringify(jsonRessult, null, 2));
