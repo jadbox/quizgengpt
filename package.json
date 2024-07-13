@@ -8,6 +8,9 @@
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
+  "scripts": {
+    "start": "bun run --debug --watch ./index.ts"
+  },
   "dependencies": {
     "openai": "^4.52.7",
     "xlsx": "^0.18.5"

@@ -1,5 +1,15 @@
 const fs = require("fs");
 const xlsx = require("xlsx");
+const copilot = require("./copilot");
+
+async function test() {
+  // Global Disease Process
+  // Specific Disease Process
+  const r = await copilot.getObjPrompt("Rheumatic fever");
+
+  console.log(r);
+}
+test();
 
 function loadExcelSheet(filePath: string) {
   // Read the Excel file
@@ -51,7 +61,9 @@ function loadExcelSheet(filePath: string) {
     const System = row["System"]?.trim();
     return {
       System: System,
-      Data: Sheet_PACKRAT_Content.filter((x: any) => x["System"] === System),
+      Blueprint: Sheet_PACKRAT_Content.filter(
+        (x: any) => x["System"] === System
+      ),
       Content: row["Content"],
       "History & Physical": row["History & Physical"],
       "Diagnostic Studies": row["Diagnostic Studies"],
@@ -66,10 +78,10 @@ function loadExcelSheet(filePath: string) {
 
   // sort Data by its element's key Frequency
   formattedJson.forEach((row: any) => {
-    row.Data.forEach((x: any) => {
+    row.Blueprint.forEach((x: any) => {
       delete x["System"];
     }); // already have System in the parent object
-    row.Data.sort((a: any, b: any) => {
+    row.Blueprint.sort((a: any, b: any) => {
       return b.Frequency - a.Frequency;
     });
   });
@@ -80,5 +92,32 @@ function loadExcelSheet(filePath: string) {
 // Example usage
 const filePath = "./Master_PACKRAT_2024.xlsx";
 
-const jsonResult = loadExcelSheet(filePath).slice(0, 5);
-console.log(JSON.stringify(jsonResult, null, 2));
+const jsonResult = loadExcelSheet(filePath);
+
+// for each jsonResult System parameter into a key for the object
+const jsonResultObject: any = {};
+jsonResult.forEach((row: any) => {
+  if (!row["System"]) return;
+  jsonResultObject[row["System"]] = row;
+  delete row["System"];
+});
+
+// console.log(JSON.stringify(jsonResultObject, null, 2));
+
+// console.log(JSON.stringify(jsonResult, null, 2));
+
+const SYSTEMS_OPT = [
+  "Cardiovascular",
+  "Pulmonology",
+  "Gastrointestinal/Nutrition",
+  "Orthopedics/Rheumatology",
+  "ENT/Ophthalmology",
+  "Obstetrics/Gynecology",
+  "Endocrinology",
+  "Neurology/Neurosurgery",
+  "Psychiatry/Behavioral Medicine",
+  "Urology/Renal",
+  "Dermatology",
+  "Hematology",
+  "Infectious Diseases",
+];
