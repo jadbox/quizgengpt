@@ -1,0 +1,41 @@
+# Import the required module
+Import-Module ImportExcel
+
+# Function to load Excel sheet
+function Load-ExcelSheet {
+    param (
+        [string]$FilePath,
+        [string]$SheetName
+    )
+
+    # Read the Excel file
+    $workbook = Import-Excel -Path $FilePath -WorksheetName $SheetName
+
+    # Format the objects
+    $formattedObjects = $workbook | ForEach-Object {
+        # Create a custom object for each row
+        New-Object PSObject -Property @{
+            System = $_."System"
+            Content = $_."Content"
+            "History & Physical" = $_."History & Physical"
+            "Diagnostic Studies" = $_."Diagnostic Studies"
+            Diagnosis = $_."Diagnosis"
+            "Clinical Intervention" = $_."Clinical Intervention"
+            "Clinical Therapeutics" = $_."Clinical Therapeutics"
+            "Health Maintenance" = $_."Health Maintenance"
+            "Scientific Concepts" = $_."Scientific Concepts"
+            Total = $_."__EMPTY_9"  # Adjust column name as per the data
+        }
+    }
+
+    return $formattedObjects
+}
+
+# Example usage
+$filePath = ".\Master_PACKRAT_2024.xlsx"
+$sheetName = "PACKRAT_BluePrint"
+
+$jsonResult = Load-ExcelSheet -FilePath $filePath -SheetName $sheetName
+$jsonResult | ConvertTo-Json -Depth 2 | Write-Host
+
+pause
