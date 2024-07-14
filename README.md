@@ -21,7 +21,11 @@ To run:
 bun run index.ts
 ```
 
-Instructions:
+### Instructions:
 - Add Master_PACKRAT_2024.xlsx to the root directory
-- Run the program
-- Output will be in the `output` directory
+- Run the program and follow the prompts
+- Output will be in the `output/` directory under the name [section].txt
+
+### Example usage:
+![Img](./img/Screenshot%202024-07-14%20155428.png)
+![Img2](./img/Screenshot%202024-07-14%20155522.png)
