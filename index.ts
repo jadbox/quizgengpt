@@ -1,18 +1,37 @@
+import { getObjPrompt } from "./copilot";
+
 const fs = require("fs");
 const xlsx = require("xlsx");
-const copilot = require("./copilot");
 
-async function test() {
+// ChatGPT generation
+async function generateQuestion(area: string = "Rheumatic fever") {
+  if (!area) throw new Error("Area is required");
+
+  console.log("Generating question for:", area);
   // Global Disease Process
   // Specific Disease Process
-  const r = await copilot.getObjPrompt("Rheumatic fever");
+  const r = await getObjPrompt(area);
 
-  // save to file output.txt
-  fs.writeFileSync("output.txt", r);
+  // create output folder if not exists
+  if (!fs.existsSync("output")) {
+    fs.mkdirSync("output");
+  }
+
+  // convert area in a file name with no spaces and no special characters and lowercase
+  const fileName = area
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .replace(/\s/g, "")
+    .toLowerCase();
+
+  // save or append to file output.txt
+  fs.appendFileSync(`output/${fileName}.txt`, r + "\n---\n");
+
+  console.log("Done. Generated:");
   console.log(r);
+  console.log("---");
 }
-test();
 
+// Load the primary Master_PACKRAT_2024.xlsx file for directives
 function loadExcelSheet(filePath: string) {
   // Read the Excel file
   const workbook = xlsx.readFile(filePath);
@@ -89,14 +108,14 @@ function loadExcelSheet(filePath: string) {
   });
 
   // for each jsonResult System parameter into a key for the object
-  const jsonResultObject: any = {};
-  formattedJson.forEach((row: any) => {
-    if (!row["System"]) return;
-    jsonResultObject[row["System"]] = row;
-    delete row["System"];
-  });
+  // const jsonResultObject: any = {};
+  // formattedJson.forEach((row: any) => {
+  //   if (!row["System"]) return;
+  //   // jsonResultObject[row["System"]] = row;
+  //   delete row["System"];
+  // });
 
-  return jsonResultObject;
+  return formattedJson;
 }
 
 // Example usage
@@ -127,26 +146,72 @@ const FIELDS_OPT = [
   "Scientific Concepts",
 ];
 
-function perField(field: string = "Cardiovascular") {
+function loadQuestionSchema(field: string = "Cardiovascular") {
+  if (!field) throw new Error("Field is required");
+
   const filePath = "./Master_PACKRAT_2024.xlsx";
-  const jsonResult = loadExcelSheet(filePath)[field];
-  FIELDS_OPT.map((field) => {
-    console.log(field, jsonResult);
+  const jsonResult = loadExcelSheet(filePath).filter((x: any) => {
+    if (!x || !x["System"]) return false;
+    return x["System"].toLowerCase().trim() === field.trim().toLowerCase();
+  })[0];
 
-    const pickSections = [];
+  if (!jsonResult) throw new Error("Field not found " + field);
 
-    // sample from the jsonResult.Blueprint for the field "Specific Disease Process" at the frequency of the Frequency field
-    for (let i = 0; i < jsonResult[field]; i++) {
-      let f = jsonResult.Blueprint[i]["Specific Disease Process"]?.trim() || "";
-      if (f) f += " under ";
-      f += jsonResult.Blueprint[i]["Global Disease Process"]?.trim() || "";
+  // call formatBluePrintProcess and set property BlueprintSections
+  jsonResult["BlueprintSections"] = formatBluePrintProcess(jsonResult);
 
-      pickSections.push(f);
+  return jsonResult;
+}
+
+function formatBluePrintProcess(jsonResult: any) {
+  const pickSections = [];
+
+  // sample from the jsonResult.Blueprint for the field "Specific Disease Process" at the frequency of the Frequency field
+  for (let i = 0; i < jsonResult["Blueprint"].length; i++) {
+    let f =
+      jsonResult["Blueprint"][i]["Specific Disease Process"]?.trim() || "";
+    if (f) f += " under ";
+    f += jsonResult["Blueprint"][i]["Global Disease Process"]?.trim() || "";
+
+    pickSections.push(f);
+  }
+
+  return pickSections;
+}
+
+// CLI prompt the user to pick a SYSTEM to generate a question and how many questions to generate
+function promptUser() {
+  const { prompt } = require("enquirer");
+
+  const questions = [
+    {
+      type: "select",
+      name: "system",
+      message: "Pick a system to generate questions for:",
+      choices: SYSTEMS_OPT,
+    },
+    {
+      type: "input",
+      name: "count",
+      message: "How many questions to generate?",
+      initial: "1",
+    },
+  ];
+
+  prompt(questions).then((answers: any) => {
+    const system = answers.system;
+    const count = parseInt(answers.count);
+
+    const jsonResult = loadQuestionSchema(system);
+    // console.log("loadQuestionSchema", jsonResult, system);
+
+    const sections = jsonResult["BlueprintSections"];
+    const sectionsLen = sections.length;
+
+    for (let i = 0; i < count; i++) {
+      generateQuestion(sections[i % sectionsLen]);
     }
-
-    console.log(pickSections);
   });
 }
 
-// perField("Cardiovascular");
-// console.log(JSON.stringify(jsonRessult, null, 2));
+promptUser();

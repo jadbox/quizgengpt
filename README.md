@@ -1,5 +1,14 @@
 # quizgengpt
 
+This project generates quiz practice questions based on an excel file template.
+
+Requires ChatGPT API Key:
+- create `.env` file with:
+```bash
+OPENAI_API_KEY=your_api_key
+```
+- Requires JavaScript runtime Bun v1.1.20 or higher installed (https://bun.sh)
+
 To install dependencies:
 
 ```bash
@@ -12,4 +21,7 @@ To run:
 bun run index.ts
 ```
 
-This project was created using `bun init` in bun v1.1.18. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Instructions:
+- Add Master_PACKRAT_2024.xlsx to the root directory
+- Run the program
+- Output will be in the `output` directory
