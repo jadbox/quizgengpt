@@ -1,0 +1,19 @@
+---
+const activities = [
+  'study', 'work', 'relax', 'family', 'friends', 'date', 'sport', 'party', 
+  'movies', 'reading', 'gaming', 'shopping', 'good meal', 'cleaning', 'transit',
+  'school', 'edit/new'
+];
+---
+
+<div>
+  <h1 class="text-xl font-bold mb-4">What have you been up to?</h1>
+  <div class="flex flex-wrap justify-center gap-6">
+    {activities.map((activity) => (
+      <div class="text-center text-purple-500">
+        <span class="material-icons text-4xl">{activity}</span>
+        <p>{activity}</p>
+      </div>
+    ))}
+  </div>
+</div>
