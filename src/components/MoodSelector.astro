@@ -10,6 +10,12 @@ const moods = [
 
 <div class="flex flex-col items-center justify-evenly min-h-screen -mt-24 pb-36">
 
+  <div class="fixed top-8 right-8 flex flex-col items-center">
+    <a href="/daily-check" class="bg-purple-500 text-white p-3 rounded-full shadow-lg flex items-center justify-center">
+      <span class="material-icons">arrow_forward</span>
+    </a>
+  </div>
+
   <section class="flex flex-col items-center justify-center -mb-14">
     <h1 class="text-3xl uppercase mb-4">How are you?</h1>
     <div class="flex items-center justify-center space-x-4 text-purple-500 mb-4">
@@ -29,7 +35,7 @@ const moods = [
   <section class="flex flex-col items-center justify-center -mt-14">
   <div class="flex justify-center space-x-4 mb-4">
     {moods.map((mood) => (
-      <div key={mood.label} class="text-center">
+      <div class="text-center">
         <span class={`material-icons ${mood.color} text-6xl`}>{mood.icon}</span>
         <p class="text-lg mt-2">{mood.label}</p>
       </div>
