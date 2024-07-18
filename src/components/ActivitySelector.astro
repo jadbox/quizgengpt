@@ -1,4 +1,6 @@
 ---
+import ToggleSwitch from "./ToggleSwitch.astro";
+
 const activities = [
   { label: "study", icon: "school" },
   { label: "work", icon: "work" },
@@ -28,9 +30,7 @@ const activities = [
     >
       arrow_back
     </a>
-    <span class="material-icons text-green-500 text-6xl">
-      sentiment_very_satisfied
-    </span>
+    <ToggleSwitch />
     <button
       class="material-icons bg-purple-500 text-white p-3 rounded-full shadow-lg"
     >

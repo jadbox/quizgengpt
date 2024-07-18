@@ -1,0 +1,37 @@
+<div class="flex items-center space-x-2">
+  <div class="relative inline-block w-10 mr-2 align-middle select-none">
+    <input
+      type="checkbox"
+      name="toggle"
+      id="toggle"
+      class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-600 ease-in-out"
+    />
+    <label
+      for="toggle"
+      class="toggle-label block overflow-hidden h-6 rounded-full border bg-slate-400 border-gray-400 cursor-pointer transition-all duration-600 ease-in-out"
+    ></label>
+  </div>
+  <span class="text-green-400">Goal set or Goal Completed?</span>
+</div>
+
+<script>
+  const checkbox = document.getElementById("toggle") as HTMLInputElement;
+  
+  if (checkbox) {
+    checkbox.addEventListener("change", () => {
+      // You can add additional functionality here based on the checkbox state
+    });
+  };
+</script>
+
+<style>
+  .toggle-checkbox {
+    left: 0;
+  }
+  .toggle-checkbox:checked {
+    left: calc(100% - 1.5rem); /* Adjust the value based on the size of the checkbox */
+  }
+  .toggle-checkbox:checked + .toggle-label {
+    background-color: #68d391;
+  }
+</style>
