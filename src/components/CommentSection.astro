@@ -1,0 +1,108 @@
+---
+const comments = [
+  {
+    author: "Anna C",
+    activity: "completed RUNNING",
+    time: "12:03 PM",
+    content:
+      "Ut in ad laborum minim aliqua mollit proident enim adipisicing. Pariatur nisi velit eiusmod magna mollit adipisicing ut mollit qui ad sunt mollit ipsum nisi dolore.Quis eu commodo aliquip amet est fugiat duis id ad officia voluptate. Duis esse.",
+    replies: [
+      {
+        author: "Benjamin Foster",
+        role: "Author",
+        time: "08:20 AM",
+        content:
+          "Ipsum anim est consequat commodo reprehenderit mollit enim iure amet sit cupidatat pariatur occaecat. Velit proident est nostrud occaecat.",
+      },
+    ],
+  },
+  {
+    author: "John",
+    activity: "completed PAINTING",
+    time: "08:10 AM",
+    content:
+      "Id ullamco qui tempor consectetur fugiat magna officia eiusmod ad fugiat laboris et culpa nostrud non veniam.",
+    replies: [
+      {
+        author: "Benjamin Foster",
+        role: "Author",
+        time: "08:20 AM",
+        content:
+          "Ipsum anim est consequat commodo reprehenderit mollit enim iure amet sit cupidatat pariatur occaecat. Velit proident est nostrud occaecat.",
+      },
+    ],
+  },
+  {
+    author: "Lisa",
+    activity: "set a goal today to start new diet",
+    time: "10:50 AM",
+    content:
+      "Anim aute ea ad dolore et enim aute duis laboris officia anim sit ut exercitation magna do. In nulla id exercitation veniam Lorem consectetur. Est ad commodo velit ut qui in consequat.",
+    replies: [],
+  },
+];
+---
+<body class="bg-gray-100 p-4 font-sans">
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div class="text-center mb-6">
+      <span class="text-blue-600 text-2xl underline">
+        Post new <br /> activity?
+      </span>
+    </div>
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-bold">Comment (532)</h2>
+      <button class="absolute top-4 right-4 text-xl">&times;</button>
+    </div>
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex items-center space-x-2">
+        <span>Most recent</span>
+        <span class="material-icons">expand_more</span>
+      </div>
+    </div>
+    <div>
+      {
+        comments.map((comment) => (
+          <div class="mb-6 p-4 bg-gray-50 rounded-lg shadow-sm">
+            <div class="flex justify-between items-center mb-2">
+              <div>
+                <span class="font-bold">{comment.author}</span>{" "}
+                {comment.activity}
+              </div>
+              <div class="text-sm text-gray-500">{comment.time}</div>
+            </div>
+            <p class="mb-4">{comment.content}</p>
+            <div class="flex space-x-4 text-blue-600">
+              <a href="#" class="flex items-center">
+                <span class="material-icons mr-1">thumb_up</span> Like
+              </a>
+              <a href="#" class="flex items-center">
+                <span class="material-icons mr-1">reply</span> Reply
+              </a>
+            </div>
+            <div class="mt-4">
+              {comment.replies.map((reply) => (
+                <div class="mt-4 pl-4 border-l-2 border-gray-200">
+                  <div class="flex justify-between items-center mb-2">
+                    <div>
+                      <span class="font-bold">{reply.author}</span>{" "}
+                      <span class="text-sm text-purple-600">
+                        {reply.role}
+                      </span>
+                    </div>
+                    <div class="text-sm text-gray-500">{reply.time}</div>
+                  </div>
+                  <p>{reply.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="text-center">
+      <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg"
+        >Show more discussion (4,512)</button
+      >
+    </div>
+  </div>
+</body>
