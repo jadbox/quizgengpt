@@ -81,8 +81,13 @@ const activities = [
 </style>
 
 <script is:inline>
+  // Add event listener to all activity items
+  // must be done after the DOM is loaded!
   document.addEventListener("DOMContentLoaded", function () {
+    // Get all activity items
     const activityItems = document.querySelectorAll(".activity-item");
+
+    // Add click event listener to all activity items
     activityItems.forEach((activityItem) => {
       activityItem.addEventListener("click", (event) => {
         const activity = event.currentTarget.getAttribute("data-activity");
