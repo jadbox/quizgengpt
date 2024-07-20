@@ -83,6 +83,7 @@ const activities = [
 <script is:inline>
   // Add event listener to all activity items
   // must be done after the DOM is loaded!
+  var selected = [];
   document.addEventListener("DOMContentLoaded", function () {
     // Get all activity items
     const activityItems = document.querySelectorAll(".activity-item");
@@ -96,14 +97,23 @@ const activities = [
         // add tailwind selection stlye class-ing to invert color and bg.
         // Also use animate.css to animated selection icon.
         // clear all previous selections
-        activityItems.forEach((item) => {
-          item.classList.remove("bg-purple-500", "text-white");
-          item.classList.remove("animate__animated", "animate__pulse");
-        });
+        // activityItems.forEach((item) => {
+        //   if (item === activityItem) return;
+        //   item.classList.remove("bg-purple-500", "text-white");
+        //   item.classList.remove("animate__animated", "animate__pulse");
+        // });
+
         activityItem.classList.toggle("bg-purple-500");
         activityItem.classList.toggle("text-white");
         activityItem.classList.toggle("animate__animated");
         activityItem.classList.toggle("animate__pulse");
+
+        // update selected activities for all animate__animated items
+        selected = Array.from(
+          document.querySelectorAll(".activity-item.animate__animated")
+        ).map((item) => item.getAttribute("data-activity"));
+
+        console.log("selected", selected);
       });
     });
   });
