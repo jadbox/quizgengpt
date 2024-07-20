@@ -1,0 +1,129 @@
+---
+const activities = [
+  { label: "study", icon: "school" },
+  { label: "work", icon: "work" },
+  { label: "relax", icon: "self_improvement" },
+  { label: "family", icon: "family_restroom" },
+  { label: "friends", icon: "people" },
+  { label: "date", icon: "favorite" },
+  { label: "sport", icon: "directions_run" },
+  { label: "party", icon: "celebration" },
+  { label: "movies", icon: "movie" },
+  { label: "reading", icon: "menu_book" },
+  { label: "gaming", icon: "sports_esports" },
+  { label: "shopping", icon: "shopping_cart" },
+  { label: "good meal", icon: "restaurant" },
+  { label: "cleaning", icon: "cleaning_services" },
+  { label: "transit", icon: "directions_transit" },
+  { label: "school", icon: "edit" },
+  { label: "edit/new", icon: "add_circle" },
+];
+---
+
+<script is:inline>
+  let checked = false;
+  function onCheckedChange(event) {
+    console.log("onCheckedChange");
+    checked = event.target.checked;
+    console.log(checked);
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    document
+      .getElementById("Switch")
+      .addEventListener("click", onCheckedChange);
+  });
+</script>
+<style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const activityItems = document.querySelectorAll(".activity-item");
+    activityItems.forEach((activityItem) => {
+      activityItem.addEventListener("click", (event) => {
+        const activity = event.currentTarget.getAttribute("data-activity");
+        console.log(activity);
+
+        // add tailwind selection stlye class-ing to invert color and bg.
+        // Also use animate.css to animated selection icon.
+        // clear all previous selections
+        activityItems.forEach((item) => {
+          item.classList.remove("bg-purple-500", "text-white");
+          item.classList.remove("animate__animated", "animate__pulse");
+        });
+        activityItem.classList.toggle("bg-purple-500");
+        activityItem.classList.toggle("text-white");
+        activityItem.classList.toggle("animate__animated");
+        activityItem.classList.toggle("animate__pulse");
+      });
+    });
+  });
+</script>
+
+<div class="grid grid-cols-4 gap-4 mb-4 md:grid-cols-5 mt-4">
+  {
+    activities.map((activity) => (
+      <div
+        class="flex rounded flex-col items-center text-center text-purple-500 cursor-pointer activity-item"
+        data-activity={activity.label}
+      >
+        <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-200 activity-icon">
+          <span class="material-icons text-3xl">{activity.icon}</span>
+        </div>
+        <p class="text-xs">{activity.label}</p>
+      </div>
+    ))
+  }
+</div>
+
+<div class="flex items-center space-x-2 my-4">
+  <label class="switch">
+    <input type="checkbox" id="Switch" />
+    <span class="slider"></span>
+  </label>
+  <span class="text-slate-600">Set goal or Goal Completed?</span>
+</div>
