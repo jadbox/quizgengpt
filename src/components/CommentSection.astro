@@ -61,60 +61,59 @@ const comments = [
       </div>
     </div>
     <div>
-      {
-        comments.map((comment, index) => (
-          <div class="mb-6 p-4 bg-gray-50 rounded-lg shadow-sm">
-            <div class="flex justify-between items-center mb-2">
-              <div>
-                <span class="font-bold">{comment.author}</span>{" "}
-                {comment.activity}
-              </div>
-              <div class="text-sm text-gray-500">{comment.time}</div>
+      {comments.map((comment, index) => (
+        <div class="mb-6 p-4 bg-gray-50 rounded-lg shadow-sm">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              <span class="font-bold">{comment.author}</span> {comment.activity}
             </div>
-            <p class="mb-4">{comment.content}</p>
-            <div class="flex space-x-4 text-blue-600">
-              <like-btn class="flex items-center">
-                <>
-                  <button class="material-icons mr-1" aria-label="Thumbs Up">
-                    thumb_up
-                  </button>
-                  <span>0</span>
-                </>
-              </like-btn>
-
-              <a
-                href="#"
-                class="flex items-center reply-btn"
-                data-index={index}
-              >
-                <span class="material-icons mr-1">reply</span> Reply
-              </a>
-              <a href="#" class="flex items-center text-red-600">
-                <span class="material-icons mr-1">delete</span> Delete
-              </a>
-            </div>
-            <div id={`reply-box-${index}`} class="reply-box hidden mt-4">
-              <textarea
-                class="w-full p-2 border rounded-lg"
-                placeholder="Write your reply..."
-              />
-              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">
-                Submit Reply
-              </button>
-            </div>
+            <div class="text-sm text-gray-500">{comment.time}</div>
           </div>
-        ))
-      }
+          <p class="mb-4">{comment.content}</p>
+          <div class="flex space-x-4 text-blue-600">
+            <like-btn like-confetti-button class="flex items-center">
+              <button class="material-icons mr-1" aria-label="Thumbs Up">
+                thumb_up
+              </button>
+              <span>0</span>
+            </like-btn>
+            <a href="#" class="flex items-center reply-btn" data-index={index}>
+              <span class="material-icons mr-1">reply</span> Reply
+            </a>
+            <a href="#" class="flex items-center text-red-600 delete-btn">
+              <span class="material-icons mr-1">delete</span> Delete
+            </a>
+          </div>
+          <div id={`reply-box-${index}`} class="reply-box hidden mt-4">
+            <textarea
+              class="w-full p-2 border rounded-lg reply-content"
+              placeholder="Write your reply..."
+            />
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2 submit-reply-btn">
+              Submit Reply
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
     <div class="text-center">
-      <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg"
-        >Show more discussion (4,512)</button
-      >
+      <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg">
+        Show more discussion (4,512)
+      </button>
     </div>
   </div>
 
   <script>
+    import confetti from "canvas-confetti";
+
     document.addEventListener("DOMContentLoaded", () => {
+      // Confetti button for likes
+      const buttons = document.querySelectorAll("[like-confetti-button]");
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => confetti());
+      });
+
+      // Event handlers to toggle visibility of reply submission box
       const replyButtons = document.querySelectorAll(".reply-btn");
       replyButtons.forEach((button) => {
         button.addEventListener("click", (event) => {
@@ -125,8 +124,29 @@ const comments = [
           replyBox.classList.toggle("hidden");
         });
       });
+
+      // Handle delete button click
+      const deleteButtons = document.querySelectorAll(".delete-btn");
+      deleteButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          console.log("Delete button clicked", event);
+        });
+      });
+
+      // Handle submit reply button click
+      const submitReplyButtons = document.querySelectorAll(".submit-reply-btn");
+      submitReplyButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          const replyBox = button.closest(".reply-box");
+          if (!replyBox) return;
+          const content = (replyBox.querySelector(".reply-content") as HTMLTextAreaElement).value;
+          console.log(`REPLY MESSAGE TO SEND: ${content}`);
+        });
+      });
     });
 
+    // Custom like button element
     class LikeBtn extends HTMLElement {
       constructor() {
         super();
@@ -135,12 +155,11 @@ const comments = [
         const likeButton = this.querySelector("button");
         const countSpan = this.querySelector("span");
 
-        // Each time the button is clicked, update the count.
         if (likeButton && countSpan)
-        likeButton.addEventListener("click", () => {
-          count++;
-          countSpan.textContent = count.toString();
-        });
+          likeButton.addEventListener("click", () => {
+            count++;
+            countSpan.textContent = count.toString();
+          });
       }
     }
 
