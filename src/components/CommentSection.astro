@@ -42,6 +42,7 @@ const comments = [
   },
 ];
 ---
+
 <body class="bg-gray-100 p-4 font-sans">
   <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
     <div class="text-center mb-6">
@@ -72,10 +73,20 @@ const comments = [
             </div>
             <p class="mb-4">{comment.content}</p>
             <div class="flex space-x-4 text-blue-600">
-              <a href="#" class="flex items-center">
-                <span class="material-icons mr-1">thumb_up</span> Like
-              </a>
-              <a href="#" class="flex items-center reply-btn" data-index={index}>
+              <like-btn class="flex items-center">
+                <>
+                  <button class="material-icons mr-1" aria-label="Thumbs Up">
+                    thumb_up
+                  </button>
+                  <span>0</span>
+                </>
+              </like-btn>
+
+              <a
+                href="#"
+                class="flex items-center reply-btn"
+                data-index={index}
+              >
                 <span class="material-icons mr-1">reply</span> Reply
               </a>
               <a href="#" class="flex items-center text-red-600">
@@ -83,8 +94,13 @@ const comments = [
               </a>
             </div>
             <div id={`reply-box-${index}`} class="reply-box hidden mt-4">
-              <textarea class="w-full p-2 border rounded-lg" placeholder="Write your reply..."></textarea>
-              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">Submit Reply</button>
+              <textarea
+                class="w-full p-2 border rounded-lg"
+                placeholder="Write your reply..."
+              />
+              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">
+                Submit Reply
+              </button>
             </div>
           </div>
         ))
@@ -98,17 +114,36 @@ const comments = [
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const replyButtons = document.querySelectorAll('.reply-btn');
-      replyButtons.forEach(button => {
-        button.addEventListener('click', (event) => {
+    document.addEventListener("DOMContentLoaded", () => {
+      const replyButtons = document.querySelectorAll(".reply-btn");
+      replyButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
           event.preventDefault();
-          const index = button.getAttribute('data-index');
+          const index = button.getAttribute("data-index");
           const replyBox = document.getElementById(`reply-box-${index}`);
           if (!replyBox) return;
-          replyBox.classList.toggle('hidden');
+          replyBox.classList.toggle("hidden");
         });
       });
     });
+
+    class LikeBtn extends HTMLElement {
+      constructor() {
+        super();
+        let count = 0;
+
+        const likeButton = this.querySelector("button");
+        const countSpan = this.querySelector("span");
+
+        // Each time the button is clicked, update the count.
+        if (likeButton && countSpan)
+        likeButton.addEventListener("click", () => {
+          count++;
+          countSpan.textContent = count.toString();
+        });
+      }
+    }
+
+    customElements.define("like-btn", LikeBtn);
   </script>
 </body>
