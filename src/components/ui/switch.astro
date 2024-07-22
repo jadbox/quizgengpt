@@ -56,9 +56,12 @@
 
 <script>
   const switchElement = document.querySelector('.switch');
+  if (!switchElement) {
+    throw new Error('Switch element not found');
+  }
   switchElement.addEventListener('click', () => {
     const isChecked = switchElement.getAttribute('data-state') === 'checked';
     switchElement.setAttribute('data-state', isChecked ? 'unchecked' : 'checked');
-    switchElement.setAttribute('aria-checked', !isChecked);
+    switchElement.setAttribute('aria-checked', (!isChecked).toString());
   });
 </script>
