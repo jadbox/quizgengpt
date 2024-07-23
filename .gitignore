@@ -5,6 +5,7 @@ output.txt
 questions.txt
 .env
 .env.local
+output_*.txt
 # Logs
 
 logs

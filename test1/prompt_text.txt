@@ -1,0 +1,163 @@
+Create a moderately challenging, clinical vignette question to assess the ability of a student clinical provider to incorporate history and physical exam components, diagnostic labs or imaging studies and differentiate between the pediatric infectious diseases of the kidney or urinary tract system with 5 possible answers. Provide diagnostic confirmation steps and then initial first line treatments after the rationale. 
+
+## Follow on conversation Query 
+
+- Use the same criteria as above but have the outcome anorexia nervosa please. 
+- Difficulty levels are moderate-easy, moderate, moderate-hard. Not too easy or too hard for a rounded assessment.
+ 
+
+<Sample Output>
+
+# Clinical Vignette Question: Differentiating Diagnoses of Pediatric Feeding/Eating Disorders - Difficulty: Moderate 
+
+**Clinical Scenario:*
+
+A 14-year-old girl is brought to the pediatric clinic by her mother due to concerns about significant weight loss over the past 6 months. The girl reports that she has been "eating healthy" and exercising regularly but admits to feeling fat despite her weight loss. Her mother has noticed that she is very restrictive with her food choices, often skips meals, and becomes anxious when confronted about her eating habits. The girl’s menstrual periods have become irregular over the past few months. On physical examination, she appears thin with a body mass index (BMI) in the 10th percentile for her age and height. She has bradycardia, dry skin, and lanugo hair on her arms. 
+
+ 
+
+**Question:** 
+
+Based on the history, physical examination findings, and possible diagnostic studies, what is the most likely diagnosis for this patient? 
+
+ 
+
+**Options:** 
+
+A. Avoidant/Restrictive Food Intake Disorder (ARFID) 
+
+B. Anorexia Nervosa 
+
+C. Bulimia Nervosa 
+
+D. Pica 
+
+E. Gastroesophageal Reflux Disease (GERD) 
+
+ 
+
+**Correct Answer:** 
+
+B. Anorexia Nervosa 
+
+ 
+
+**Rationale:** 
+
+- **A:** ARFID involves restrictive eating due to a lack of interest in food or aversions to sensory characteristics of food, without the preoccupation with weight and body image seen in anorexia nervosa. 
+
+- **B:** This is the correct answer. Anorexia Nervosa is characterized by restrictive eating leading to significantly low body weight, intense fear of gaining weight, and body image disturbances. The girl's significant weight loss, restrictive eating habits, fear of gaining weight, and physical findings of bradycardia, dry skin, and lanugo hair are consistent with anorexia nervosa. 
+
+- **C:** Bulimia Nervosa involves episodes of binge eating followed by inappropriate compensatory behaviors such as vomiting, fasting, or excessive exercise. This scenario does not describe binge eating episodes. 
+
+- **D:** Pica is characterized by the persistent eating of non-nutritive, non-food substances over a period of at least one month. There is no mention of eating such substances in this scenario. 
+
+- **E:** GERD can cause feeding difficulties due to discomfort and pain associated with eating, but it typically presents with symptoms such as regurgitation, irritability, and poor weight gain, which are not described here. 
+
+ 
+
+**Diagnostic Confirmation:** 
+
+- **Clinical Evaluation:** Conduct a thorough psychiatric evaluation to assess eating behaviors, body image concerns, and possible co-occurring psychiatric conditions such as anxiety or depression. 
+
+- **Labs:** Complete blood count (CBC), comprehensive metabolic panel (CMP), thyroid function tests, and electrolytes to assess for malnutrition and metabolic imbalances. 
+
+- **Imaging:** Bone density scan (DEXA) if there is concern for osteopenia or osteoporosis due to prolonged malnutrition and amenorrhea. 
+
+- **Electrocardiogram (ECG):** To evaluate for bradycardia and potential cardiac complications associated with anorexia nervosa. 
+
+ 
+
+**Initial First Line Treatments:** 
+
+- **Nutritional Rehabilitation:** Develop a structured meal plan to ensure adequate caloric intake and gradual weight restoration. This may involve collaboration with a dietitian experienced in eating disorders. 
+
+- **Psychotherapy:** Initiate evidence-based psychotherapies such as Cognitive Behavioral Therapy (CBT) for Eating Disorders or Family-Based Therapy (FBT) to address the psychological aspects of anorexia nervosa. 
+
+- **Medical Monitoring:** Regular monitoring of weight, vital signs, and laboratory parameters to assess for refeeding syndrome and other medical complications. 
+
+- **Medication:** Consider the use of medications such as selective serotonin reuptake inhibitors (SSRIs) for co-occurring anxiety or depression, although pharmacotherapy is not the primary treatment for anorexia nervosa. 
+
+ 
+
+This question assesses the student's ability to incorporate clinical history, physical examination findings, and appropriate diagnostic considerations to differentiate between various pediatric feeding/eating disorders, ensuring they can identify the most likely diagnosis, confirm it with appropriate studies, and initiate first-line treatment. 
+
+ 
+
+<Sample Output>
+
+# Clinical Vignette Question: Differentiating Diagnoses of Pediatric Feeding/Eating Disorders - Difficulty: Moderate
+
+ 
+
+**Clinical Scenario:** 
+
+A 3-year-old boy is brought to the pediatric clinic by his parents due to concerns about his eating habits. They report that he has been a picky eater since infancy, but over the past six months, he has become increasingly restrictive with the foods he will eat. He only accepts a few types of foods, such as plain pasta, bread, and certain fruits. He refuses to eat vegetables, meats, or any mixed textures. His parents have noticed that he gags and occasionally vomits when trying new foods. Despite these issues, he has maintained his growth along the 25th percentile for weight and height. On physical examination, he appears well-nourished and active, with no signs of malnutrition or other physical abnormalities. 
+
+ 
+
+**Question:** 
+
+Based on the history, physical examination findings, and possible diagnostic studies, what is the most likely diagnosis for this patient? 
+
+ 
+
+**Options:** 
+
+A. Avoidant/Restrictive Food Intake Disorder (ARFID) 
+
+B. Anorexia Nervosa 
+
+C. Bulimia Nervosa 
+
+D. Pica 
+
+E. Gastroesophageal Reflux Disease (GERD) 
+
+ 
+
+**Correct Answer:** 
+
+A. Avoidant/Restrictive Food Intake Disorder (ARFID) 
+
+ 
+
+**Rationale:** 
+
+- **A:** This is the correct answer. ARFID is characterized by an apparent lack of interest in eating or food, avoidance based on the sensory characteristics of food, or concern about aversive consequences of eating, such as gagging or vomiting. The boy's restrictive eating patterns, gagging, and limited food variety are consistent with ARFID. 
+
+- **B:** Anorexia Nervosa involves restrictive eating leading to significantly low body weight, intense fear of gaining weight, and body image disturbances. The child in this scenario maintains normal growth and does not exhibit fear of weight gain or body image issues. 
+
+- **C:** Bulimia Nervosa involves episodes of binge eating followed by inappropriate compensatory behaviors such as vomiting, fasting, or excessive exercise. This scenario does not describe binge eating or compensatory behaviors. 
+
+- **D:** Pica is characterized by the persistent eating of non-nutritive, non-food substances over a period of at least one month. There is no mention of eating such substances in this scenario. 
+
+- **E:** GERD can cause feeding difficulties due to discomfort and pain associated with eating, but it typically presents with symptoms such as regurgitation, irritability, and poor weight gain, which are not described here. 
+
+ 
+
+**Diagnostic Confirmation:** 
+
+- **Comprehensive Evaluation:** Conduct a detailed dietary history, including food preferences, eating habits, and mealtime behaviors. Assess for any aversive experiences related to eating. 
+
+- **Developmental and Behavioral Assessment:** Screen for other developmental or behavioral issues that may contribute to feeding difficulties. 
+
+- **Labs:** Basic metabolic panel, complete blood count (CBC), and nutritional markers (e.g., iron, zinc, vitamin D) to rule out any deficiencies. 
+
+- **Consultation:** Referral to a pediatric dietitian or feeding specialist for a comprehensive assessment and management plan. 
+
+ 
+
+**Initial First Line Treatments:** 
+
+- **Behavioral Interventions:** Implement behavioral strategies to gradually introduce new foods and textures. This may include positive reinforcement, systematic desensitization, and structured mealtime routines. 
+
+- **Parental Education and Support:** Educate parents on creating a supportive and low-pressure feeding environment. Provide guidance on offering a variety of foods and encouraging the child to try new foods without forcing them. 
+
+- **Feeding Therapy:** Referral to a feeding therapist for specialized intervention, which may include sensory-based approaches and motor-skill development to improve the child's acceptance of a broader range of foods. 
+
+- **Nutritional Monitoring:** Regular monitoring of the child's growth and nutritional status to ensure adequate intake of essential nutrients. 
+
+ 
+
+This question assesses the student's ability to incorporate clinical history, physical examination findings, and appropriate diagnostic considerations to differentiate between various pediatric feeding/eating disorders, ensuring they can identify the most likely diagnosis, confirm it with appropriate studies, and initiate first-line treatment. 

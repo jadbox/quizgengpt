@@ -19,7 +19,7 @@ export async function getObjPrompt(objective: string) {
 }
 
 // get the completion from the OpenAI API
-export async function getCompletion(prompt: string) {
+export async function getCompletion(prompt: string, system: string = "") {
   return (
     await openaiClient.chat.completions.create({
       model: "gpt-4o",
@@ -27,7 +27,8 @@ export async function getCompletion(prompt: string) {
         {
           role: "system",
           content:
-            "You are a professor preparing questions for medical students and wish to teach students as best as possible through quizzing.",
+            system ||
+            "You are a professor preparing questions for medical students over a range of challenges, but always with a concise answer.",
         },
         {
           role: "user",
