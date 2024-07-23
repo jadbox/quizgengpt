@@ -86,8 +86,9 @@ const activities = await getActivities();
         //   item.classList.remove("animate__animated", "animate__pulse");
         // });
 
-        activityItem.classList.toggle("bg-purple-500");
-        activityItem.classList.toggle("text-white");
+        activityItem.classList.toggle("bg-blue-500");
+        activityItem.classList.toggle("rounded-xl");
+        activityItem.classList.toggle("text-gray-200");
         activityItem.classList.toggle("animate__animated");
         activityItem.classList.toggle("animate__pulse");
 
@@ -106,10 +107,10 @@ const activities = await getActivities();
   {
     activities.map((activity) => (
       <div
-        class="flex rounded flex-col items-center text-center text-purple-500 cursor-pointer activity-item"
+        class="flex rounded flex-col items-center text-center text-yellow-400 cursor-pointer activity-item"
         data-activity={activity.label}
       >
-        <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-200 activity-icon">
+        <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-700 bg-gray-900 activity-icon">
           <span class="material-icons text-3xl">{activity.icon}</span>
         </div>
         <p class="text-xs">{activity.label}</p>
@@ -123,5 +124,5 @@ const activities = await getActivities();
     <input type="checkbox" id="Switch" />
     <span class="slider"></span>
   </label>
-  <span class="text-slate-600">Set goal or Goal Completed?</span>
+  <span class="text-slate-300">Set goal or Goal Completed?</span>
 </div>

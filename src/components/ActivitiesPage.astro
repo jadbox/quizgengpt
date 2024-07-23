@@ -2,30 +2,30 @@
 import ActivitySelector from "./ActivitySelector.astro";
 ---
 
-<div class="max-h-screen flex flex-col items-center py-8 space-y-4">
-  <h1 class="text-2xl uppercase mb-4">What have you been up to?</h1>
+<div class="max-h-screen flex flex-col items-center py-8 space-y-4 text-slate-200">
+  <h1 class="text-2xl uppercase mb-4 text-yellow-400">What have you been up to?</h1>
   <ActivitySelector />
   <textarea
-    class="w-11/12 p-2 mt-4 border rounded-md bg-gray-200 md:w-1/2"
+    class="w-11/12 p-2 mt-4 border rounded-md bg-gray-800 text-slate-200 md:w-1/2"
     placeholder="Add Note..."></textarea>
   <div class="flex justify-between items-center w-11/12 mt-4 md:w-3/4">
     <div
       class="fixed bottom-8 inset-x-0 flex flex-col items-center md:relative md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
     >
       <button
-        class="material-icons bg-purple-500 text-white p-4 rounded-full shadow-lg text-4xl"
+        class="material-icons bg-yellow-400 text-black p-4 rounded-full shadow-lg text-4xl"
       >
         check
       </button>
-      <p class="mt-2 text-purple-500">Save</p>
+      <p class="mt-2 text-yellow-400">Save</p>
     </div>
     <div class="fixed bottom-8 right-8 flex flex-col items-center">
       <button
-        class="material-icons bg-white text-purple-500 p-3 rounded-full shadow-lg border-2 border-gray-200"
+        class="material-icons bg-gray-900 text-yellow-400 p-3 rounded-full shadow-lg border-2 border-gray-700"
       >
         edit
       </button>
-      <p class="mt-2 text-purple-500">Edit Activities</p>
+      <p class="mt-2 text-yellow-400">Edit Activities</p>
     </div>
   </div>
 </div>

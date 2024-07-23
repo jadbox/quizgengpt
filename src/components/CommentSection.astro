@@ -43,34 +43,35 @@ const comments = [
 ];
 ---
 
-<body class="bg-gray-100 p-4 font-sans">
-  <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+<body class="p-4 font-sans text-slate-200">
+  <div class="max-w-2xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
     <div class="text-center mb-6">
-      <span class="text-blue-600 text-2xl underline">
+      <span class="text-yellow-400 text-2xl underline">
         Post new <br /> activity?
       </span>
     </div>
     <div class="text-center mb-6">
-      <h2 class="text-2xl font-bold">Comment (532)</h2>
-      <button class="absolute top-4 right-4 text-xl">&times;</button>
+      <h2 class="text-2xl font-bold text-yellow-400">Comment (532)</h2>
+      <button class="absolute top-4 right-4 text-xl text-yellow-400">&times;</button>
     </div>
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center space-x-2">
-        <span>Most recent</span>
-        <span class="material-icons">expand_more</span>
+        <span class="text-yellow-400">Most recent</span>
+        <span class="material-icons text-yellow-400">expand_more</span>
       </div>
     </div>
     <div>
       {comments.map((comment, index) => (
-        <div class="mb-6 p-4 bg-gray-50 rounded-lg shadow-sm">
+        <div class="mb-6 p-4 bg-gray-700 rounded-lg shadow-sm">
           <div class="flex justify-between items-center mb-2">
             <div>
-              <span class="font-bold">{comment.author}</span> {comment.activity}
+              <span class="font-bold text-yellow-400">{comment.author}</span>
+              <span class="text-gray-200">{comment.activity}</span>
             </div>
-            <div class="text-sm text-gray-500">{comment.time}</div>
+            <div class="text-sm text-gray-400">{comment.time}</div>
           </div>
-          <p class="mb-4">{comment.content}</p>
-          <div class="flex space-x-4 text-blue-600">
+          <p class="mb-4 text-gray-300">{comment.content}</p>
+          <div class="flex space-x-4 text-yellow-400">
             <like-btn like-confetti-button class="flex items-center">
               <button class="material-icons mr-1" aria-label="Thumbs Up">
                 thumb_up
@@ -80,16 +81,16 @@ const comments = [
             <a href="#" class="flex items-center reply-btn" data-index={index}>
               <span class="material-icons mr-1">reply</span> Reply
             </a>
-            <a href="#" class="flex items-center text-red-600 delete-btn">
+            <a href="#" class="flex items-center text-red-400 delete-btn">
               <span class="material-icons mr-1">delete</span> Delete
             </a>
           </div>
           <div id={`reply-box-${index}`} class="reply-box hidden mt-4">
             <textarea
-              class="w-full p-2 border rounded-lg reply-content"
+              class="w-full p-2 border rounded-lg bg-gray-600 text-slate-200 reply-content"
               placeholder="Write your reply..."
             />
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2 submit-reply-btn">
+            <button class="bg-yellow-400 text-black px-4 py-2 rounded-lg mt-2 submit-reply-btn">
               Submit Reply
             </button>
           </div>
@@ -97,7 +98,7 @@ const comments = [
       ))}
     </div>
     <div class="text-center">
-      <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg">
+      <button class="bg-gray-700 text-yellow-400 px-4 py-2 rounded-lg">
         Show more discussion (4,512)
       </button>
     </div>
