@@ -1,0 +1,25 @@
+---
+const comments = [
+  "YOU CAN DO IT! -Jessica",
+  "I FINISHED MY GYM GOAL -Larry",
+  "I'll be so glad to get to the gym today after work -Joe",
+  "You're going to enjoy that run and buy a nice healthy snack soon at the store!",
+];
+---
+
+<div class="flex flex-col items-center justify-center max-h-screen p-4 space-y-40">
+  <div class=" w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl">
+    {comments.map((comment, index) => <p class="text-yellow-400">{comment}</p>)}
+  </div>
+  <div class="flex flex-col items-center justify-center w-full">
+    <input
+      type="text"
+      placeholder="Type to inspire others..."
+      class="w-full md:w-2/3 p-2 mt-4 border border-yellow-400 rounded-lg bg-gray-800 text-yellow-400 placeholder-gray-500"
+    />
+    <button
+      class="w-full md:w-2/3 mt-2 p-2 border border-yellow-400 text-yellow-400 bg-gray-700 rounded-lg"
+      >reset</button
+    >
+  </div>
+</div>
