@@ -25,6 +25,7 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "nanostores": "^0.10.3",
     "postcss": "^8.4.39",
     "supabase": "^1.183.5",
     "tailwind-merge": "^2.4.0",
