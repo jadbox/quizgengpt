@@ -1,22 +1,42 @@
----
-const goals = [
-  { name: "RUN 5mi", time: "3m 10s", isRunning: true },
-  { name: "GYM", time: "", isRunning: false },
-  { name: "GROCERIES", time: "", isRunning: false },
-];
----
+<script>
+  import { selectedActivities } from "@/scripts/store";
+
+  selectedActivities.subscribe((value) => {
+    console.log("activities selected", value);
+
+    const goalContainer = document.getElementById("goalContainer");
+    const storedActivities = value.map((activity) => ({
+      name: activity,
+      isRunning: false,
+      time: "00:00:00",
+    }));
+
+    if (goalContainer) {
+      storedActivities.forEach((goal) => {
+        const goalElement = document.createElement("div");
+        goalElement.className =
+          "flex justify-between items-center p-2 border border-yellow-400 rounded-lg";
+        goalElement.innerHTML = `
+          <span class="capitalize text-yellow-400">
+            ${goal.name}
+          </span>
+          <button class="bg-gray-700 text-yellow-400 border border-yellow-400 px-2 py-1 rounded-lg">
+            ${goal.isRunning ? `${goal.time} (stop)` : "(start)"}
+          </button>
+        `;
+        goalContainer.appendChild(goalElement);
+      });
+    } else {
+      console.error("goalContainer not found");
+    }
+  });
+</script>
 
 <div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
   <h1 class="text-2xl font-bold text-yellow-400">Today's goal list</h1>
   <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3">
-    {goals.map((goal, index) => (
-      <div class="flex justify-between items-center p-2 border border-yellow-400 rounded-lg">
-        <span class="text-yellow-400">{goal.name}</span>
-        <button class="bg-gray-700 text-yellow-400 border border-yellow-400 px-2 py-1 rounded-lg">
-          {goal.isRunning ? `${goal.time} (stop)` : "(start)"}
-        </button>
-      </div>
-    ))}
+    <div class="container space-y-4" id="goalContainer">
+      <!-- Activities will be rendered here -->
+    </div>
   </div>
 </div>
-

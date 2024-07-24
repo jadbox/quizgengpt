@@ -5,7 +5,7 @@ const activities = await getActivities();
 ---
 
 <script>
-  import { isSelected } from "../scripts/store.js";
+  import { selectedActivities } from "@/scripts/store.js";
 
   document.addEventListener("DOMContentLoaded", function () {
     // Activity Selector Logic
@@ -36,8 +36,8 @@ const activities = await getActivities();
         //console.log("selected", selected);
 
         // Set activities to the store
-        isSelected.set(selected);
-        //console.log(isSelected.get());
+        selectedActivities.set(selected);
+        //console.log(selectedActivities.get());
       });
     });
   });
