@@ -18,6 +18,8 @@ export const activities = [
   { label: "edit/new", icon: "add_circle" },
 ];
 
+export type ActivityLabel = typeof activities[number]['label'];
+
 // Note, this is a fake API call, in a real app you would fetch this data from a server to include custom activities
 export async function getActivities() {
   return activities;

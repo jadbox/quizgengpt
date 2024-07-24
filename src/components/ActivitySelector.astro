@@ -1,90 +1,24 @@
 ---
-import { getActivities } from "./globals.ts";
+import { getActivities } from "../scripts/globals.ts";
+import ToggleSwitch from "./ToggleSwitch.astro";
 const activities = await getActivities();
 ---
 
-<script is:inline>
-  let checked = false;
-  function onCheckedChange(event) {
-    console.log("onCheckedChange");
-    checked = event.target.checked;
-    console.log(checked);
-  }
+<script>
+  import { isSelected } from "../scripts/store.js";
+
   document.addEventListener("DOMContentLoaded", function () {
-    document
-      .getElementById("Switch")
-      .addEventListener("click", onCheckedChange);
-  });
-</script>
-<style>
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
+    // Activity Selector Logic
+    var selected: string[] = [];
+    const activityItems =
+      document.querySelectorAll<HTMLElement>(".activity-item");
 
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 34px;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-
-  input:checked + .slider {
-    background-color: #2196f3;
-  }
-
-  input:checked + .slider:before {
-    transform: translateX(26px);
-  }
-</style>
-
-<script is:inline>
-  // Add event listener to all activity items
-  // must be done after the DOM is loaded!
-  var selected = [];
-  document.addEventListener("DOMContentLoaded", function () {
-    // Get all activity items
-    const activityItems = document.querySelectorAll(".activity-item");
-
-    // Add click event listener to all activity items
     activityItems.forEach((activityItem) => {
       activityItem.addEventListener("click", (event) => {
-        const activity = event.currentTarget.getAttribute("data-activity");
-        console.log(activity);
-
-        // add tailwind selection stlye class-ing to invert color and bg.
-        // Also use animate.css to animated selection icon.
-        // clear all previous selections
-        // activityItems.forEach((item) => {
-        //   if (item === activityItem) return;
-        //   item.classList.remove("bg-purple-500", "text-white");
-        //   item.classList.remove("animate__animated", "animate__pulse");
-        // });
+        const activity = (event.currentTarget as HTMLElement).getAttribute(
+          "data-activity",
+        );
+        //console.log(activity);
 
         activityItem.classList.toggle("bg-blue-500");
         activityItem.classList.toggle("rounded-xl");
@@ -94,10 +28,16 @@ const activities = await getActivities();
 
         // update selected activities for all animate__animated items
         selected = Array.from(
-          document.querySelectorAll(".activity-item.animate__animated")
-        ).map((item) => item.getAttribute("data-activity"));
+          document.querySelectorAll(".activity-item.animate__animated"),
+        ).map(
+          (item) => (item as HTMLElement).getAttribute("data-activity") || "",
+        );
 
-        console.log("selected", selected);
+        //console.log("selected", selected);
+
+        // Set activities to the store
+        isSelected.set(selected);
+        //console.log(isSelected.get());
       });
     });
   });
@@ -119,10 +59,4 @@ const activities = await getActivities();
   }
 </div>
 
-<div class="flex items-center space-x-2 my-4">
-  <label class="switch">
-    <input type="checkbox" id="Switch" />
-    <span class="slider"></span>
-  </label>
-  <span class="text-slate-300">Set goal or Goal Completed?</span>
-</div>
+<ToggleSwitch />
