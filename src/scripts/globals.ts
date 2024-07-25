@@ -15,7 +15,6 @@ export const activities = [
   { label: "cleaning", icon: "cleaning_services" },
   { label: "transit", icon: "directions_transit" },
   { label: "school", icon: "edit" },
-  { label: "edit/new", icon: "add_circle" },
 ];
 
 export type ActivityLabel = typeof activities[number]['label'];
