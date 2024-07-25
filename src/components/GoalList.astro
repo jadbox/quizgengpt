@@ -12,6 +12,9 @@
     }));
 
     if (goalContainer) {
+      // Clear the container first to avoid duplication
+      goalContainer.innerHTML = "";
+
       storedActivities.forEach((goal) => {
         const goalElement = document.createElement("div");
         goalElement.className =
@@ -20,10 +23,65 @@
           <span class="capitalize text-yellow-400">
             ${goal.name}
           </span>
+          <span id="stopwatch" class="text-yellow-400">
+            ${goal.time}
+          </span>
           <button class="bg-gray-700 text-yellow-400 border border-yellow-400 px-2 py-1 rounded-lg">
-            ${goal.isRunning ? `${goal.time} (stop)` : "(start)"}
+            ${goal.isRunning ? `(stop)` : "(start)"}
           </button>
         `;
+
+        let intervalId = null;
+        let startTime = null;
+        let elapsedTime = 0;
+        let isPaused = false;
+
+        const startStopwatch = () => {
+          goalElement.querySelector("button").textContent = "(stop)";
+          if (!startTime) {
+            startTime = Date.now();
+            intervalId = setInterval(updateStopwatch, 1000);
+          }
+          if (isPaused) {
+            isPaused = false;
+            if (intervalId === null) {
+              startTime = Date.now() - elapsedTime * 1000;
+              intervalId = setInterval(updateStopwatch, 1000);
+            }
+          }
+        };
+
+        const stopStopwatch = () => {
+          goalElement.querySelector("button").textContent = "(start)";
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+            isPaused = true;
+          }
+        };
+
+        const updateStopwatch = () => {
+          const currentTime = Date.now();
+          elapsedTime = (currentTime - startTime) / 1000;
+          const hours = Math.floor(elapsedTime / 3600);
+          const minutes = Math.floor((elapsedTime % 3600) / 60);
+          const seconds = Math.floor(elapsedTime % 60);
+
+          goalElement.querySelector("#stopwatch").textContent =
+            `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        };
+
+        goalElement
+          .querySelector("button")
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            if (event.target.textContent.includes("start")) {
+              startStopwatch();
+            } else {
+              stopStopwatch();
+            }
+          });
+
         goalContainer.appendChild(goalElement);
       });
     } else {
