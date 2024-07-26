@@ -7,6 +7,9 @@ interface Props {
 }
 
 const { title } = Astro.props;
+
+// disable page caching
+Astro.request.headers.set("Cache-Control", "no-store");
 ---
 
 <!doctype html>
