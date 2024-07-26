@@ -1,0 +1,27 @@
+---
+import { supabase } from "../lib/supabase";
+
+const { cookies, redirect } = Astro;
+const accessToken = cookies.get("sb-access-token");
+const refreshToken = cookies.get("sb-refresh-token");
+
+const url = Astro.request.url.split("/signin")[0];
+const url2 = new URL("/api/auth/callback", url).href;
+console.log("redirect url", url2);
+
+if (accessToken || refreshToken) {
+  return redirect("/");
+}
+
+const { data, error } = await supabase.auth.signInWithOAuth({
+  provider: "google",
+  options: {
+    redirectTo: url2,
+  },
+});
+
+if (data?.url) {
+  // redirect the user to the identity provider's authentication flow
+  return redirect(data.url);
+}
+---
