@@ -16,7 +16,7 @@ const activities = await getActivities();
     activityItems.forEach((activityItem) => {
       activityItem.addEventListener("click", (event) => {
         const activity = (event.currentTarget as HTMLElement).getAttribute(
-          "data-activity",
+          "data-activity"
         );
         //console.log(activity);
 
@@ -28,12 +28,12 @@ const activities = await getActivities();
 
         // update selected activities for all animate__animated items
         selected = Array.from(
-          document.querySelectorAll(".activity-item.animate__animated"),
+          document.querySelectorAll(".activity-item.animate__animated")
         ).map(
-          (item) => (item as HTMLElement).getAttribute("data-activity") || "",
+          (item) => (item as HTMLElement).getAttribute("data-activity") || ""
         );
 
-        //console.log("selected", selected);
+        // console.log("selected", selected);
 
         // Set activities to the store
         selectedActivities.set(selected);
@@ -59,4 +59,4 @@ const activities = await getActivities();
   }
 </div>
 
-<ToggleSwitch />
+<!-- <ToggleSwitch /> -->
