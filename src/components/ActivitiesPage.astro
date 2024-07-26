@@ -2,36 +2,58 @@
 import ActivitySelector from "./ActivitySelector.astro";
 ---
 
+<script>
+  import confetti from "canvas-confetti";  
+
+  const buttons = document.querySelectorAll("[data-confetti-button]");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+
+      setTimeout(() => {
+        const href = button.getAttribute("href");
+        if (href) window.location.href = href;
+      }, 2000);
+    });
+  });
+</script>
+
 <div
   class="max-h-screen flex flex-col items-center py-8 space-y-4 text-slate-200"
 >
-  <h1 class="text-2xl uppercase mb-4 text-yellow-400">
+  <h1 class="text-2xl uppercase mb-4 text-green-400">
     What's your plan for today?
   </h1>
   <ActivitySelector />
   <textarea
     class="w-11/12 p-2 mt-4 border rounded-md bg-gray-800 text-slate-200 md:w-1/2"
-    placeholder="Add Note..."></textarea>
+    placeholder="Tell us what inspires you!"></textarea>
   <div class="flex justify-between items-center w-11/12 mt-4 md:w-3/4">
     <div
       class="fixed bottom-8 inset-x-0 flex flex-col items-center md:relative md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
     >
-      <a href="/goals">
+      <a data-confetti-button href="/goals">
         <button
-          class="material-icons bg-yellow-400 text-black p-4 rounded-full shadow-lg text-4xl"
+          class="material-icons bg-green-400 text-black p-4 rounded-full shadow-lg text-4xl"
         >
           check
         </button>
       </a>
-      <p class="mt-2 text-yellow-400">Save</p>
+      <p class="mt-2 text-green-400">Crush Goals!</p>
     </div>
     <!-- <div class="fixed bottom-8 right-8 flex flex-col items-center">
       <button
-        class="material-icons bg-gray-900 text-yellow-400 p-3 rounded-full shadow-lg border-2 border-gray-700"
+        class="material-icons bg-gray-900 text-green-400 p-3 rounded-full shadow-lg border-2 border-gray-700"
       >
         edit
       </button>
-      <p class="mt-2 text-yellow-400">Edit Activities</p>
+      <p class="mt-2 text-green-400">Edit Activities</p>
     </div> -->
   </div>
 </div>
