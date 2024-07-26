@@ -5,8 +5,8 @@ const { cookies, redirect } = Astro;
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
 
-const url = Astro.request.url.split("/signin")[0];
-const url2 = new URL("/api/auth/callback", url).href;
+const urlBase = Astro.request.url.split("/signin")[0];
+const url2 = new URL("/api/auth/callback", urlBase).href;
 console.log("redirect url", url2);
 
 if (accessToken || refreshToken) {

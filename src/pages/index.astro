@@ -9,7 +9,7 @@ const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
 
 if (!accessToken || !refreshToken) {
-  // return redirect("/signin");
+  return redirect("/signin");
 }
 
 async function auth() {
@@ -29,12 +29,14 @@ async function auth() {
 
     return redirect("/signin");
   }
+
+  return data.user?.email;
 }
 
 const email = await auth(); // data.user?.email;
 ---
 
 <Layout title="Choose Your Goals">
-  {email ? <welcome>{email}</welcome> : ""}
+  {email ? <h3 class="text-white w-full text-center">User: {email}</h3> : ""}
   <ActivitiesPage />
 </Layout>
