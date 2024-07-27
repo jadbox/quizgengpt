@@ -6,8 +6,10 @@
     "dev": "bunx --bun astro dev",
     "start": "bunx --bun astro dev --host 0.0.0.0",
     "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview2": "astro preview",
+    "preview": "bun run ./dist/server/entry.mjs",
+    "astro": "astro",
+    "deploy": "astro run build && fly run deploy"
   },
   "dependencies": {
     "@astrojs/check": "^0.8.3",
@@ -22,6 +24,7 @@
     "@types/react-dom": "^18.3.0",
     "animate.css": "^4.1.1",
     "astro": "^4.12.2",
+    "astro-bun-adapter": "^1.0.2",
     "autoprefixer": "^10.4.19",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",

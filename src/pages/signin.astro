@@ -13,15 +13,20 @@ if (accessToken || refreshToken) {
   return redirect("/");
 }
 
+const redirectURL = import.meta.env.PROD ? import.meta.env.SITE : url2;
+console.log("redirectURL", redirectURL);
+
 const { data, error } = await supabase.auth.signInWithOAuth({
   provider: "google",
   options: {
-    redirectTo: import.meta.env.PROD ? import.meta.env.SITE : url2,
+    redirectTo: redirectURL,
   },
 });
 
 if (data?.url) {
   // redirect the user to the identity provider's authentication flow
-  return redirect(data.url);
+  // return redirect(data.url);
 }
 ---
+
+redirecting to <a href={redirectURL}>{redirectURL}</a>

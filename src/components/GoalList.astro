@@ -31,13 +31,15 @@
           </button>
         `;
 
-        let intervalId = null;
-        let startTime = null;
+        var intervalId: any;
+        var startTime: any = null;
         let elapsedTime = 0;
         let isPaused = false;
 
         const startStopwatch = () => {
-          goalElement.querySelector("button").textContent = "(stop)";
+          const btn = goalElement.querySelector("button");
+          if (btn === null) return;
+          btn.textContent = "(stop)";
           if (!startTime) {
             startTime = Date.now();
             intervalId = setInterval(updateStopwatch, 1000);
@@ -52,7 +54,9 @@
         };
 
         const stopStopwatch = () => {
-          goalElement.querySelector("button").textContent = "(start)";
+          const btn = goalElement.querySelector("button");
+          if (btn === null) return;
+          btn.textContent = "(start)";
           if (intervalId) {
             clearInterval(intervalId);
             intervalId = null;
@@ -67,15 +71,16 @@
           const minutes = Math.floor((elapsedTime % 3600) / 60);
           const seconds = Math.floor(elapsedTime % 60);
 
-          goalElement.querySelector("#stopwatch").textContent =
-            `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+          const watch = goalElement.querySelector("#stopwatch");
+          if (watch)
+            watch.textContent = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
         };
 
         goalElement
-          .querySelector("button")
-          .addEventListener("click", (event) => {
+          ?.querySelector("button")
+          ?.addEventListener("click", (event) => {
             event.preventDefault();
-            if (event.target.textContent.includes("start")) {
+            if ((event.target as any).textContent.includes("start")) {
               startStopwatch();
             } else {
               stopStopwatch();
