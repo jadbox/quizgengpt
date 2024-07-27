@@ -5,7 +5,7 @@ const { cookies, redirect } = Astro;
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
 
-const urlBase = Astro.request.url.split("/signin")[0];
+const urlBase = "http://localhost:4321"; //Astro.request.url.split("/signin")[0];
 const url2 = new URL("/api/auth/callback", urlBase).href;
 console.log("redirect url", url2);
 
@@ -16,7 +16,7 @@ if (accessToken || refreshToken) {
 const { data, error } = await supabase.auth.signInWithOAuth({
   provider: "google",
   options: {
-    redirectTo: url2,
+    redirectTo: import.meta.env.PROD ? import.meta.env.SITE : url2,
   },
 });
 
