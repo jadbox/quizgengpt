@@ -13,7 +13,9 @@ if (accessToken || refreshToken) {
   return redirect("/");
 }
 
-const redirectURL = import.meta.env.PROD ? import.meta.env.SITE : url2;
+const redirectURL = import.meta.env.PROD
+  ? "https://app.thrivetogether.ai/api/auth/callback"
+  : url2; // import.meta.env.SITE
 console.log("redirectURL", redirectURL);
 
 const { data, error } = await supabase.auth.signInWithOAuth({
