@@ -25,8 +25,8 @@ const { data, error } = await supabase.auth.signInWithOAuth({
 
 if (data?.url) {
   // redirect the user to the identity provider's authentication flow
-  // return redirect(data.url);
+  return redirect(data.url);
 }
 ---
 
-redirecting to <a href={redirectURL}>{redirectURL}</a>
+redirecting to <a href={data.url}>{data.url}</a> with redirect of {redirectURL}.
