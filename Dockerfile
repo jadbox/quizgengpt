@@ -42,7 +42,7 @@ COPY --from=build /app /app
 
 ENV ASTRO_DEV_PORT=4321
 ENV PORT=4321
-ENV SITE=http://app.thrivetogether.ai
+ENV SITE=https://app.thrivetogether.ai
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 4321
 CMD [ "bun", "run", "start" ]
