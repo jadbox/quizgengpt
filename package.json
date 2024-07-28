@@ -31,6 +31,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "nanostores": "^0.10.3",
+    "openai": "^4.53.2",
     "postcss": "^8.4.40",
     "supabase": "^1.187.3",
     "tailwind-merge": "^2.4.0",

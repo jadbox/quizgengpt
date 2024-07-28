@@ -1,7 +1,10 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import GoalList from '../components/GoalList.astro';
-import DummyComments from '../components/DummyComments.astro';
+import Layout from "@/layouts/Layout.astro";
+import GoalList from "../components/GoalList.astro";
+import DummyComments from "../components/DummyComments.astro";
+import { loginCheck } from "@/lib/auth";
+
+loginCheck(Astro);
 ---
 
 <Layout title="Goals">

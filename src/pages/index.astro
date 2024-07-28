@@ -2,18 +2,18 @@
 import Layout from "../layouts/Layout.astro";
 import ActivitiesPage from "../components/ActivitiesPage.astro";
 import { supabase } from "../lib/supabase";
+import { loginCheck } from "@/lib/auth";
 
 const { cookies, redirect } = Astro;
 
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
 
-if (!accessToken || !refreshToken) {
-  return redirect("/signin");
-}
+loginCheck(Astro);
 
 async function auth() {
   if (!refreshToken || !accessToken) return null;
+
   const { data, error } = await supabase.auth.setSession({
     refresh_token: refreshToken.value,
     access_token: accessToken.value,
@@ -30,6 +30,8 @@ async function auth() {
     return redirect("/signin");
   }
 
+  Astro.cookies.set("uid", "" + data.user?.id);
+
   return data.user?.email;
 }
 
@@ -37,6 +39,12 @@ const email = await auth(); // data.user?.email;
 ---
 
 <Layout title="Choose Your Goals">
-  {email ? <h3 class="text-white w-full text-center">User: {email}</h3> : ""}
+  {
+    email ? (
+      <h3 class="text-white w-full text-center">User: {email}</h3>
+    ) : (
+      "Not loggin in"
+    )
+  }
   <ActivitiesPage />
 </Layout>

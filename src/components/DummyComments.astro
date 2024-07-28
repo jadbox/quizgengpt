@@ -1,25 +1,120 @@
 ---
-const comments = [
-  "YOU CAN DO IT! -Jessica",
-  "I FINISHED MY GYM GOAL -Larry",
-  "I'll be so glad to get to the gym today after work -Joe",
-  "You're going to enjoy that run and buy a nice healthy snack soon at the store!",
+import { supabase } from "@/lib/supabase";
+
+let comments: String[] = [
+  // "YOU CAN DO IT! -Jessica",
+  // "I FINISHED MY GYM GOAL -Larry",
+  // "I'll be so glad to get to the gym today after work -Joe",
+  // "You're going to enjoy that run and buy a nice healthy snack soon at the store!",
 ];
+
+// populate comments from supabase message table with content field
+const { data, error } = await supabase.from("messages").select("content");
+if (error) {
+  console.error("Error fetching messages:", error);
+} else {
+  comments = data.map((message) => message.content);
+}
+
+const { cookies, redirect } = Astro;
+const uid = cookies.get("uid")?.value || "";
+
+// if (!uid) return redirect("/signin");
 ---
 
-<div class="flex flex-col items-center justify-center max-h-screen p-4 space-y-40">
-  <div class=" w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl">
+<script>
+  import { supabase } from "@/lib/supabase";
+
+  const handleInserts = (payload: any) => {
+    console.log("payload", payload);
+    const newComment = payload.new.content;
+    const el = document.getElementById("commentbox");
+    if (el) el.innerHTML += `<p class="text-green-400">${newComment}</p>`;
+  };
+
+  const handleSubmit = async () => {
+    const input = document.getElementById("messageInput") as HTMLInputElement;
+    const message = input.value;
+
+    const uid = input.getAttribute("data-uid")?.toString();
+    console.log("{ content: message, profile_id: uid }", {
+      content: message,
+      profile_id: uid,
+    });
+    if (message) {
+      const { data, error } = await supabase
+        .from("messages")
+        .insert([{ content: message, profile_id: uid }]);
+      if (error) {
+        console.error("Error inserting message:", error);
+      } else {
+        console.log("Message inserted successfully:", data);
+        input.value = "";
+      }
+    }
+  };
+
+  addEventListener("DOMContentLoaded", () => {
+    const submitButton = document.getElementById("handleSubmit");
+    if (submitButton) {
+      submitButton.addEventListener("click", handleSubmit);
+    }
+    const input = document.getElementById("messageInput") as HTMLInputElement;
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleSubmit();
+      }
+    });
+  });
+
+  supabase
+    .channel("messages-insert")
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "messages" },
+      handleInserts
+    )
+    .subscribe();
+
+  supabase
+    .channel("messages-update")
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "messages" },
+      handleInserts
+    )
+    .subscribe();
+  console.log("subscribed to messages channel");
+</script>
+
+<div
+  class="flex flex-col items-center justify-center max-h-screen p-4 space-y-40"
+>
+  <div
+    class="w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl"
+    id="commentbox"
+  >
     {comments.map((comment, index) => <p class="text-green-400">{comment}</p>)}
   </div>
   <div class="flex flex-col items-center justify-center w-full">
     <input
+      data-uid={uid}
       type="text"
       placeholder="Type to inspire others..."
       class="w-full md:w-2/3 p-2 mt-4 border border-green-400 rounded-lg bg-gray-800 text-green-400 placeholder-gray-500"
+      id="messageInput"
     />
     <button
-      class="w-full md:w-2/3 mt-2 p-2 border border-green-400 text-green-400 bg-gray-700 rounded-lg"
-      >reset</button
+      class="mt-2 p-2 border border-green-400 text-green-400 bg-gray-700 rounded-lg"
+      id="handleSubmit"
     >
+      submit
+    </button>
+
+    <button
+      class="mt-2 p-2 border border-green-400 text-green-400 bg-gray-700 rounded-lg"
+    >
+      reset
+    </button>
   </div>
 </div>
