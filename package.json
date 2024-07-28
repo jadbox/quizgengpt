@@ -9,7 +9,8 @@
     "preview2": "astro preview",
     "preview": "bun run ./dist/server/entry.mjs",
     "astro": "astro",
-    "deploy": "astro run build && fly run deploy"
+    "deploy": "astro run build && fly run deploy",
+    "db": "npx supabase gen types --lang=typescript --project-id 'bfamhutcvrljgrfxndpt' --schema public > supabase/supabase.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.8.3",
