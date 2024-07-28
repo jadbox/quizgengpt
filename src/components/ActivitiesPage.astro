@@ -1,28 +1,7 @@
 ---
 import ActivitySelector from "./ActivitySelector.astro";
+const uid = Astro.cookies.get("uid")?.value || "";
 ---
-
-<script>
-  import confetti from "canvas-confetti";
-
-  const buttons = document.querySelectorAll("[data-confetti-button]");
-
-  buttons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      });
-
-      setTimeout(() => {
-        const href = button.getAttribute("href");
-        if (href) window.location.href = href;
-      }, 2000);
-    });
-  });
-</script>
 
 <style>
   @import "../styles/animated-border.css";
@@ -38,6 +17,8 @@ import ActivitySelector from "./ActivitySelector.astro";
 
   <div class="comment">
     <textarea
+      data-uid={uid}
+      id="postfield"
       class="w-full bg-transparent border-none outline-none resize-none text-slate-400"
       placeholder="Post what inspires you today..."></textarea>
   </div>
@@ -46,16 +27,16 @@ import ActivitySelector from "./ActivitySelector.astro";
     <div
       class="fixed bottom-8 inset-x-0 flex flex-col items-center md:relative md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
     >
-      <a data-confetti-button href="/goals">
-        <button
-          class="material-icons bg-green-400 text-black p-4 rounded-full shadow-lg text-4xl"
-        >
-          check
-        </button>
-      </a>
-      <p class="mt-2 text-green-400">Crush Goals!</p>
+      <button
+        id="submitButton"
+        class="material-icons bg-green-400 text-black p-4 rounded-full shadow-lg text-4xl"
+      >
+        check
+      </button>
     </div>
-    <!-- <div class="fixed bottom-8 right-8 flex flex-col items-center">
+    <p class="mt-2 text-green-400">Crush Goals!</p>
+  </div>
+  <!-- <div class="fixed bottom-8 right-8 flex flex-col items-center">
       <button
         class="material-icons bg-gray-900 text-green-400 p-3 rounded-full shadow-lg border-2 border-gray-700"
       >
@@ -63,5 +44,54 @@ import ActivitySelector from "./ActivitySelector.astro";
       </button>
       <p class="mt-2 text-green-400">Edit Activities</p>
     </div> -->
-  </div>
 </div>
+
+<script>
+  import confetti from "canvas-confetti";
+  import { supabase } from "@/lib/supabase";
+
+  const button = document.getElementById("submitButton") as HTMLButtonElement;
+  if (!button) throw new Error("Activity Submit button not found");
+
+  button.addEventListener("click", async (event: any) => {
+    event.preventDefault();
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+
+    // disable button
+    button.disabled = true;
+    button.classList.add("bg-gray-700");
+    button.classList.remove("bg-green-400");
+
+    // save new message to supebase messages table for postfield content
+    const postfield = document.getElementById(
+      "postfield"
+    ) as HTMLTextAreaElement;
+    const message = postfield.value;
+    const uid = postfield.getAttribute("data-uid")?.toString();
+
+    console.log("Message:", message, "UID:", uid);
+
+    if (message) {
+      const c = await supabase
+        .from("messages")
+        .insert([{ content: message, profile_id: uid }]);
+
+      // log any errors
+      if (c.error) {
+        console.error("Error inserting message:", c.error);
+      } else {
+        console.log("Message inserted successfully:", c.data);
+        postfield.value = "";
+      }
+    }
+
+    // Redirect to goals page after 1 second
+    setTimeout(() => {
+      window.location.href = "/goals";
+    }, 1000);
+  });
+</script>

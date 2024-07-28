@@ -13,4 +13,7 @@ export default defineConfig({
     }),
     // react()
   ],
+  experimental: {
+    serverIslands: true,
+  },
 });
