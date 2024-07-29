@@ -10,7 +10,7 @@ const url2 = new URL("/api/auth/callback", urlBase).href;
 console.log("redirect url", url2);
 
 if (accessToken || refreshToken) {
-  return redirect("/");
+  if (cookies.has("uid")) return redirect("/");
 }
 
 const redirectURL = import.meta.env.PROD

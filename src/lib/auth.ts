@@ -1,4 +1,4 @@
-export function loginCheck(Astro: any) {
+export function loginCheck(Astro:any) {
   const { cookies, redirect } = Astro;
   const accessToken = cookies.get("sb-access-token");
   const refreshToken = cookies.get("sb-refresh-token");
@@ -6,4 +6,10 @@ export function loginCheck(Astro: any) {
   if (!accessToken || !refreshToken) {
     return redirect("/signin");
   }
+
+  if(!cookies.get('uid')) {
+    return redirect('/signin');
+  }
+
+  return null;
 }

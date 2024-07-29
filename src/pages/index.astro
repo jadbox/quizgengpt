@@ -9,8 +9,6 @@ const { cookies, redirect } = Astro;
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
 
-loginCheck(Astro);
-
 async function auth() {
   if (!refreshToken || !accessToken) return null;
 
@@ -36,6 +34,9 @@ async function auth() {
 }
 
 const email = await auth(); // data.user?.email;
+
+const check = loginCheck(Astro);
+if (check) return check;
 ---
 
 <Layout title="Choose Your Goals">
