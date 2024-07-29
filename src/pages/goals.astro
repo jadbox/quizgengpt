@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import GoalList from "../components/GoalList.astro";
-import DummyComments from "../components/DummyComments.astro";
+import PostSection from "../components/PostSection.astro";
 import { loginCheck } from "@/lib/auth";
 
 const check = loginCheck(Astro);
@@ -11,5 +11,5 @@ if (check) return check;
 
 <Layout title="Goals">
   <GoalList />
-  <DummyComments />
+  <PostSection />
 </Layout>
