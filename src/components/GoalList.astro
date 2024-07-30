@@ -1,25 +1,55 @@
+---
+const uid = Astro.cookies.get("uid")?.value;
+---
+
+<div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
+  <user id="user" uid={uid} class="hidden"></user>
+  <h1 class="text-2xl font-bold text-green-400">Today's goal list</h1>
+  <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3">
+    <div class="container space-y-4" id="goalContainer">
+      <!-- Activities will be rendered here -->
+    </div>
+  </div>
+</div>
+
 <script>
-  import { selectedActivities } from "@/scripts/store";
+  // import { selectedActivities } from "@/scripts/store";
+  import { supabase } from "../lib/supabase";
 
-  selectedActivities.subscribe((value) => {
-    console.log("activities selected", value);
+  const uid = document.getElementById("user")?.getAttribute("uid");
+  if (!uid) throw new Error("no uid");
 
-    const goalContainer = document.getElementById("goalContainer");
-    const storedActivities = value.map((activity) => ({
-      name: activity,
-      isRunning: false,
-      time: "00:00:00",
-    }));
+  // in last 24hrs
+  const goalsRows = await supabase.from("goals").select("*").match({ uid });
+  // .gte("created_at", new Date().toISOString());
+  // .is("completed", null);
 
-    if (goalContainer) {
-      // Clear the container first to avoid duplication
-      goalContainer.innerHTML = "";
+  let goals = goalsRows.data || [];
 
-      storedActivities.forEach((goal) => {
-        const goalElement = document.createElement("div");
-        goalElement.className =
-          "flex justify-between items-center p-2 border border-green-400 rounded-lg";
-        goalElement.innerHTML = `
+  console.log("goals", goals);
+
+  // console.log("activities selected", value);
+
+  const goalContainer = document.getElementById("goalContainer");
+  const storedActivities = goals.map((activity) => ({
+    name: activity.goal,
+    id: activity.id,
+    isRunning: activity.started && !activity.completed,
+    time: "00:00:00",
+    completed: activity.completed,
+    started: activity.started,
+  }));
+
+  if (!goalContainer) throw new Error("no goalContainer");
+
+  // Clear the container first to avoid duplication
+  goalContainer.innerHTML = "";
+
+  storedActivities.forEach((goal) => {
+    const goalElement = document.createElement("div");
+    goalElement.className =
+      "flex justify-between items-center p-2 border border-green-400 rounded-lg";
+    goalElement.innerHTML = `
           <span class="capitalize text-green-400">
             ${goal.name}
           </span>
@@ -31,75 +61,75 @@
           </button>
         `;
 
-        var intervalId: any;
-        var startTime: any = null;
-        let elapsedTime = 0;
-        let isPaused = false;
+    var intervalId: any;
+    var startTime: any = null;
+    let elapsedTime = 0;
+    let isPaused = false;
 
-        const startStopwatch = () => {
-          const btn = goalElement.querySelector("button");
-          if (btn === null) return;
-          btn.textContent = "(stop)";
-          if (!startTime) {
-            startTime = Date.now();
-            intervalId = setInterval(updateStopwatch, 1000);
-          }
-          if (isPaused) {
-            isPaused = false;
-            if (intervalId === null) {
-              startTime = Date.now() - elapsedTime * 1000;
-              intervalId = setInterval(updateStopwatch, 1000);
-            }
-          }
-        };
+    const startStopwatch = async () => {
+      const btn = goalElement.querySelector("button");
+      if (btn === null) return;
+      btn.textContent = "(finish)";
 
-        const stopStopwatch = () => {
-          const btn = goalElement.querySelector("button");
-          if (btn === null) return;
-          btn.textContent = "(start)";
-          if (intervalId) {
-            clearInterval(intervalId);
-            intervalId = null;
-            isPaused = true;
-          }
-        };
+      const { data, error } = await supabase
+        .from("goals")
+        .update({ started: new Date().toISOString(), completed: null })
+        .match({ id: goal.id });
 
-        const updateStopwatch = () => {
-          const currentTime = Date.now();
-          elapsedTime = (currentTime - startTime) / 1000;
-          const hours = Math.floor(elapsedTime / 3600);
-          const minutes = Math.floor((elapsedTime % 3600) / 60);
-          const seconds = Math.floor(elapsedTime % 60);
+      if (!startTime) {
+        startTime = Date.now();
+        intervalId = setInterval(updateStopwatch, 1000);
+      }
+      if (isPaused) {
+        isPaused = false;
+        if (intervalId === null) {
+          startTime = Date.now() - elapsedTime * 1000;
+          intervalId = setInterval(updateStopwatch, 1000);
+        }
+      }
+    };
 
-          const watch = goalElement.querySelector("#stopwatch");
-          if (watch)
-            watch.textContent = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-        };
+    const stopStopwatch = async () => {
+      const btn = goalElement.querySelector("button");
+      if (btn === null) return;
+      btn.textContent = "(restart)";
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+        isPaused = true;
+      }
 
-        goalElement
-          ?.querySelector("button")
-          ?.addEventListener("click", (event) => {
-            event.preventDefault();
-            if ((event.target as any).textContent.includes("start")) {
-              startStopwatch();
-            } else {
-              stopStopwatch();
-            }
-          });
+      // save date for goal in supabase
+      const { data, error } = await supabase
+        .from("goals")
+        .update({ completed: new Date().toISOString() })
+        .match({ id: goal.id });
 
-        goalContainer.appendChild(goalElement);
-      });
-    } else {
-      console.error("goalContainer not found");
-    }
+      // delete goal from DOM
+      // goalContainer.removeChild(goalElement);
+    };
+
+    const updateStopwatch = () => {
+      const currentTime = Date.now();
+      elapsedTime = (currentTime - startTime) / 1000;
+      const hours = Math.floor(elapsedTime / 3600);
+      const minutes = Math.floor((elapsedTime % 3600) / 60);
+      const seconds = Math.floor(elapsedTime % 60);
+
+      const watch = goalElement.querySelector("#stopwatch");
+      if (watch)
+        watch.textContent = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    };
+
+    goalElement?.querySelector("button")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      if ((event.target as any).textContent.includes("start")) {
+        startStopwatch();
+      } else {
+        stopStopwatch();
+      }
+    });
+
+    goalContainer.appendChild(goalElement);
   });
 </script>
-
-<div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
-  <h1 class="text-2xl font-bold text-green-400">Today's goal list</h1>
-  <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3">
-    <div class="container space-y-4" id="goalContainer">
-      <!-- Activities will be rendered here -->
-    </div>
-  </div>
-</div>

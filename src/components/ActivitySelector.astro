@@ -4,45 +4,6 @@ import ToggleSwitch from "./ToggleSwitch.astro";
 const activities = await getActivities();
 ---
 
-<script>
-  import { selectedActivities } from "@/scripts/store.js";
-
-  document.addEventListener("DOMContentLoaded", function () {
-    // Activity Selector Logic
-    var selected: string[] = [];
-    const activityItems =
-      document.querySelectorAll<HTMLElement>(".activity-item");
-
-    activityItems.forEach((activityItem) => {
-      activityItem.addEventListener("click", (event) => {
-        const activity = (event.currentTarget as HTMLElement).getAttribute(
-          "data-activity"
-        );
-        //console.log(activity);
-
-        activityItem.classList.toggle("bg-blue-500");
-        activityItem.classList.toggle("rounded-xl");
-        activityItem.classList.toggle("text-gray-200");
-        activityItem.classList.toggle("animate__animated");
-        activityItem.classList.toggle("animate__pulse");
-
-        // update selected activities for all animate__animated items
-        selected = Array.from(
-          document.querySelectorAll(".activity-item.animate__animated")
-        ).map(
-          (item) => (item as HTMLElement).getAttribute("data-activity") || ""
-        );
-
-        // console.log("selected", selected);
-
-        // Set activities to the store
-        selectedActivities.set(selected);
-        //console.log(selectedActivities.get());
-      });
-    });
-  });
-</script>
-
 <div class="grid grid-cols-4 gap-4 mb-4 md:grid-cols-5 mt-4">
   {
     activities.map((activity) => (
@@ -60,3 +21,40 @@ const activities = await getActivities();
 </div>
 
 <!-- <ToggleSwitch /> -->
+
+<script>
+  import { selectedActivities } from "@/scripts/store.js";
+
+  // Activity Selector Logic
+  var selected: string[] = [];
+  const activityItems =
+    document.querySelectorAll<HTMLElement>(".activity-item");
+
+  activityItems.forEach((activityItem) => {
+    activityItem.addEventListener("click", (event) => {
+      const activity = (event.currentTarget as HTMLElement).getAttribute(
+        "data-activity",
+      );
+      //console.log(activity);
+
+      activityItem.classList.toggle("bg-blue-500");
+      activityItem.classList.toggle("rounded-xl");
+      activityItem.classList.toggle("text-gray-200");
+      activityItem.classList.toggle("animate__animated");
+      activityItem.classList.toggle("animate__pulse");
+
+      // update selected activities for all animate__animated items
+      selected = Array.from(
+        document.querySelectorAll(".activity-item.animate__animated"),
+      ).map(
+        (item) => (item as HTMLElement).getAttribute("data-activity") || "",
+      );
+
+      // console.log("selected", selected);
+
+      // Set activities to the store
+      selectedActivities.set(selected);
+      //console.log(selectedActivities.get());
+    });
+  });
+</script>

@@ -49,6 +49,7 @@ const uid = Astro.cookies.get("uid")?.value || "";
 <script>
   import confetti from "canvas-confetti";
   import { supabase } from "@/lib/supabase";
+  import { selectedActivities } from "@/scripts/store";
 
   const button = document.getElementById("submitButton") as HTMLButtonElement;
   if (!button) throw new Error("Activity Submit button not found");
@@ -68,7 +69,7 @@ const uid = Astro.cookies.get("uid")?.value || "";
 
     // save new message to supebase messages table for postfield content
     const postfield = document.getElementById(
-      "postfield"
+      "postfield",
     ) as HTMLTextAreaElement;
     const message = postfield.value;
     const uid = postfield.getAttribute("data-uid")?.toString();
@@ -88,6 +89,36 @@ const uid = Astro.cookies.get("uid")?.value || "";
         postfield.value = "";
       }
     }
+
+    console.log("selectedActivities", selectedActivities.value); // ex ['clean']
+    // save into Supabase goals table where each goal is a row
+    // and each activity is a column
+    // and the value is the count of the activity
+    const goals = selectedActivities.value;
+    if (!goals || goals.length === 0) {
+      alert("Select at least one goal");
+      return;
+    }
+
+    if (goals && uid) {
+      console.log("uid", uid);
+      // delete current uncompoleted goals
+      const r = await supabase
+        .from("goals")
+        .delete()
+        .match({ uid })
+        .is("completed", null);
+
+      if (r.error) {
+        console.error("Error deleting goals:", r.error);
+        return;
+      } else {
+        console.log("Deleted goals:", r.data);
+      }
+      // Refactor the above loop to be a single query transactions
+      await supabase.from("goals").insert(goals.map((goal) => ({ uid, goal })));
+    }
+    // return;
 
     // Redirect to goals page after 1 second
     setTimeout(() => {
