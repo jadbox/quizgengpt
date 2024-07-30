@@ -1,6 +1,5 @@
 ---
 import { getActivities } from "../scripts/globals.ts";
-import ToggleSwitch from "./ToggleSwitch.astro";
 const activities = await getActivities();
 ---
 
@@ -20,8 +19,6 @@ const activities = await getActivities();
   }
 </div>
 
-<!-- <ToggleSwitch /> -->
-
 <script>
   import { selectedActivities } from "@/scripts/store.js";
 
@@ -39,7 +36,7 @@ const activities = await getActivities();
 
       activityItem.classList.toggle("bg-blue-500");
       activityItem.classList.toggle("rounded-xl");
-      activityItem.classList.toggle("text-gray-200");
+      activityItem.classList.toggle("text-white");
       activityItem.classList.toggle("animate__animated");
       activityItem.classList.toggle("animate__pulse");
 
