@@ -1,0 +1,61 @@
+<nav class="bg-gray-800 border-b border-gray-700">
+  <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+    <!-- App Name -->
+    <div class="flex items-center space-x-4">
+      <a href="/" class="text-2xl font-bold text-slate-400">Thrive</a>
+    </div>
+    <!-- Right Icons -->
+    <div class="flex-center space-x-4">
+      <a href="#" class="text-gray-400 hover:text-gray-200">
+        <span class="material-icons"> favorite_outline </span>
+      </a>
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex items-center space-x-4">
+        <a href="#" class="text-slate-400 hover:text-green-400">Choose Goals</a>
+        <a href="#" class="text-slate-400 hover:text-green-400">Goal Tracker</a>
+        <a href="#" class="text-slate-400 hover:text-green-400">Stats</a>
+        <a href="#" class="text-slate-400 hover:text-green-400">Profile</a>
+      </div>
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden flex items-center">
+        <button
+          id="mobile-menu-button"
+          class="text-gray-400 hover:text-gray-300 focus:outline-none"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+     <!-- TODO: Fix layout on mobile when opened. Test .dropdown & .dropdown_link -->
+    <div id="mobile-menu" class="hidden md:hidden">
+      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Choose Goals</a>
+      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Goal Tracker</a>
+      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Stats</a>
+      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Profile</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  if (!mobileMenu || !mobileMenuButton)
+    throw new Error("Missing mobile menu elements");
+  mobileMenuButton.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+  });
+</script>

@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
+import Nav from '@/components/Nav.astro';
 
 interface Props {
   title: string;
@@ -36,6 +37,7 @@ Astro.request.headers.set("Cache-Control", "no-store");
     <ViewTransitions />
   </head>
   <body class="bg-gray-800">
+    <Nav />
     <slot />
   </body>
 </html>
