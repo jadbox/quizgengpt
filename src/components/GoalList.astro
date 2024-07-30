@@ -47,7 +47,7 @@ const uid = Astro.cookies.get("uid")?.value;
   function createGoalElement(goal: any) {
     const goalElement = document.createElement("div");
     goalElement.className =
-      "flex justify-between items-center p-2 border border-green-400 rounded-lg";
+      "flex-between p-2 border border-green-400 rounded-lg";
     goalElement.innerHTML = `
       <span class="capitalize text-green-400">${goal.goal}</span>
       <span id="stopwatch-${goal.id}" class="text-green-400">
