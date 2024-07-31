@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
-import Nav from '@/components/Nav.astro';
+import Nav from "@/components/Nav.astro";
 
 interface Props {
   title: string;
@@ -19,7 +19,10 @@ Astro.request.headers.set("Cache-Control", "no-store");
     <meta charset="UTF-8" />
     <meta name="description" content="Astro description" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -33,7 +36,7 @@ Astro.request.headers.set("Cache-Control", "no-store");
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{title} | ThriveTogether.ai</title>
     <ViewTransitions />
   </head>
   <body class="bg-gray-800">

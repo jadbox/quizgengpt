@@ -28,7 +28,6 @@ RUN bun install --frozen-lockfile --ci
 # Copy application code
 COPY --link . .
 
-
 # Final stage for app image
 FROM base
 
