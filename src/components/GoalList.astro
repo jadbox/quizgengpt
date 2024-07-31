@@ -18,6 +18,9 @@ const uid = Astro.cookies.get("uid")?.value;
   const uid = document.getElementById("user")?.getAttribute("uid");
   if (!uid) throw new Error("no uid");
 
+  let paused = false;
+  let intervalId;
+
   async function fetchGoals() {
     const { data: goals, error } = await supabase
       .from("goals")
@@ -57,7 +60,12 @@ const uid = Astro.cookies.get("uid")?.value;
       <span id="stopwatch-${goal.id}" class="text-green-400">
         ${formatDuration(goal.started, goal.completed)}
       </span>
-      <button class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg">
+
+      <button id="pause-${goal.id}" class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg">
+        ${paused ? "(start)" : "(pause)"}
+      </button>
+      
+      <button id="btn-${goal.id}" class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg">
         ${goal.started && !goal.completed ? "(stop)" : goal.completed ? "(restart)" : "(start)"}
       </button>
     `;
@@ -69,8 +77,36 @@ const uid = Astro.cookies.get("uid")?.value;
       }
     };
 
+    const togglePause = async () => {
+      const btn = goalElement.querySelector(`#pause-${goal.id}`);
+      if (!btn) return;
+
+      if (paused) {
+        // Resume the goal
+        paused = false;
+        btn.textContent = "(pause)";
+        // Start the interval to update the stopwatch
+        intervalId = setInterval(() => {
+          if (goal.started && !goal.completed && !paused) {
+            const watch = document.querySelector(`#stopwatch-${goal.id}`);
+            if (watch) {
+              watch.textContent = formatDuration(goal.started, null);
+            }
+          }
+        }, 1000);
+      } else {
+        // Pause the goal
+        paused = true;
+        btn.textContent = "(resume)";
+        // Clear the interval to stop updating the stopwatch
+        clearInterval(intervalId);
+      }
+
+      updateStopwatch();
+    };
+
     const toggleGoal = async () => {
-      const btn = goalElement.querySelector("button");
+      const btn = goalElement.querySelector(`#btn-${goal.id}`);
       if (!btn) return;
 
       if (goal.started && !goal.completed) {
@@ -109,7 +145,12 @@ const uid = Astro.cookies.get("uid")?.value;
       updateStopwatch();
     };
 
-    goalElement.querySelector("button")?.addEventListener("click", toggleGoal);
+    goalElement
+      .querySelector(`#btn-${goal.id}`)
+      ?.addEventListener("click", toggleGoal);
+    goalElement
+      .querySelector(`#pause-${goal.id}`)
+      ?.addEventListener("click", togglePause);
 
     return goalElement;
   }
@@ -126,9 +167,9 @@ const uid = Astro.cookies.get("uid")?.value;
     });
 
     // Start interval for running goals
-    setInterval(() => {
+    intervalId  = setInterval(() => {
       goals.forEach((goal) => {
-        if (goal.started && !goal.completed) {
+        if (goal.started && !goal.completed && !paused) {
           const watch = document.querySelector(`#stopwatch-${goal.id}`);
           if (watch) {
             watch.textContent = formatDuration(goal.started, null);
