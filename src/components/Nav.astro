@@ -2,7 +2,7 @@
   <div class="container mx-auto px-4 py-2 flex justify-between items-center">
     <!-- App Name -->
     <div class="flex items-center space-x-4">
-      <a href="/" class="text-2xl font-bold text-slate-400">Thrive</a>
+      <a href="/" class="text-2xl font-bold text-slate-400">Thrive Together</a>
     </div>
     <!-- Right Icons -->
     <div class="flex-center space-x-4">
@@ -11,8 +11,8 @@
       </a>
       <!-- Desktop Nav Links -->
       <div class="hidden md:flex items-center space-x-4">
-        <a href="#" class="text-slate-400 hover:text-green-400">Choose Goals</a>
-        <a href="#" class="text-slate-400 hover:text-green-400">Goal Tracker</a>
+        <a href="/" class="text-slate-400 hover:text-green-400">Choose Goals</a>
+        <a href="/goals" class="text-slate-400 hover:text-green-400">Goal Tracker</a>
         <a href="#" class="text-slate-400 hover:text-green-400">Stats</a>
         <a href="#" class="text-slate-400 hover:text-green-400">Profile</a>
       </div>
@@ -38,24 +38,60 @@
         </button>
       </div>
     </div>
-    <!-- Mobile Menu -->
-     <!-- TODO: Fix layout on mobile when opened. Test .dropdown & .dropdown_link -->
-    <div id="mobile-menu" class="hidden md:hidden">
-      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Choose Goals</a>
-      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Goal Tracker</a>
-      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Stats</a>
-      <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-700">Profile</a>
+  </div>
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="fixed right-0 top-18 mt-2 w-1/3 bg-gray-200 shadow-lg rounded-lg hidden md:hidden"
+  >
+    <div class="flex-end flex-col">
+      <a
+        href="/"
+        class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
+        >Choose Goals</a
+      >
+      <a
+        href="/goals"
+        class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
+        >Goal Tracker</a
+      >
+      <a
+        href="#"
+        class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
+        >Stats</a
+      >
+      <a
+        href="#"
+        class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
+        >Profile</a
+      >
     </div>
   </div>
+
+  <script>
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    if (!mobileMenu || !mobileMenuButton)
+      throw new Error("Missing mobile menu elements");
+    mobileMenuButton.addEventListener("click", (event) => {
+      mobileMenu.classList.toggle("hidden");
+      event.stopPropagation(); // Prevent the click from propagating to the document
+    });
+
+    // Close the menu when clicking outside of it
+    document.addEventListener('click', (event) => {
+      const target = event.target as Node;
+      if (!mobileMenu.contains(target) && !mobileMenuButton.contains(target)) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+
+    // Close the menu when resizing the window
+    window.addEventListener('resize', () => {
+      if (!mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+  </script>
 </nav>
-
-<script>
-  const mobileMenuButton = document.getElementById("mobile-menu-button");
-  const mobileMenu = document.getElementById("mobile-menu");
-
-  if (!mobileMenu || !mobileMenuButton)
-    throw new Error("Missing mobile menu elements");
-  mobileMenuButton.addEventListener("click", () => {
-    mobileMenu.classList.toggle("hidden");
-  });
-</script>
