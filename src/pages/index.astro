@@ -9,9 +9,8 @@ const { cookies, redirect } = Astro;
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
 
-async function auth() {
-  if (!refreshToken || !accessToken) return null;
-
+let email = "";
+if (refreshToken && accessToken) {
   const { data, error } = await supabase.auth.setSession({
     refresh_token: refreshToken.value,
     access_token: accessToken.value,
@@ -28,12 +27,35 @@ async function auth() {
     return redirect("/signin");
   }
 
-  Astro.cookies.set("uid", "" + data.user?.id);
+  if (!data.user?.id) throw new Error("User not found");
 
-  return data.user?.email;
+  // delete uncompleted goals older than 24hrs
+  const deleteOldGoals = await supabase
+    .from("goals")
+    .delete()
+    .eq("uid", data.user?.id)
+    .is("completed", null)
+    .gte(
+      "created_at",
+      new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    );
+
+  // if user has uncompleted goals in supabase, redirect to /goals
+  const { count } = await supabase
+    .from("goals")
+    .select("*", { count: "exact", head: true })
+    .eq("uid", data.user?.id)
+    .is("completed", null);
+
+  console.log("count", count);
+
+  if (count && count > 0) {
+    return redirect("/goals");
+  }
+
+  if (data.user?.email) email = data.user?.email;
 }
-
-const email = await auth(); // data.user?.email;
+// return data.user?.email;
 
 const check = loginCheck(Astro);
 if (check) return check;

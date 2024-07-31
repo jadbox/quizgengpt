@@ -9,9 +9,12 @@ let comments: { content: string; profile_id: string }[] = [
 ];
 
 // populate comments from supabase message table with content field
+
+// newer than 24hrs
 const { data, error } = await supabase
   .from("messages")
   .select("content, profile_id")
+  .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
   .limit(20);
 
 if (error) {
@@ -26,9 +29,7 @@ const uid = cookies.get("uid")?.value || "";
 // if (!uid) return redirect("/signin");
 ---
 
-<div
-  class="flex flex-col items-center justify-center max-h-screen p-4"
->
+<div class="flex flex-col items-center justify-center max-h-screen p-4">
   <div
     class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mb-10 overflow-y-auto max-h-[50vh]"
     id="commentbox"
@@ -130,7 +131,20 @@ const uid = cookies.get("uid")?.value || "";
   const resetButton = document.getElementById(
     "handleResetBtn",
   ) as HTMLButtonElement;
-  resetButton.addEventListener("click", () => {
+  resetButton.addEventListener("click", async () => {
+    // are you sure?
+    if (!confirm("Are you sure you want to delete all your goals?")) return;
+
+    const input = document.getElementById("messageInput") as HTMLInputElement;
+    const uid = input.getAttribute("data-uid") || "";
+
+    // delete uncompleted goals
+    const { data, error } = await supabase
+      .from("goals")
+      .delete()
+      .eq("uid", uid)
+      .is("completed", null);
+
     window.location.href = "/";
   });
 
