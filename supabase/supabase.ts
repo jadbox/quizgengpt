@@ -58,33 +58,33 @@ export type Database = {
         Row: {
           completed: string | null
           created_at: string
+          duration: number
           goal: string | null
           id: number
           paused: boolean
-          pauseduration: number
-          pauseStart: string | null
+          resumed: string | null
           started: string | null
           uid: string
         }
         Insert: {
           completed?: string | null
           created_at?: string
+          duration?: number
           goal?: string | null
           id?: number
           paused?: boolean
-          pauseduration?: number
-          pauseStart?: string | null
+          resumed?: string | null
           started?: string | null
           uid: string
         }
         Update: {
           completed?: string | null
           created_at?: string
+          duration?: number
           goal?: string | null
           id?: number
           paused?: boolean
-          pauseduration?: number
-          pauseStart?: string | null
+          resumed?: string | null
           started?: string | null
           uid?: string
         }

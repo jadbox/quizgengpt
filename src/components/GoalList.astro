@@ -18,8 +18,7 @@ const uid = Astro.cookies.get("uid")?.value;
   const uid = document.getElementById("user")?.getAttribute("uid");
   if (!uid) throw new Error("no uid");
 
-  let paused = false;
-  let intervalId;
+  let intervalId: any;
 
   async function fetchGoals() {
     const { data: goals, error } = await supabase
@@ -28,7 +27,7 @@ const uid = Astro.cookies.get("uid")?.value;
       .match({ uid })
       .gte(
         "created_at",
-        new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
       );
 
     if (error) {
@@ -38,17 +37,8 @@ const uid = Astro.cookies.get("uid")?.value;
     return goals || [];
   }
 
-  function formatDuration(start: string, end: string | null): string {
-    if (!start) return "00:00:00";
-    const startTime = new Date(start).getTime();
-    const endTime = end ? new Date(end).getTime() : Date.now();
-    const duration = Math.floor((endTime - startTime) / 1000);
-    const hours = Math.floor(duration / 3600);
-    const minutes = Math.floor((duration % 3600) / 60);
-    const seconds = duration % 60;
-    return [hours, minutes, seconds]
-      .map((val) => val.toString().padStart(2, "0"))
-      .join(":");
+  function formatDuration(duration: number) {
+    return new Date(duration * 1000).toISOString().substr(11, 8);
   }
 
   function createGoalElement(goal: any) {
@@ -57,102 +47,65 @@ const uid = Astro.cookies.get("uid")?.value;
       "flex-between p-2 border border-green-400 rounded-lg";
     goalElement.innerHTML = `
       <span class="capitalize text-green-400">${goal.goal}</span>
-      <span id="stopwatch-${goal.id}" class="text-green-400">
-        ${formatDuration(goal.started, goal.completed)}
-      </span>
-
-      <button id="pause-${goal.id}" class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg">
-        ${paused ? "(start)" : "(pause)"}
-      </button>
-      
-      <button id="btn-${goal.id}" class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg">
-        ${goal.started && !goal.completed ? "(stop)" : goal.completed ? "(restart)" : "(start)"}
+      <span id="stopwatch-${goal.id}" class="text-green-400">${formatDuration(goal.duration)}</span>
+      <button id="toggle-${goal.id}" class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg">
+        ${goal.resumed ? "Pause" : "Resume"}
       </button>
     `;
 
-    const updateStopwatch = () => {
-      const watch = goalElement.querySelector(`#stopwatch-${goal.id}`);
-      if (watch) {
-        watch.textContent = formatDuration(goal.started, goal.completed);
-      }
-    };
-
-    const togglePause = async () => {
-      const btn = goalElement.querySelector(`#pause-${goal.id}`);
-      if (!btn) return;
-
-      if (paused) {
-        // Resume the goal
-        paused = false;
-        btn.textContent = "(pause)";
-        // Start the interval to update the stopwatch
-        intervalId = setInterval(() => {
-          if (goal.started && !goal.completed && !paused) {
-            const watch = document.querySelector(`#stopwatch-${goal.id}`);
-            if (watch) {
-              watch.textContent = formatDuration(goal.started, null);
-            }
-          }
-        }, 1000);
-      } else {
-        // Pause the goal
-        paused = true;
-        btn.textContent = "(resume)";
-        // Clear the interval to stop updating the stopwatch
-        clearInterval(intervalId);
-      }
-
-      updateStopwatch();
-    };
-
-    const toggleGoal = async () => {
-      const btn = goalElement.querySelector(`#btn-${goal.id}`);
-      if (!btn) return;
-
-      if (goal.started && !goal.completed) {
-        // Stop the goal
-        const { data, error } = await supabase
-          .from("goals")
-          .update({ completed: new Date().toISOString() })
-          .match({ id: goal.id })
-          .select();
-
-        if (error) {
-          console.error("Error completing goal:", error);
-          return;
-        }
-
-        goal.completed = data[0].completed;
-        btn.textContent = "(restart)";
-      } else {
-        // Start or restart the goal
-        const { data, error } = await supabase
-          .from("goals")
-          .update({ started: new Date().toISOString(), completed: null })
-          .match({ id: goal.id })
-          .select();
-
-        if (error) {
-          console.error("Error starting/restarting goal:", error);
-          return;
-        }
-
-        goal.started = data[0].started;
-        goal.completed = null;
-        btn.textContent = "(stop)";
-      }
-
-      updateStopwatch();
-    };
-
-    goalElement
-      .querySelector(`#btn-${goal.id}`)
-      ?.addEventListener("click", toggleGoal);
-    goalElement
-      .querySelector(`#pause-${goal.id}`)
-      ?.addEventListener("click", togglePause);
+    const toggleButton = goalElement.querySelector(`#toggle-${goal.id}`);
+    if (toggleButton)
+      toggleButton.addEventListener("click", () =>
+        toggleGoal(goal, toggleButton)
+      );
 
     return goalElement;
+  }
+
+  async function toggleGoal(goal: any, button: Element) {
+    const now = new Date();
+    let updatedGoal = { ...goal };
+
+    goal.paused = !goal.paused;
+    if (goal.paused) {
+      // Pausing the goal
+      updatedGoal.resumed = null;
+    } else {
+      updatedGoal.duration += Math.floor(
+        now.getDate() -
+          new Date(goal.resumed || goal.started_at).getDate() / 1000
+      );
+      // Resuming the goal
+      updatedGoal.resumed = now.toISOString();
+    }
+
+    const { data, error } = await supabase
+      .from("goals")
+      .update(updatedGoal)
+      .match({ id: goal.id })
+      .select();
+
+    if (error) {
+      console.error("Error updating goal:", error);
+      return;
+    }
+
+    Object.assign(goal, data[0]);
+    button.textContent = goal.paused ? "Pause" : "Resume";
+    updateStopwatch(goal);
+  }
+
+  function updateStopwatch(goal: any) {
+    const stopwatch = document.querySelector(`#stopwatch-${goal.id}`);
+    if (stopwatch) {
+      let duration = goal.duration;
+      if (goal.resumed) {
+        duration += Math.floor(
+          (new Date().getDate() - new Date("" + goal.resumed).getDate()) / 1000
+        );
+      }
+      stopwatch.textContent = formatDuration(duration);
+    }
   }
 
   async function renderGoals() {
@@ -162,20 +115,12 @@ const uid = Astro.cookies.get("uid")?.value;
 
     goalContainer.innerHTML = "";
     goals.forEach((goal) => {
-      const goalElement = createGoalElement(goal);
-      goalContainer.appendChild(goalElement);
+      goalContainer.appendChild(createGoalElement(goal));
     });
 
-    // Start interval for running goals
-    intervalId  = setInterval(() => {
-      goals.forEach((goal) => {
-        if (goal.started && !goal.completed && !paused) {
-          const watch = document.querySelector(`#stopwatch-${goal.id}`);
-          if (watch) {
-            watch.textContent = formatDuration(goal.started, null);
-          }
-        }
-      });
+    clearInterval(intervalId);
+    intervalId = setInterval(() => {
+      goals.forEach(updateStopwatch);
     }, 1000);
   }
 
