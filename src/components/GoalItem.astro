@@ -42,7 +42,7 @@ const goal = Astro.props.goal as Goal;
 
   RootElement.ready(($, ctx) => {
     goal = ctx.data.goal as Goal;
-    timerUpdate(!!goal.started);
+    timerUpdate();
 
     const elem = $.optional(`start-finish`);
     elem?.addEventListener("click", async () => {
