@@ -1,13 +1,13 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { loginCheck } from "@/lib/auth";
-import UserStats from '@/components/UserStats.astro';
+import UserStats from "@/components/UserStats.astro";
 
 const check = loginCheck(Astro);
 if (check) return check;
 // server:defer
 ---
 
-<Layout title="Stats">
+<Layout title="Stats" transition:animate="fade">
   <UserStats />
 </Layout>

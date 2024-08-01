@@ -37,6 +37,7 @@ const goal = Astro.props.goal as Goal;
 </RootElement>
 
 <script>
+  import { navigate } from "astro:transitions/client";
   import { supabase, Goal } from "../lib/supabase";
 
   RootElement.ready(($, ctx) => {
@@ -74,7 +75,8 @@ const goal = Astro.props.goal as Goal;
         return;
       }
 
-      window.location.reload();
+      navigate("/");
+      // window.location.reload();
       // push navigation to /
       // old  window.history.replaceState({}, "", "/");
       // updateStopwatch(goal);
@@ -111,7 +113,8 @@ const goal = Astro.props.goal as Goal;
       }
 
       // Object.assign(goal, data[0]);
-      window.location.reload();
+      navigate("/");
+      // window.location.reload();
     });
 
     function timerUpdate() {

@@ -51,6 +51,7 @@ const uid = Astro.cookies.get("uid")?.value || "";
     import confetti from "canvas-confetti";
     import { supabase, Goal } from "@/lib/supabase";
     import { selectedActivities } from "@/scripts/store";
+    import { navigate } from "astro:transitions/client";
 
     RootElement.ready(($, ctx) => {
       const button = document.getElementById(
@@ -136,7 +137,8 @@ const uid = Astro.cookies.get("uid")?.value || "";
 
         // Redirect to goals page after 1 second
         setTimeout(() => {
-          window.location.reload();
+          //window.location.reload();
+          navigate("/");
         }, 900);
       });
 

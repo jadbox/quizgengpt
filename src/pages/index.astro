@@ -52,7 +52,7 @@ const check = loginCheck(Astro);
 if (check) return check;
 ---
 
-<Layout title="Choose Your Goals">
+<Layout title="Choose Your Goals" transition:animate="fade">
   {
     email ? (
       <h3 class="text-white w-full text-center">User: {email}</h3>
