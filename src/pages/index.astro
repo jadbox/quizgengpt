@@ -16,7 +16,10 @@ if (refreshToken && accessToken) {
     access_token: accessToken.value,
   });
 
+  // On Auth issue
   if (error) {
+    console.error("ERROR", error);
+
     cookies.delete("sb-access-token", {
       path: "/",
     });
@@ -29,25 +32,12 @@ if (refreshToken && accessToken) {
 
   if (!data.user?.id) throw new Error("User not found");
 
-  // delete uncompleted goals older than 24hrs
-  // const deleteOldGoals = await supabase
-  //   .from("goals")
-  //   .delete()
-  //   .eq("uid", data.user?.id)
-  //   .is("completed", null)
-  //   .gte(
-  //     "created_at",
-  //     new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  //   );
-
   // if user has uncompleted goals in supabase, redirect to /goals
   const { count } = await supabase
     .from("goals")
     .select("*", { count: "exact", head: true })
     .eq("uid", data.user?.id)
     .is("completed", null);
-
-  console.log("count", count);
 
   if (count && count > 0) {
     console.log("redirecting to /goals");

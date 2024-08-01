@@ -3,6 +3,9 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { supabase } from "../../../lib/supabase";
 
+// do not cache
+Astro.request.headers.set("Cache-Control", "no-store");
+
 const authCode = Astro.url.searchParams.get("code") || "";
 console.log("authCode", authCode);
 if (!authCode) {
@@ -20,6 +23,15 @@ if (error) {
   console.error("Error:", error);
   return new Response(error.message, { status: 500 });
 }
+console.log("data.user.id", data.user.id);
+
+if (data.user.id)
+  Astro.cookies.set("uid", data.user.id, {
+    path: "/",
+  });
+else throw new Error("User not found");
+
+if (data.user.email) Astro.cookies.set("email", data.user.email);
 
 const { access_token, refresh_token } = data.session;
 
@@ -30,5 +42,6 @@ Astro.cookies.set("sb-refresh-token", refresh_token, {
   path: "/",
 });
 
+console.info("CB redirecting to /");
 return Astro.redirect("/");
 ---

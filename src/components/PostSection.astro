@@ -105,13 +105,10 @@ const uid = cookies.get("uid")?.value || "";
 
   // Handle Submit button click
   const submitButton = document.getElementById(
-    "handleSubmitBtn",
+    "handleSubmitBtn"
   ) as HTMLButtonElement;
 
-  console.log(document.getElementById("handleSubmitBtn"));
-
   if (!submitButton) throw new Error("submitButton for comments not found");
-  else console.log("submitButton found");
 
   submitButton.addEventListener("click", handleSubmit);
 
@@ -129,7 +126,7 @@ const uid = cookies.get("uid")?.value || "";
 
   // Handle Reset button click
   const resetButton = document.getElementById(
-    "handleResetBtn",
+    "handleResetBtn"
   ) as HTMLButtonElement;
   resetButton.addEventListener("click", async () => {
     // are you sure?
@@ -154,7 +151,7 @@ const uid = cookies.get("uid")?.value || "";
     .on(
       "postgres_changes",
       { event: "INSERT", schema: "public", table: "messages" },
-      handleInserts,
+      handleInserts
     )
     .subscribe();
 
@@ -163,7 +160,7 @@ const uid = cookies.get("uid")?.value || "";
     .on(
       "postgres_changes",
       { event: "UPDATE", schema: "public", table: "messages" },
-      handleInserts,
+      handleInserts
     )
     .subscribe();
   console.log("subscribed to messages channel");

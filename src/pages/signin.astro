@@ -7,7 +7,7 @@ const refreshToken = cookies.get("sb-refresh-token");
 
 const urlBase = "http://localhost:4321"; //Astro.request.url.split("/signin")[0];
 const url2 = new URL("/api/auth/callback", urlBase).href;
-console.log("redirect url", url2);
+// console.log("redirect url", url2);
 
 if (accessToken || refreshToken) {
   if (cookies.has("uid")) return redirect("/");
@@ -16,7 +16,7 @@ if (accessToken || refreshToken) {
 const redirectURL = import.meta.env.PROD
   ? "https://app.thrivetogether.ai/api/auth/callback"
   : url2; // import.meta.env.SITE
-console.log("redirectURL", redirectURL);
+// console.log("redirectURL", redirectURL);
 
 const { data, error } = await supabase.auth.signInWithOAuth({
   provider: "google",
