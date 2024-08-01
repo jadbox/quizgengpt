@@ -8,6 +8,8 @@ import type { Tables } from "../../supabase/supabase";
 // );
 
 export let messages: Tables<"messages">;
+export type Goal = Tables<"goals">;
+
 export const supabase = createClient<Database>(
   import.meta.env.PUBLIC_SUPABASE_URL,
   import.meta.env.PUBLIC_SUPABASE_ANON_KEY,

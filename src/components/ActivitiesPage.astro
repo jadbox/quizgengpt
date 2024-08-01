@@ -48,7 +48,7 @@ const uid = Astro.cookies.get("uid")?.value || "";
 
 <script>
   import confetti from "canvas-confetti";
-  import { supabase } from "@/lib/supabase";
+  import { supabase, Goal } from "@/lib/supabase";
   import { selectedActivities } from "@/scripts/store";
 
   const button = document.getElementById("submitButton") as HTMLButtonElement;

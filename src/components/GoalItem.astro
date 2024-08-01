@@ -1,0 +1,164 @@
+---
+import { Goal } from "../lib/supabase";
+const goal = Astro.props.goal as Goal;
+---
+
+<RootElement data={{ goal }}>
+  <div class="flex items-center justify-between py-2">
+    <div class="flex items-center">
+      <span class="capitalize text-green-400">{goal.goal}</span>
+    </div>
+    <span data-target="stopwatch" class="text-green-400">00:00:00</span>
+
+    {
+      goal.started && !goal.completed && (
+        <button
+          data-target="pause-toggle"
+          class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg"
+        >
+          {!goal.paused ? "Pause" : "Resume"}
+        </button>
+      )
+    }
+
+    {
+      !goal.completed && (
+        <button
+          data-target="start-finish"
+          class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg"
+        >
+          {!goal.started ? "Start" : "Finish"}
+        </button>
+      )
+    }
+
+    {goal.completed && <span class="text-green-400">Done!</span>}
+  </div>
+</RootElement>
+
+<script>
+  import { supabase, Goal } from "../lib/supabase";
+  var goal: Goal;
+
+  RootElement.ready(($, ctx) => {
+    goal = ctx.data.goal as Goal;
+    timerUpdate(!!goal.started);
+
+    const elem = $.optional(`start-finish`);
+    elem?.addEventListener("click", async () => {
+      if (!goal.started) {
+        goal.started = new Date().toISOString();
+        goal.paused = false;
+        goal.resumed = goal.started;
+        goal.duration = 0;
+        // timerUpdate(true);
+        // goal.resumed = goal.started;
+      } else {
+        goal.paused = false;
+        goal.resumed = null;
+
+        goal.completed = new Date().toISOString();
+      }
+
+      const { data, error } = await supabase
+        .from("goals")
+        .update(goal)
+        .match({ id: goal.id })
+        .select();
+
+      if (error) {
+        console.error("Error updating goal:", error);
+        return;
+      }
+
+      // Object.assign(goal, data[0]);
+
+      window.location.href = "/";
+      // push navigation to /
+      // old  window.history.replaceState({}, "", "/");
+      // updateStopwatch(goal);
+    });
+
+    // Handle pause-toggle button toggle click
+    const pauseToggle = $.optional(`pause-toggle`);
+    pauseToggle?.addEventListener("click", async () => {
+      const dur = getDuration(goal); // must be calc before we pause
+      goal.paused = !goal.paused;
+
+      if (goal.paused) {
+        goal.resumed = null;
+
+        // in seconds
+        // const now = new Date();
+        console.log("goal", goal);
+        // const resumedDate = new Date(goal.resumed || goal.started || "");
+        goal.duration = dur;
+        console.log("Paused duration:", goal.duration);
+      } else {
+        goal.resumed = new Date().toISOString();
+      }
+
+      const { data, error } = await supabase
+        .from("goals")
+        .update(goal)
+        .match({ id: goal.id })
+        .select();
+
+      if (error) {
+        console.error("Error updating goal:", error);
+        return;
+      }
+
+      // Object.assign(goal, data[0]);
+      window.location.href = "/";
+    });
+
+    function timerUpdate(started: boolean = false) {
+      const stopwatch = $(`stopwatch`);
+      if (!stopwatch) return;
+
+      stopwatch.textContent = formatDuration(goal);
+      if (!started || goal.paused) return;
+
+      const intervalId = setInterval(() => {
+        stopwatch.textContent = formatDuration(goal);
+      }, 500);
+
+      return intervalId;
+    }
+  });
+
+  // WIP
+  //   const toggleButton = goalElement.querySelector(`#toggle-${goal.id}`);
+  //   if (toggleButton)
+  //     toggleButton.addEventListener("click", () =>
+  //       toggleGoal(goal, toggleButton)
+  //     );
+
+  function formatDuration(goal: Goal) {
+    const diff = getDuration(goal);
+
+    const hours = Math.floor(diff / 3600);
+    const minutes = Math.floor((diff % 3600) / 60);
+    const seconds = diff % 60;
+
+    // format as 00:00:00
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  function getDuration(goal: Goal) {
+    const duration = goal.duration;
+
+    let diff = duration;
+    if (!goal.paused && goal.started) {
+      const lastStartedDate = goal.resumed as string;
+      const now = new Date();
+      const startedDate = new Date(lastStartedDate);
+      diff += Math.floor((now.getTime() - startedDate.getTime()) / 1000);
+    }
+
+    return diff;
+  }
+</script>
