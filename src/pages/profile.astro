@@ -1,0 +1,13 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { loginCheck } from "@/lib/auth";
+import UserProfile from '@/components/UserProfile.astro';
+
+const check = loginCheck(Astro);
+if (check) return check;
+// server:defer
+---
+
+<Layout title="Profile">
+  <UserProfile />
+</Layout>

@@ -1,0 +1,88 @@
+---
+import { supabase } from "../lib/supabase";
+const uid = Astro.cookies.get("uid")?.value;
+
+async function fetchGoals() {
+  const { data: goals, error } = await supabase
+    .from("goals")
+    .select("*")
+    .match({ uid })
+    .gte(
+      "created_at",
+      new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    );
+
+  if (error) {
+    console.error("Error fetching goals:", error);
+    return [];
+  }
+  return goals || [];
+}
+
+function formatDuration(duration: number) {
+  return new Date(duration * 1000).toISOString().substr(11, 8);
+}
+
+const goals = await fetchGoals();
+---
+
+<div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
+  <h1 class="text-2xl font-bold text-green-400">Goal Tracking Stats</h1>
+
+  <!-- Number of Goals Completed -->
+  <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-2">
+    <h2 class="text-xl font-bold text-green-400">Goals Completed</h2>
+    <div class="text-lg font-medium">
+      <span id="goals-completed" class="text-white">
+        {
+          goals.reduce((count, goal) => {
+            return goal.completed ? count + 1 : count;
+          }, 0)
+        }
+      </span> goals completed
+    </div>
+  </div>
+
+  <!-- Cumulative Time Spent on Each Goal -->
+  <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-2">
+    <h2 class="text-xl font-bold text-green-400">Time Spent on Goals</h2>
+    <ul id="goal-times" class="list-disc pl-5 space-y-1">
+      {
+        goals.map((goal) => (
+          <li class="text-lg text-white">
+            Goal - {goal.goal}:{" "}
+            <span id={"goal-" + goal.id.toString()}>
+              {formatDuration(goal.duration)}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <!-- Rankings of Time Spent Compared to Other Users -->
+  <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-2">
+    <h2 class="text-xl font-bold text-green-400">Rankings</h2>
+    <table class="min-w-full text-left text-white">
+      <thead>
+        <tr class="border-b border-gray-700">
+          <th class="py-2 px-4">Rank</th>
+          <th class="py-2 px-4">User</th>
+          <th class="py-2 px-4">Time Spent</th>
+        </tr>
+      </thead>
+      <tbody id="rankings">
+        <tr class="border-b border-gray-700">
+          <td class="py-2 px-4">1</td>
+          <td class="py-2 px-4">User 1</td>
+          <td class="py-2 px-4">10:00:00</td>
+        </tr>
+        <tr class="border-b border-gray-700">
+          <td class="py-2 px-4">2</td>
+          <td class="py-2 px-4">User 2</td>
+          <td class="py-2 px-4">08:30:00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
