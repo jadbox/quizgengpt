@@ -3,7 +3,7 @@ import { Goal } from "../lib/supabase";
 const goal = Astro.props.goal as Goal;
 ---
 
-<RootElement data={{ goal }}>
+<RootElement data={{ goal }} data-id={goal.id}>
   <div class="flex items-center justify-between py-2">
     <div class="flex items-center">
       <span class="capitalize text-green-400">{goal.goal}</span>
@@ -27,7 +27,7 @@ const goal = Astro.props.goal as Goal;
           data-target="start-finish"
           class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg"
         >
-          {!goal.started ? "Start" : "Finish"}
+          {!goal.started ? `Start` : "Finish"}
         </button>
       )
     }
@@ -38,14 +38,16 @@ const goal = Astro.props.goal as Goal;
 
 <script>
   import { supabase, Goal } from "../lib/supabase";
-  var goal: Goal;
 
   RootElement.ready(($, ctx) => {
-    goal = ctx.data.goal as Goal;
+    var goal = ctx.data.goal as Goal;
     timerUpdate();
 
     const elem = $.optional(`start-finish`);
     elem?.addEventListener("click", async () => {
+      // console.log(elem.innerHTML, goal.id);
+      // console.log("a", $.self.getAttribute("data-test"));
+
       if (!goal.started) {
         goal.started = new Date().toISOString();
         goal.paused = false;
@@ -60,6 +62,7 @@ const goal = Astro.props.goal as Goal;
         goal.completed = new Date().toISOString();
       }
 
+      console.log("goal", goal);
       const { data, error } = await supabase
         .from("goals")
         .update(goal)
@@ -71,9 +74,7 @@ const goal = Astro.props.goal as Goal;
         return;
       }
 
-      // Object.assign(goal, data[0]);
-
-      window.location.href = "/";
+      window.location.reload();
       // push navigation to /
       // old  window.history.replaceState({}, "", "/");
       // updateStopwatch(goal);
@@ -110,7 +111,7 @@ const goal = Astro.props.goal as Goal;
       }
 
       // Object.assign(goal, data[0]);
-      window.location.href = "/";
+      window.location.reload();
     });
 
     function timerUpdate() {
@@ -127,13 +128,6 @@ const goal = Astro.props.goal as Goal;
       return intervalId;
     }
   });
-
-  // WIP
-  //   const toggleButton = goalElement.querySelector(`#toggle-${goal.id}`);
-  //   if (toggleButton)
-  //     toggleButton.addEventListener("click", () =>
-  //       toggleGoal(goal, toggleButton)
-  //     );
 
   function formatDuration(goal: Goal) {
     const diff = getDuration(goal);

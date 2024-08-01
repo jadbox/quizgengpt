@@ -9,7 +9,7 @@ const { data: goals, error } = await supabase
   .match({ uid })
   // .is("completed", null) // TODO: remove
   .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-  .order("created_at", { ascending: true });
+  .order("id", { ascending: true });
 
 if (error) {
   console.error("Error fetching goals:", error);
