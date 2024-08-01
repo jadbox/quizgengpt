@@ -23,7 +23,7 @@ if (error) {
   console.error("Error:", error);
   return new Response(error.message, { status: 500 });
 }
-console.log("data.user.id", data.user.id);
+// console.log("data.user.id", data.user.id);
 
 if (data.user.id)
   Astro.cookies.set("uid", data.user.id, {

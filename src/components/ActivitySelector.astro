@@ -3,7 +3,13 @@ import { getActivities } from "../scripts/globals";
 const activities = await getActivities();
 ---
 
-<div class="grid grid-cols-4 gap-4 mb-4 md:grid-cols-5 mt-4">
+<style>
+  .aq {
+    animation: fadeIn 1.2s;
+    --animate-duration: 0.2s;
+  }
+</style>
+<div class="grid grid-cols-4 gap-4 mb-4 md:grid-cols-5 mt-4 aq">
   {
     activities.map((activity) => (
       <div

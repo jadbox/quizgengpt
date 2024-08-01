@@ -1,9 +1,10 @@
 ---
 import { Goal } from "../lib/supabase";
 const goal = Astro.props.goal as Goal;
+const name = Astro.cookies.get("name")?.value;
 ---
 
-<RootElement data={{ goal }} data-id={goal.id}>
+<RootElement data={{ goal, name }} data-id={goal.id}>
   <div class="flex items-center justify-between py-2">
     <div class="flex items-center">
       <span class="capitalize text-green-400">{goal.goal}</span>
@@ -61,6 +62,12 @@ const goal = Astro.props.goal as Goal;
         goal.paused = false;
         goal.resumed = null;
         goal.completed = new Date().toISOString();
+
+        // send message to Supabase
+        const message = `${ctx.data.name} completed ${goal.goal} in ${formatDuration(goal)}`;
+        const { data, error } = await supabase
+          .from("messages")
+          .insert([{ content: message, profile_id: goal.uid }]);
       }
 
       console.log("goal", goal);

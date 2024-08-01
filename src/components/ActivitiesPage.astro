@@ -1,13 +1,14 @@
 ---
 import ActivitySelector from "./ActivitySelector.astro";
 const uid = Astro.cookies.get("uid")?.value || "";
+const name = Astro.cookies.get("name")?.value || "";
 ---
 
 <style>
   @import "../styles/animated-border.css";
 </style>
 
-<RootElement>
+<RootElement data={{ name, uid }}>
   <div
     class="max-h-screen flex flex-col items-center py-8 space-y-12 text-slate-200"
   >
@@ -76,34 +77,38 @@ const uid = Astro.cookies.get("uid")?.value || "";
         const postfield = document.getElementById(
           "postfield"
         ) as HTMLTextAreaElement;
-        const message = postfield.value;
-        const uid = postfield.getAttribute("data-uid")?.toString();
 
-        console.log("Message:", message, "UID:", uid);
-
-        if (message) {
-          const c = await supabase
-            .from("messages")
-            .insert([{ content: message, profile_id: uid }]);
-
-          // log any errors
-          if (c.error) {
-            console.error("Error inserting message:", c.error);
-          } else {
-            console.log("Message inserted successfully:", c.data);
-            postfield.value = "";
-          }
-        }
-
-        console.log("selectedActivities", selectedActivities.value); // ex ['clean']
-        // save into Supabase goals table where each goal is a row
-        // and each activity is a column
-        // and the value is the count of the activity
         const goals = selectedActivities.value;
         if (!goals || goals.length === 0) {
           alert("Select at least one goal");
           return;
         }
+
+        let message = `${ctx.data.name} started goals ${goals.join(", ")}`;
+        if (postfield.value) message += ". " + postfield.value;
+
+        const uid = ctx.data.uid; // postfield.getAttribute("data-uid")?.toString();
+
+        console.log("Message:", message, "UID:", uid);
+
+        // if (message) {
+        const c = await supabase
+          .from("messages")
+          .insert([{ content: message, profile_id: uid }]);
+
+        // log any errors
+        if (c.error) {
+          console.error("Error inserting message:", c.error);
+        } else {
+          console.log("Message inserted successfully:", c.data);
+          postfield.value = "";
+        }
+        //}
+
+        console.log("selectedActivities", selectedActivities.value); // ex ['clean']
+        // save into Supabase goals table where each goal is a row
+        // and each activity is a column
+        // and the value is the count of the activity
 
         if (goals && uid) {
           console.log("uid", uid);
@@ -131,7 +136,7 @@ const uid = Astro.cookies.get("uid")?.value || "";
             console.error("Error inserting goals:", re.error);
             return;
           }
-          console.log("Goals inserted:", goals, JSON.stringify(re.data));
+          // console.log("Goals inserted:", goals, JSON.stringify(re.data));
         }
         // return;
 

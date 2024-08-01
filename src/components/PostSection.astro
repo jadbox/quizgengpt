@@ -26,10 +26,10 @@ if (error) {
 const { cookies, redirect } = Astro;
 const uid = cookies.get("uid")?.value || "";
 
-// if (!uid) return redirect("/signin");
+const name = cookies.get("name")?.value || "";
 ---
 
-<RootElement>
+<RootElement data={{ name, uid }}>
   <div class="flex flex-col items-center justify-center max-h-screen p-4">
     <div
       class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-10 overflow-y-auto max-h-[50vh]"
@@ -73,6 +73,7 @@ const uid = cookies.get("uid")?.value || "";
 
   <script>
     import { supabase } from "@/lib/supabase";
+    import { navigate } from "astro:transitions/client";
 
     RootElement.ready(($, ctx) => {
       const handleInserts = (payload: any) => {
@@ -86,13 +87,15 @@ const uid = cookies.get("uid")?.value || "";
         const input = document.getElementById(
           "messageInput"
         ) as HTMLInputElement;
-        const message = input.value;
+
+        if (!input.value) return;
+        const message = `${ctx.data.name}: ${input.value}`;
 
         const uid = input.getAttribute("data-uid")?.toString();
-        console.log("{ content: message, profile_id: uid }", {
-          content: message,
-          profile_id: uid,
-        });
+        // console.log("{ content: message, profile_id: uid }", {
+        //   content: message,
+        //   profile_id: uid,
+        // });
 
         if (message) {
           const { data, error } = await supabase
@@ -150,7 +153,8 @@ const uid = cookies.get("uid")?.value || "";
           .eq("uid", uid)
           .is("completed", null);
 
-        window.location.href = "/";
+        // window.location.href = "/";
+        navigate("/");
       });
 
       // Subscribe to messages channel
