@@ -17,20 +17,8 @@ if (refreshToken && accessToken) {
     access_token: accessToken.value,
   });
 
-  // set name
-  name = data.user?.user_metadata?.name;
-  // remove last name and make it initial
-  if (name) {
-    const names = name.split(" ");
-    name = names[0] + " " + names[names.length - 1].charAt(0) + "";
-  }
-  Astro.cookies.set("name", name);
-  Astro.cookies.set("email", data.user?.email || "");
-
-  console.log("data", data.user?.user_metadata);
-
   // On Auth issue
-  if (error) {
+  if (error || !data.user?.email) {
     console.error("ERROR", error);
 
     cookies.delete("sb-access-token", {
@@ -42,6 +30,18 @@ if (refreshToken && accessToken) {
 
     return redirect("/signin");
   }
+
+  // set name
+  name = data.user?.user_metadata?.name;
+
+  if (!name) throw new Error("Name not found");
+  // remove last name and make it initial
+  if (name) {
+    const names = name.split(" ");
+    name = names[0] + " " + names[names.length - 1].charAt(0) + "";
+  }
+  Astro.cookies.set("name", name);
+  Astro.cookies.set("email", data.user?.email || "");
 
   if (!data.user?.id) throw new Error("User not found");
 
