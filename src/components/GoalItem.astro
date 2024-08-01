@@ -113,12 +113,12 @@ const goal = Astro.props.goal as Goal;
       window.location.href = "/";
     });
 
-    function timerUpdate(started: boolean = false) {
+    function timerUpdate() {
       const stopwatch = $(`stopwatch`);
       if (!stopwatch) return;
 
       stopwatch.textContent = formatDuration(goal);
-      if (!started || goal.paused || goal.completed) return;
+      if (!goal.started || goal.paused || goal.completed) return;
 
       const intervalId = setInterval(() => {
         stopwatch.textContent = formatDuration(goal);
