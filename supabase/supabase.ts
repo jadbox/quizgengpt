@@ -60,6 +60,9 @@ export type Database = {
           created_at: string
           goal: string | null
           id: number
+          paused: boolean
+          pauseduration: number
+          pauseStart: string | null
           started: string | null
           uid: string
         }
@@ -68,6 +71,9 @@ export type Database = {
           created_at?: string
           goal?: string | null
           id?: number
+          paused?: boolean
+          pauseduration?: number
+          pauseStart?: string | null
           started?: string | null
           uid: string
         }
@@ -76,6 +82,9 @@ export type Database = {
           created_at?: string
           goal?: string | null
           id?: number
+          paused?: boolean
+          pauseduration?: number
+          pauseStart?: string | null
           started?: string | null
           uid?: string
         }

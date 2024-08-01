@@ -8,7 +8,7 @@ const activities = await getActivities();
     activities.map((activity) => (
       <div
         class="flex rounded flex-col items-center text-center text-green-400 cursor-pointer activity-item"
-        data-activity={activity.label}
+        data-activity={activity.val || activity.label}
       >
         <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-700 bg-gray-900 activity-icon">
           <span class="material-icons text-3xl">{activity.icon}</span>
@@ -30,7 +30,7 @@ const activities = await getActivities();
   activityItems.forEach((activityItem) => {
     activityItem.addEventListener("click", (event) => {
       const activity = (event.currentTarget as HTMLElement).getAttribute(
-        "data-activity",
+        "data-activity"
       );
       //console.log(activity);
 
@@ -42,9 +42,9 @@ const activities = await getActivities();
 
       // update selected activities for all animate__animated items
       selected = Array.from(
-        document.querySelectorAll(".activity-item.animate__animated"),
+        document.querySelectorAll(".activity-item.animate__animated")
       ).map(
-        (item) => (item as HTMLElement).getAttribute("data-activity") || "",
+        (item) => (item as HTMLElement).getAttribute("data-activity") || ""
       );
 
       // console.log("selected", selected);

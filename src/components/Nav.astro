@@ -12,7 +12,9 @@
       <!-- Desktop Nav Links -->
       <div class="hidden md:flex items-center space-x-4">
         <a href="/" class="text-slate-400 hover:text-green-400">Choose Goals</a>
-        <a href="/goals" class="text-slate-400 hover:text-green-400">Goal Tracker</a>
+        <a href="/goals" class="text-slate-400 hover:text-green-400"
+          >Goal Tracker</a
+        >
         <a href="#" class="text-slate-400 hover:text-green-400">Stats</a>
         <a href="#" class="text-slate-400 hover:text-green-400">Profile</a>
       </div>
@@ -80,17 +82,17 @@
     });
 
     // Close the menu when clicking outside of it
-    document.addEventListener('click', (event) => {
+    document.addEventListener("click", (event) => {
       const target = event.target as Node;
       if (!mobileMenu.contains(target) && !mobileMenuButton.contains(target)) {
-        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.add("hidden");
       }
     });
 
     // Close the menu when resizing the window
-    window.addEventListener('resize', () => {
-      if (!mobileMenu.classList.contains('hidden')) {
-        mobileMenu.classList.add('hidden');
+    window.addEventListener("resize", () => {
+      if (!mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.add("hidden");
       }
     });
   </script>
