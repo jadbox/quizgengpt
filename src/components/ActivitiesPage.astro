@@ -7,36 +7,37 @@ const uid = Astro.cookies.get("uid")?.value || "";
   @import "../styles/animated-border.css";
 </style>
 
-<div
-  class="max-h-screen flex flex-col items-center py-8 space-y-12 text-slate-200"
->
-  <h1 class="text-2xl uppercase mb-4 text-green-400 mt-4">
-    What's your plan for today?
-  </h1>
-  <ActivitySelector />
+<RootElement>
+  <div
+    class="max-h-screen flex flex-col items-center py-8 space-y-12 text-slate-200"
+  >
+    <h1 class="text-2xl uppercase mb-4 text-green-400 mt-4">
+      What's your plan for today?
+    </h1>
+    <ActivitySelector />
 
-  <div class="comment">
-    <textarea
-      data-uid={uid}
-      id="postfield"
-      class="w-full bg-transparent border-none outline-none resize-none text-slate-400"
-      placeholder="Post what inspires you today..."></textarea>
-  </div>
-
-  <div class="flex-between w-11/12 mt-4 md:w-3/4">
-    <div
-      class="fixed bottom-8 inset-x-0 flex flex-col items-center md:relative md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
-    >
-      <button
-        id="submitButton"
-        class="material-icons bg-green-400 text-black p-4 rounded-full shadow-lg text-4xl"
-      >
-        check
-      </button>
-      <p class="mt-2 text-green-400">Crush Goals!</p>
+    <div class="comment">
+      <textarea
+        data-uid={uid}
+        id="postfield"
+        class="w-full bg-transparent border-none outline-none resize-none text-slate-400"
+        placeholder="Post what inspires you today..."></textarea>
     </div>
-  </div>
-  <!-- <div class="fixed bottom-8 right-8 flex flex-col items-center">
+
+    <div class="flex-between w-11/12 mt-4 md:w-3/4">
+      <div
+        class="fixed bottom-8 inset-x-0 flex flex-col items-center md:relative md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
+      >
+        <button
+          id="submitButton"
+          class="material-icons bg-green-400 text-black p-4 rounded-full shadow-lg text-4xl"
+        >
+          check
+        </button>
+        <p class="mt-2 text-green-400">Crush Goals!</p>
+      </div>
+    </div>
+    <!-- <div class="fixed bottom-8 right-8 flex flex-col items-center">
       <button
         class="material-icons bg-gray-900 text-green-400 p-3 rounded-full shadow-lg border-2 border-gray-700"
       >
@@ -44,95 +45,102 @@ const uid = Astro.cookies.get("uid")?.value || "";
       </button>
       <p class="mt-2 text-green-400">Edit Activities</p>
     </div> -->
-</div>
+  </div>
 
-<script>
-  import confetti from "canvas-confetti";
-  import { supabase, Goal } from "@/lib/supabase";
-  import { selectedActivities } from "@/scripts/store";
+  <script>
+    import confetti from "canvas-confetti";
+    import { supabase, Goal } from "@/lib/supabase";
+    import { selectedActivities } from "@/scripts/store";
 
-  const button = document.getElementById("submitButton") as HTMLButtonElement;
-  if (!button) throw new Error("Activity Submit button not found");
+    RootElement.ready(($, ctx) => {
+      const button = document.getElementById(
+        "submitButton"
+      ) as HTMLButtonElement;
+      if (!button) throw new Error("Activity Submit button not found");
 
-  button.addEventListener("click", async (event: any) => {
-    event.preventDefault();
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
+      button.addEventListener("click", async (event: any) => {
+        event.preventDefault();
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+
+        // disable button
+        button.disabled = true;
+        button.classList.add("bg-gray-700");
+        button.classList.remove("bg-green-400");
+
+        // save new message to supebase messages table for postfield content
+        const postfield = document.getElementById(
+          "postfield"
+        ) as HTMLTextAreaElement;
+        const message = postfield.value;
+        const uid = postfield.getAttribute("data-uid")?.toString();
+
+        console.log("Message:", message, "UID:", uid);
+
+        if (message) {
+          const c = await supabase
+            .from("messages")
+            .insert([{ content: message, profile_id: uid }]);
+
+          // log any errors
+          if (c.error) {
+            console.error("Error inserting message:", c.error);
+          } else {
+            console.log("Message inserted successfully:", c.data);
+            postfield.value = "";
+          }
+        }
+
+        console.log("selectedActivities", selectedActivities.value); // ex ['clean']
+        // save into Supabase goals table where each goal is a row
+        // and each activity is a column
+        // and the value is the count of the activity
+        const goals = selectedActivities.value;
+        if (!goals || goals.length === 0) {
+          alert("Select at least one goal");
+          return;
+        }
+
+        if (goals && uid) {
+          console.log("uid", uid);
+          // delete current uncompoleted goals
+          const r = await supabase
+            .from("goals")
+            .delete()
+            .match({ uid })
+            .is("completed", null);
+
+          if (r.error) {
+            console.error("Error deleting goals:", r.error);
+            return;
+          } else {
+            console.log("Deleted goals:", r.data);
+          }
+          // Refactor the above loop to be a single query transactions
+          const re = await supabase
+            .from("goals")
+            .insert(goals.map((goal) => ({ uid, goal })))
+            .select();
+
+          if (re.error) {
+            alert("Error inserting goals:" + re.error);
+            console.error("Error inserting goals:", re.error);
+            return;
+          }
+          console.log("Goals inserted:", goals, JSON.stringify(re.data));
+        }
+        // return;
+
+        // Redirect to goals page after 1 second
+        setTimeout(() => {
+          window.location.reload();
+        }, 900);
+      });
+
+      // console.log("RootElement ready", ctx);
     });
-
-    // disable button
-    button.disabled = true;
-    button.classList.add("bg-gray-700");
-    button.classList.remove("bg-green-400");
-
-    // save new message to supebase messages table for postfield content
-    const postfield = document.getElementById(
-      "postfield"
-    ) as HTMLTextAreaElement;
-    const message = postfield.value;
-    const uid = postfield.getAttribute("data-uid")?.toString();
-
-    console.log("Message:", message, "UID:", uid);
-
-    if (message) {
-      const c = await supabase
-        .from("messages")
-        .insert([{ content: message, profile_id: uid }]);
-
-      // log any errors
-      if (c.error) {
-        console.error("Error inserting message:", c.error);
-      } else {
-        console.log("Message inserted successfully:", c.data);
-        postfield.value = "";
-      }
-    }
-
-    console.log("selectedActivities", selectedActivities.value); // ex ['clean']
-    // save into Supabase goals table where each goal is a row
-    // and each activity is a column
-    // and the value is the count of the activity
-    const goals = selectedActivities.value;
-    if (!goals || goals.length === 0) {
-      alert("Select at least one goal");
-      return;
-    }
-
-    if (goals && uid) {
-      console.log("uid", uid);
-      // delete current uncompoleted goals
-      const r = await supabase
-        .from("goals")
-        .delete()
-        .match({ uid })
-        .is("completed", null);
-
-      if (r.error) {
-        console.error("Error deleting goals:", r.error);
-        return;
-      } else {
-        console.log("Deleted goals:", r.data);
-      }
-      // Refactor the above loop to be a single query transactions
-      const re = await supabase
-        .from("goals")
-        .insert(goals.map((goal) => ({ uid, goal })))
-        .select();
-
-      if (re.error) {
-        alert("Error inserting goals:" + re.error);
-        console.error("Error inserting goals:", re.error);
-        return;
-      }
-      console.log("Goals inserted:", goals, JSON.stringify(re.data));
-    }
-    // return;
-
-    // Redirect to goals page after 1 second
-    setTimeout(() => {
-      window.location.reload();
-    }, 900);
-  });
-</script>
+  </script>
+</RootElement>
