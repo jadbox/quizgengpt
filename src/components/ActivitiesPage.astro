@@ -69,7 +69,7 @@ const uid = Astro.cookies.get("uid")?.value || "";
 
     // save new message to supebase messages table for postfield content
     const postfield = document.getElementById(
-      "postfield",
+      "postfield"
     ) as HTMLTextAreaElement;
     const message = postfield.value;
     const uid = postfield.getAttribute("data-uid")?.toString();
@@ -116,13 +116,23 @@ const uid = Astro.cookies.get("uid")?.value || "";
         console.log("Deleted goals:", r.data);
       }
       // Refactor the above loop to be a single query transactions
-      await supabase.from("goals").insert(goals.map((goal) => ({ uid, goal })));
+      const re = await supabase
+        .from("goals")
+        .insert(goals.map((goal) => ({ uid, goal })))
+        .select();
+
+      if (re.error) {
+        alert("Error inserting goals:" + re.error);
+        console.error("Error inserting goals:", re.error);
+        return;
+      }
+      console.log("Goals inserted:", goals, JSON.stringify(re.data));
     }
     // return;
 
     // Redirect to goals page after 1 second
     setTimeout(() => {
-      window.location.href = "/goals";
-    }, 1000);
+      window.location.reload();
+    }, 900);
   });
 </script>

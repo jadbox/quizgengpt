@@ -4,7 +4,7 @@ import ActivitiesPage from "../components/ActivitiesPage.astro";
 import { supabase } from "../lib/supabase";
 import { loginCheck } from "@/lib/auth";
 
-const { cookies, redirect } = Astro;
+const { cookies, redirect, rewrite } = Astro;
 
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
@@ -30,15 +30,15 @@ if (refreshToken && accessToken) {
   if (!data.user?.id) throw new Error("User not found");
 
   // delete uncompleted goals older than 24hrs
-  const deleteOldGoals = await supabase
-    .from("goals")
-    .delete()
-    .eq("uid", data.user?.id)
-    .is("completed", null)
-    .gte(
-      "created_at",
-      new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    );
+  // const deleteOldGoals = await supabase
+  //   .from("goals")
+  //   .delete()
+  //   .eq("uid", data.user?.id)
+  //   .is("completed", null)
+  //   .gte(
+  //     "created_at",
+  //     new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  //   );
 
   // if user has uncompleted goals in supabase, redirect to /goals
   const { count } = await supabase
@@ -50,7 +50,8 @@ if (refreshToken && accessToken) {
   console.log("count", count);
 
   if (count && count > 0) {
-    return redirect("/goals");
+    console.log("redirecting to /goals");
+    return rewrite("/goals");
   }
 
   if (data.user?.email) email = data.user?.email;

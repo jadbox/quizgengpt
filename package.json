@@ -34,6 +34,7 @@
     "nanostores": "^0.10.3",
     "openai": "^4.53.2",
     "postcss": "^8.4.40",
+    "signal-polyfill": "^0.1.2",
     "simple-stack-query": "^0.2.0",
     "supabase": "^1.187.10",
     "tailwind-merge": "^2.4.0",
