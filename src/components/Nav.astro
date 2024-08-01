@@ -1,69 +1,76 @@
-<nav class="bg-gray-800 border-b border-gray-700">
-  <div class="container mx-auto px-4 py-2 flex justify-between items-center">
-    <!-- App Name -->
-    <div class="flex items-center space-x-4">
-      <a href="/" class="text-2xl font-bold text-slate-400">Thrive Together</a>
-    </div>
-    <!-- Right Icons -->
-    <div class="flex-center space-x-4">
-      <a href="#" class="text-gray-400 hover:text-gray-200">
-        <span class="material-icons"> favorite_outline </span>
-      </a>
-      <!-- Desktop Nav Links -->
-      <div class="hidden md:flex items-center space-x-4">
-        <a href="/" class="text-slate-400 hover:text-green-400">Goals</a>
-
-        <a href="/stats" class="text-slate-400 hover:text-green-400">Stats</a>
-        <a href="/profile" class="text-slate-400 hover:text-green-400">Profile</a>
-      </div>
-      <!-- Mobile Menu Button -->
-      <div class="md:hidden flex items-center">
-        <button
-          id="mobile-menu-button"
-          class="text-gray-400 hover:text-gray-300 focus:outline-none"
+<RootElement>
+  <nav class="bg-gray-800 border-b border-gray-700">
+    <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+      <!-- App Name -->
+      <div class="flex items-center space-x-4">
+        <a href="/" class="text-2xl font-bold text-slate-400">Thrive Together</a
         >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+      </div>
+      <!-- Right Icons -->
+      <div class="flex-center space-x-4">
+        <a href="#" class="text-gray-400 hover:text-gray-200">
+          <span class="material-icons"> favorite_outline </span>
+        </a>
+        <!-- Desktop Nav Links -->
+        <div class="hidden md:flex items-center space-x-4">
+          <a href="/" class="text-slate-400 hover:text-green-400">Goals</a>
+
+          <a href="/stats" class="text-slate-400 hover:text-green-400">Stats</a>
+          <a href="/profile" class="text-slate-400 hover:text-green-400"
+            >Profile</a
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden flex items-center">
+          <button
+            id="mobile-menu-button"
+            class="text-gray-400 hover:text-gray-300 focus:outline-none"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- Mobile Menu -->
-  <div
-    id="mobile-menu"
-    class="fixed right-0 top-18 mt-2 w-1/3 bg-gray-200 shadow-lg rounded-lg hidden md:hidden"
-  >
-    <div class="flex-end flex-col">
-      <a
-        href="/"
-        class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
-        >Goals</a
-      >
-      <a
-        href="/stats"
-        class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
-        >Stats</a
-      >
-      <a
-        href="/profile"
-        class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
-        >Profile</a
-      >
+    <!-- Mobile Menu -->
+    <div
+      id="mobile-menu"
+      class="fixed right-0 top-18 mt-2 w-1/3 bg-gray-200 shadow-lg rounded-lg hidden md:hidden"
+    >
+      <div class="flex-end flex-col">
+        <a
+          href="/"
+          class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
+          >Goals</a
+        >
+        <a
+          href="/stats"
+          class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
+          >Stats</a
+        >
+        <a
+          href="/profile"
+          class="block px-4 py-2 text-sm text-slate-600 w-full hover:text-green-400 hover:bg-gray-300"
+          >Profile</a
+        >
+      </div>
     </div>
-  </div>
+  </nav>
+</RootElement>
 
-  <script>
+<script>
+  RootElement.ready(($, ctx) => {
     const mobileMenuButton = document.getElementById("mobile-menu-button");
     const mobileMenu = document.getElementById("mobile-menu");
 
@@ -88,5 +95,5 @@
         mobileMenu.classList.add("hidden");
       }
     });
-  </script>
-</nav>
+  });
+</script>
