@@ -54,9 +54,9 @@ const goal = Astro.props.goal as Goal;
         // timerUpdate(true);
         // goal.resumed = goal.started;
       } else {
+        goal.duration = getDuration(goal);
         goal.paused = false;
         goal.resumed = null;
-
         goal.completed = new Date().toISOString();
       }
 
@@ -118,7 +118,7 @@ const goal = Astro.props.goal as Goal;
       if (!stopwatch) return;
 
       stopwatch.textContent = formatDuration(goal);
-      if (!started || goal.paused) return;
+      if (!started || goal.paused || goal.completed) return;
 
       const intervalId = setInterval(() => {
         stopwatch.textContent = formatDuration(goal);
@@ -152,7 +152,7 @@ const goal = Astro.props.goal as Goal;
     const duration = goal.duration;
 
     let diff = duration;
-    if (!goal.paused && goal.started) {
+    if (!goal.paused && goal.started && !goal.completed) {
       const lastStartedDate = goal.resumed as string;
       const now = new Date();
       const startedDate = new Date(lastStartedDate);
