@@ -64,8 +64,10 @@ if (completedTime) {
 
       timerUpdate();
 
-      const elem = $.optional(`start-finish`);
+      const elem = $.optional<HTMLButtonElement>(`start-finish`);
       elem?.addEventListener("click", async () => {
+        elem.disabled = true;
+        elem.classList.add("opacity-50");
         // console.log(elem.innerHTML, goal.id);
         // console.log("a", $.self.getAttribute("data-test"));
 
@@ -109,8 +111,11 @@ if (completedTime) {
       });
 
       // Handle pause-toggle button toggle click
-      const pauseToggle = $.optional(`pause-toggle`);
+      const pauseToggle = $.optional<HTMLButtonElement>(`pause-toggle`);
       pauseToggle?.addEventListener("click", async () => {
+        pauseToggle.disabled = true;
+        pauseToggle.classList.add("opacity-50");
+
         const dur = getDuration(goal); // must be calc before we pause
         goal.paused = !goal.paused;
 

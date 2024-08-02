@@ -62,16 +62,6 @@ const name = Astro.cookies.get("name")?.value || "";
 
       button.addEventListener("click", async (event: any) => {
         event.preventDefault();
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-
-        // disable button
-        button.disabled = true;
-        button.classList.add("bg-gray-700");
-        button.classList.remove("bg-green-400");
 
         // save new message to supebase messages table for postfield content
         const postfield = document.getElementById(
@@ -83,6 +73,16 @@ const name = Astro.cookies.get("name")?.value || "";
           alert("Select at least one goal");
           return;
         }
+
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+
+        // disable button
+        button.disabled = true;
+        button.classList.add("opacity-50");
 
         let message = `${ctx.data.name} started goals ${goals.join(", ")}`;
         if (postfield.value) message += ". " + postfield.value;
@@ -142,7 +142,6 @@ const name = Astro.cookies.get("name")?.value || "";
 
         // Redirect to goals page after 1 second
         setTimeout(() => {
-          //window.location.reload();
           navigate("/");
         }, 900);
       });
