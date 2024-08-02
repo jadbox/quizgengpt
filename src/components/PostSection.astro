@@ -1,6 +1,6 @@
 ---
 import { supabase } from "@/lib/supabase";
-
+// import { extract } from "oembed-parser";
 // populate comments from supabase message table with content field
 
 // newer than 24hrs
@@ -15,12 +15,38 @@ if (error) {
   console.error("Error fetching messages:", error);
 }
 
-const comments = data || [];
+var comments = data || [];
 
 const { cookies, redirect } = Astro;
 const uid = cookies.get("uid")?.value || "";
 
 const name = cookies.get("name")?.value || "";
+
+// Function to detect image URL in the post body
+const detectImageUrl = (text: string) => {
+  const urlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp|webm))/i;
+  const match = text.match(urlRegex);
+  return match ? match[0] : null;
+};
+
+// detect link url intest
+const detectLinkUrl = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const match = text.match(urlRegex);
+  return match ? match[0] : null;
+};
+
+const _comments = comments.map((comment) => {
+  const imageUrl = detectImageUrl(comment.content);
+  const link = !imageUrl && detectLinkUrl(comment.content);
+  if (imageUrl) comment.content = comment.content.replace(imageUrl, "");
+  else {
+    if (link) {
+      comment.content = comment.content.replace(link, "");
+    }
+  }
+  return { ...comment, imageUrl, link };
+});
 ---
 
 <RootElement data={{ name, uid }}>
@@ -31,7 +57,7 @@ const name = cookies.get("name")?.value || "";
       id="commentbox"
     >
       {
-        comments.map((comment) => {
+        _comments.map((comment) => {
           const isUserMessage = comment.profile_id === uid;
           const formattedDate = new Date(comment.created_at).toLocaleString();
           return (
@@ -44,6 +70,23 @@ const name = cookies.get("name")?.value || "";
                 } p-2 rounded-lg max-w-xs break-words`}
               >
                 {comment.content}
+                {comment.imageUrl && (
+                  <img
+                    src={comment.imageUrl}
+                    alt="Shared image"
+                    class="w-full h-auto object-cover rounded-lg shadow-md mb-2"
+                  />
+                )}
+                {comment.link && (
+                  <a
+                    href={comment.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-blue-400 underline"
+                  >
+                    {comment.link}
+                  </a>
+                )}
                 <>
                   <br />
                   <span class="text-xs text-gray-500 mt-1">
@@ -52,25 +95,37 @@ const name = cookies.get("name")?.value || "";
                 </>
                 <span class="flex-between space-x-3">
                   <like-btn confetti-button class="flex items-center">
-                    <button class="material-icons mr-1 text-lg" aria-label="Thumbs Up">
+                    <button
+                      class="material-icons mr-1 text-lg"
+                      aria-label="Thumbs Up"
+                    >
                       thumb_up
                     </button>
                     <span>0</span>
                   </like-btn>
                   <heart-btn confetti-button class="flex items-center">
-                    <button class="material-icons mr-1 text-lg" aria-label="Heart">
+                    <button
+                      class="material-icons mr-1 text-lg"
+                      aria-label="Heart"
+                    >
                       favorite
                     </button>
                     <span>0</span>
                   </heart-btn>
                   <happy-btn confetti-button class="flex items-center">
-                    <button class="material-icons mr-1 text-lg" aria-label="Happy Face">
+                    <button
+                      class="material-icons mr-1 text-lg"
+                      aria-label="Happy Face"
+                    >
                       sentiment_very_satisfied
                     </button>
                     <span>0</span>
                   </happy-btn>
                   <sad-btn class="flex items-center">
-                    <button class="material-icons mr-1 text-lg" aria-label="Sad Face">
+                    <button
+                      class="material-icons mr-1 text-lg"
+                      aria-label="Sad Face"
+                    >
                       sentiment_dissatisfied
                     </button>
                     <span>0</span>
@@ -105,11 +160,16 @@ const name = cookies.get("name")?.value || "";
     import { navigate } from "astro:transitions/client";
 
     RootElement.ready(($, ctx) => {
+      function makeComment(comment: string) {
+        navigate("/");
+      }
+
       const handleInserts = (payload: any) => {
         console.log("payload", payload);
         const newComment = payload.new.content;
         const el = document.getElementById("commentbox");
-        if (el) el.innerHTML += `<p class="text-green-400">${newComment}</p>`;
+        makeComment(newComment);
+        // if (el) el.innerHTML = +el.innerHTML;
       };
 
       const handleSubmit = async () => {
@@ -135,6 +195,7 @@ const name = cookies.get("name")?.value || "";
           } else {
             console.log("Message inserted successfully:", data);
             input.value = "";
+            makeComment(message);
           }
         }
       };

@@ -6,10 +6,10 @@ import { loginCheck } from "@/lib/auth";
 
 const check = loginCheck(Astro);
 if (check) return check;
-// server:defer
+// server:defer transition:persist
 ---
 
 <Layout title="Goals" transition:animate="fade">
   <GoalList />
-  <PostSection transition:persist />
+  <PostSection />
 </Layout>
