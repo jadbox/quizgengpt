@@ -15,7 +15,7 @@ if (completedTime) {
 }
 ---
 
-<RootElement data={{ goal, name }} data-id={goal.id}>
+<RootElement data={{ goal, name }}>
   <div class="grid grid-cols-4 gap-4 items-center py-2">
     <div class="col-span-1">
       <span class="capitalize text-green-400">{goal.goal}</span>
@@ -61,6 +61,7 @@ if (completedTime) {
 
     RootElement.ready(($, ctx) => {
       var goal = ctx.data.goal as Goal;
+
       timerUpdate();
 
       const elem = $.optional(`start-finish`);
