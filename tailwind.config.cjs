@@ -61,10 +61,28 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        pulseGreen: {
+          '0%': { transform: 'scale(1)', color: 'rgb(34, 197, 94)' }, // Initial color (green-400)
+          '50%': { transform: 'scale(1.2)', color: 'rgb(74, 222, 128)' }, // Changed color
+          '100%': { transform: 'scale(1)', color: 'rgb(34, 197, 94)' }, // Back to initial color
+        },
+        pulseRed: {
+          '0%': { transform: 'scale(1)', color: 'rgb(239, 68, 68)' }, // Initial color (red-500)
+          '50%': { transform: 'scale(1.2)', color: 'rgb(252, 165, 165)' }, // Changed color
+          '100%': { transform: 'scale(1)', color: 'rgb(239, 68, 68)' }, // Back to initial color
+        },
+        pulseYellow: {
+          '0%': { transform: 'scale(1)', color: 'rgb(255, 255, 0)' }, // Initial color (yellow)
+          '50%': { transform: 'scale(1.2)', color: 'rgb(255, 255, 153)' }, // Changed color
+          '100%': { transform: 'scale(1)', color: 'rgb(255, 255, 0)' }, // Back to initial color
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        pulseGreen: 'pulseGreen 0.5s ease-in-out',
+        pulseRed: 'pulseRed 0.5s ease-in-out',
+        pulseYellow: 'pulseYellow 0.5s ease-in-out',
       },
     },
   },

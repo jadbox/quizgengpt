@@ -50,6 +50,32 @@ const name = cookies.get("name")?.value || "";
                     {formattedDate}
                   </span>
                 </>
+                <span class="flex-between space-x-3">
+                  <like-btn confetti-button class="flex items-center">
+                    <button class="material-icons mr-1 text-lg" aria-label="Thumbs Up">
+                      thumb_up
+                    </button>
+                    <span>0</span>
+                  </like-btn>
+                  <heart-btn confetti-button class="flex items-center">
+                    <button class="material-icons mr-1 text-lg" aria-label="Heart">
+                      favorite
+                    </button>
+                    <span>0</span>
+                  </heart-btn>
+                  <happy-btn confetti-button class="flex items-center">
+                    <button class="material-icons mr-1 text-lg" aria-label="Happy Face">
+                      sentiment_very_satisfied
+                    </button>
+                    <span>0</span>
+                  </happy-btn>
+                  <sad-btn class="flex items-center">
+                    <button class="material-icons mr-1 text-lg" aria-label="Sad Face">
+                      sentiment_dissatisfied
+                    </button>
+                    <span>0</span>
+                  </sad-btn>
+                </span>
               </p>
             </div>
           );
@@ -73,6 +99,7 @@ const name = cookies.get("name")?.value || "";
     </div>
   </div>
 
+  <script src="@/scripts/emoji-reactions.js"></script>
   <script>
     import { supabase } from "@/lib/supabase";
     import { navigate } from "astro:transitions/client";
