@@ -1,0 +1,38 @@
+---
+import { supabase, Goal } from "@/lib/supabase";
+
+const goal = Astro.props.goal as Goal;
+
+const { count, error, data } = await supabase
+  .from("goals")
+  .select("id", { count: "exact", head: true })
+  .is("completed", null)
+  .eq("goal", goal.goal as string);
+
+if (error) {
+  console.error("Error getting count:", error);
+}
+---
+
+<RootElement>
+  <a
+    href={`https://meet.jit.si/thrive_${goal.goal}`}
+    class="flex items-center space-x-2"
+    title="Join a video call to discuss this goal"
+    target="_blank"
+  >
+    <div
+      class="flex items-center space-x-2"
+      title="People working on this goal"
+    >
+      <span
+        class="flex items-center text-sm font-bold bg-orange-100 rounded-full px-2 py-1"
+      >
+        <span class="material-symbols-outlined text-md mr-1 text-orange-500"
+          >group</span
+        >
+        <span class="text-orange-500">{count || 0}</span>
+      </span>
+    </div>
+  </a>
+</RootElement>
