@@ -1,28 +1,21 @@
 ---
 import { supabase } from "@/lib/supabase";
 
-let comments: { content: string; profile_id: string }[] = [
-  // "YOU CAN DO IT! -Jessica",
-  // "I FINISHED MY GYM GOAL -Larry",
-  // "I'll be so glad to get to the gym today after work -Joe",
-  // "You're going to enjoy that run and buy a nice healthy snack soon at the store!",
-];
-
 // populate comments from supabase message table with content field
 
 // newer than 24hrs
 const { data, error } = await supabase
   .from("messages")
-  .select("content, profile_id")
+  .select("content, profile_id, created_at")
   .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
   .limit(20)
   .order("created_at", { ascending: false });
 
 if (error) {
   console.error("Error fetching messages:", error);
-} else {
-  comments = data.map((message) => message);
 }
+
+const comments = data || [];
 
 const { cookies, redirect } = Astro;
 const uid = cookies.get("uid")?.value || "";
@@ -38,8 +31,9 @@ const name = cookies.get("name")?.value || "";
       id="commentbox"
     >
       {
-        comments.map((comment, index) => {
+        comments.map((comment) => {
           const isUserMessage = comment.profile_id === uid;
+          const formattedDate = new Date(comment.created_at).toLocaleString();
           return (
             <div class="flex-center flex-col">
               <p
@@ -50,6 +44,12 @@ const name = cookies.get("name")?.value || "";
                 } p-2 rounded-lg max-w-xs break-words`}
               >
                 {comment.content}
+                <>
+                  <br />
+                  <span class="text-xs text-gray-500 mt-1">
+                    {formattedDate}
+                  </span>
+                </>
               </p>
             </div>
           );

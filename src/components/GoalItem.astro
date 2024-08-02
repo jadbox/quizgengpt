@@ -2,6 +2,17 @@
 import { Goal } from "../lib/supabase";
 const goal = Astro.props.goal as Goal;
 const name = Astro.cookies.get("name")?.value;
+
+let completedTime = goal.completed
+  ? new Date(goal.completed).toLocaleString()
+  : null;
+if (completedTime) {
+  // remove seconds and date from completed time showing just time of day. show am or pm
+  const isPm = completedTime.includes("PM");
+  completedTime = completedTime.split(" ")[1];
+  completedTime = completedTime.slice(0, completedTime.lastIndexOf(":"));
+  completedTime += isPm ? "pm" : "am";
+}
 ---
 
 <RootElement data={{ goal, name }} data-id={goal.id}>
@@ -35,7 +46,10 @@ const name = Astro.cookies.get("name")?.value;
       }
       {
         goal.completed && (
-          <span class="text-green-400 w-24 text-center">Done!</span>
+          <div class="text-green-400 w-24 text-center">
+            Done!{" "}
+            <span class="text-xs text-gray-500 mt-1">{completedTime}</span>
+          </div>
         )
       }
     </div>
