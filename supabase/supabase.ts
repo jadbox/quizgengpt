@@ -159,6 +159,39 @@ export type Database = {
           },
         ]
       }
+      reactions: {
+        Row: {
+          emoji: number
+          message_id: string
+          uid: string | null
+        }
+        Insert: {
+          emoji: number
+          message_id: string
+          uid?: string | null
+        }
+        Update: {
+          emoji?: number
+          message_id?: string
+          uid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reactions_uid_fkey"
+            columns: ["uid"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
