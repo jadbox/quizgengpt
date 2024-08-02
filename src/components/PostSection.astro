@@ -71,11 +71,13 @@ const _comments = comments.map((comment) => {
               >
                 {comment.content}
                 {comment.imageUrl && (
-                  <img
-                    src={comment.imageUrl}
-                    alt="Shared image"
-                    class="w-full h-auto object-cover rounded-lg shadow-md mb-2"
-                  />
+                  <a href={comment.imageUrl} target="_blank">
+                    <img
+                      src={comment.imageUrl}
+                      alt="Shared image"
+                      class="w-full max-w-32 h-auto object-cover rounded-lg shadow-md mb-2"
+                    />
+                  </a>
                 )}
                 {comment.link && (
                   <a
