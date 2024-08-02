@@ -3,12 +3,13 @@ import GoalItem from "./GoalItem.astro";
 import { supabase, Goal } from "../lib/supabase";
 const uid = Astro.cookies.get("uid")?.value;
 
+// get goals created on this day
 const { data: goals, error } = await supabase
   .from("goals")
   .select("*")
   .match({ uid })
   // .is("completed", null) // TODO: remove
-  .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+  .gte("created_at", new Date().toISOString().split("T")[0])
   .order("id", { ascending: true });
 
 if (error) {
