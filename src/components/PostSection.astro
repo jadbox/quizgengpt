@@ -53,7 +53,7 @@ const _comments = comments.map((comment) => {
   <div class="flex flex-col items-center justify-center max-h-screen pt-4">
     <h1 class="text-xl font-bold text-green-400">Shared goals chat</h1>
     <div
-      class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
+      class="p-2 glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
       id="commentbox"
     >
       {
@@ -139,7 +139,7 @@ const _comments = comments.map((comment) => {
         })
       }
     </div>
-    <div class="flex-center flex-col w-full space-y-4">
+    <div class="flex-center flex-col w-full">
       <input
         data-uid={uid}
         type="text"
@@ -150,9 +150,7 @@ const _comments = comments.map((comment) => {
       <button class="black_btn w-1/3 md:h-full md:w-1/5" id="handleSubmitBtn">
         submit
       </button>
-      <button class="outline_btn w-1/4 md:h-full md:w-1/6" id="handleResetBtn"
-        >reset</button
-      >
+      <br /><br />
     </div>
   </div>
 
@@ -223,30 +221,6 @@ const _comments = comments.map((comment) => {
 
           if (message) handleSubmit();
         }
-      });
-
-      // Handle Reset button click
-      const resetButton = document.getElementById(
-        "handleResetBtn"
-      ) as HTMLButtonElement;
-      resetButton.addEventListener("click", async () => {
-        // are you sure?
-        if (!confirm("Are you sure you want to delete all your goals?")) return;
-
-        const input = document.getElementById(
-          "messageInput"
-        ) as HTMLInputElement;
-        const uid = input.getAttribute("data-uid") || "";
-
-        // delete uncompleted goals
-        const { data, error } = await supabase
-          .from("goals")
-          .delete()
-          .eq("uid", uid)
-          .is("completed", null);
-
-        // window.location.href = "/";
-        navigate("/");
       });
 
       // Subscribe to messages channel

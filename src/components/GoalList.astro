@@ -18,17 +18,50 @@ if (error) {
 }
 ---
 
-<div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
-  <user id="user" uid={uid} class="hidden"></user>
-  <h1 class="text-2xl font-bold text-green-400">Today's goal list</h1>
-  <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3">
-    <div class="container space-y-4" id="goalContainer">
-      <!-- Activities will be rendered here -->
-      {goals.map((goal: Goal) => <GoalItem goal={goal} />)}
+<RootElement data={{ uid }}>
+  <div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
+    <user id="user" uid={uid} class="hidden"></user>
+    <div class="flex items-center p-4 space-x-2 text-slate-200">
+      <div class="text-green-400 flex" title="Reset today's goals">
+        <a href="#" data-target="returnico" class="text-green-400 flex">
+          <i class="material-icons">backspace</i>
+        </a>
+      </div>
+      <h1 class="text-2xl font-bold text-green-400 flex">Today's goal list</h1>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3">
+      <div class="container space-y-4" id="goalContainer">
+        <!-- Activities will be rendered here -->
+        {goals.map((goal: Goal) => <GoalItem goal={goal} />)}
+      </div>
     </div>
   </div>
-</div>
-
+</RootElement>
 <script>
-  // OLD CODE MOVING TO GoalItem
+  import { navigate } from "astro:transitions/client";
+  import { supabase } from "../lib/supabase";
+
+  RootElement.ready(($, ctx) => {
+    $("returnico").addEventListener("click", async function (e) {
+      e.preventDefault();
+      // are you sure?
+      if (!confirm("Are you sure you want to reset today's goals?")) return;
+
+      const uid = ctx.data.uid;
+
+      $<HTMLButtonElement>("returnico").disabled = true;
+      $("returnico").classList.add("cursor-not-allowed"); // alpha
+      $("returnico").classList.add("alpha-50"); // alpha
+
+      // delete uncompleted goals
+      const { data, error } = await supabase
+        .from("goals")
+        .delete()
+        .eq("uid", uid)
+        .is("completed", null);
+
+      // window.location.href = "/";
+      navigate("/");
+    });
+  });
 </script>
