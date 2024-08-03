@@ -21,6 +21,7 @@ if (completedTime) {
   <div class="grid grid-cols-4 gap-4 items-center py-2">
     <div class="col-span-1">
       <span class="capitalize text-green-400">{goal.goal}</span>
+      {goal.started && !goal.completed && <GoalSocialIndicator goal={goal} />}
     </div>
     <div class="col-span-1 text-center">
       <span data-target="stopwatch" class="text-green-400">00:00:00</span>
@@ -28,15 +29,12 @@ if (completedTime) {
     <div class="col-span-2 flex justify-end space-x-2">
       {
         goal.started && !goal.completed && (
-          <div class="flex items-center space-x-2">
-            <GoalSocialIndicator goal={goal} />
-            <button
-              data-target="pause-toggle"
-              class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg w-24"
-            >
-              {!goal.paused ? "Pause" : "Resume"}
-            </button>
-          </div>
+          <button
+            data-target="pause-toggle"
+            class="bg-gray-700 text-green-400 border border-green-400 px-2 py-1 rounded-lg w-24"
+          >
+            {!goal.paused ? "Pause" : "Resume"}
+          </button>
         )
       }
       {

@@ -5,7 +5,7 @@ const goal = Astro.props.goal as Goal;
 
 const { count, error, data } = await supabase
   .from("goals")
-  .select("id", { count: "exact", head: true })
+  .select("id", { count: "exact", head: false })
   .is("completed", null)
   .eq("goal", goal.goal as string);
 
@@ -14,20 +14,20 @@ if (error) {
 }
 ---
 
-<RootElement>
+<RootElement style="m-2" data={{ goal }}>
   <a
-    href={`https://meet.jit.si/thrive_${goal.goal}`}
-    class="flex items-center space-x-2"
+    href={`#`}
+    class="flex items-center space-x-2 float-right"
     title="Join a video call to discuss this goal"
-    target="_blank"
+    data-target="joinVideoCall"
   >
     <div
-      class="flex items-center space-x-2"
+      class="flex
+    items-center
+    space-x-2"
       title="People working on this goal"
     >
-      <span
-        class="flex items-center text-sm font-bold bg-orange-100 rounded-full px-2 py-1"
-      >
+      <span class="flex items-center text-sm font-bold rounded-full px-2 py-1">
         <span class="material-symbols-outlined text-md mr-1 text-orange-500"
           >group</span
         >
@@ -35,4 +35,17 @@ if (error) {
       </span>
     </div>
   </a>
+
+  <script>
+    RootElement.ready(($, ctx) => {
+      const goalName = ctx.data.goal.goal;
+
+      $("joinVideoCall").addEventListener("click", function (e) {
+        e.preventDefault();
+        if (confirm("Do you wish to join the video chat for this goal?")) {
+          window.open(`https://meet.jit.si/thrive_${goalName}`, "_blank");
+        }
+      });
+    });
+  </script>
 </RootElement>
