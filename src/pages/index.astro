@@ -45,12 +45,27 @@ if (refreshToken && accessToken) {
 
   if (!data.user?.id) throw new Error("User not found");
 
+  // delete goals older than 24hrs
+  // await supabase
+  //   .from("goals")
+  //   .delete()
+  //   .eq("uid", data.user?.id)
+  //   .lt(
+  //     "created_at",
+  //     new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  //   );
+
   // if user has uncompleted goals in supabase, redirect to /goals
+  // 24hrs to complete goals
   const { count } = await supabase
     .from("goals")
     .select("*", { count: "exact", head: true })
     .eq("uid", data.user?.id)
-    .is("completed", null);
+    .is("completed", null)
+    .gte(
+      "created_at",
+      new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    );
 
   if (count && count > 0) {
     console.log("redirecting to /goals");
