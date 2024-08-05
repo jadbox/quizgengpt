@@ -2,10 +2,12 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../../supabase/supabase";
 import type { Tables } from "../../supabase/supabase";
 
-// console.log(
-//   import.meta.env.PUBLIC_SUPABASE_URL,
-//   import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-// );
+console.log(
+  "PUBLIC_SUPABASE_URL",
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+  // import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
 
 export let messages: Tables<"messages">;
 export type Goal = Tables<"goals">;

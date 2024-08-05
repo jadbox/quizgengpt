@@ -1,21 +1,30 @@
 import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 // import react from "@astrojs/react"; // avoid using this for now
-import bun from "astro-bun-adapter";
+import bun from "@nurodev/astro-bun";
 import sitemap from "@astrojs/sitemap";
 import simpleStackQuery from "simple-stack-query";
 
 // https://astro.build/config
 export default defineConfig({
+  // host: true,
   site: "https://app.thrivetogether.ai",
   output: "server",
-  adapter: bun(),
-  integrations: [tailwind({
-    applyBaseStyles: false
-  }), sitemap()
-  // react()
-  , simpleStackQuery()],
+  adapter: bun({
+    host: true,
+  }),
+  server: {
+    host: true,
+  },
+  integrations: [
+    tailwind({
+      applyBaseStyles: false,
+    }),
+    sitemap(),
+    // react()
+    simpleStackQuery(),
+  ],
   experimental: {
-    serverIslands: true
-  }
+    serverIslands: true,
+  },
 });

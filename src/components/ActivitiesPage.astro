@@ -132,8 +132,8 @@ const name = Astro.cookies.get("name")?.value || "";
             .select();
 
           if (re.error) {
-            alert("Error inserting goals:" + re.error);
-            console.error("Error inserting goals:", re.error);
+            alert("Error inserting goals:" + re.error.message);
+            console.error("Error inserting goals:", re.error.message);
             return;
           }
           // console.log("Goals inserted:", goals, JSON.stringify(re.data));

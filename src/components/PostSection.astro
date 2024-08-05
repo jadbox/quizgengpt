@@ -154,7 +154,9 @@ const _comments = comments.map((comment) => {
     </div>
   </div>
 
-  <script src="@/scripts/emoji-reactions.js"></script>
+  <script>
+    import "@/scripts/emoji-reactions.js";
+  </script>
   <script>
     import { supabase } from "@/lib/supabase";
     import { navigate } from "astro:transitions/client";

@@ -4,17 +4,25 @@ import ActivitiesPage from "../components/ActivitiesPage.astro";
 import { supabase } from "../lib/supabase";
 import { loginCheck } from "@/lib/auth";
 
+import GoalList from "../components/GoalList.astro";
+import PostSection from "../components/PostSection.astro";
+
 const { cookies, redirect, rewrite } = Astro;
 
-const accessToken = cookies.get("sb-access-token");
-const refreshToken = cookies.get("sb-refresh-token");
+const accessToken = cookies.get("sb-access-token")?.value;
+const refreshToken = cookies.get("sb-refresh-token")?.value;
+
+Astro.request.headers.set("Cache-Control", "no-store");
+
+// console.log("accessToken", accessToken, refreshToken, process.env.SITE);
 
 // let email = "";
 let name = "";
+let hasGoals = false;
 if (refreshToken && accessToken) {
   const { data, error } = await supabase.auth.setSession({
-    refresh_token: refreshToken.value,
-    access_token: accessToken.value,
+    refresh_token: refreshToken,
+    access_token: accessToken,
   });
 
   // On Auth issue
@@ -28,20 +36,12 @@ if (refreshToken && accessToken) {
       path: "/",
     });
 
-    return redirect("/signin");
+    return rewrite("/signin");
   }
 
   // set name
-  name = data.user?.user_metadata?.name;
 
-  if (!name) throw new Error("Name not found");
-  // remove last name and make it initial
-  if (name) {
-    const names = name.split(" ");
-    name = names[0] + " " + names[names.length - 1].charAt(0) + "";
-  }
-  Astro.cookies.set("name", name);
-  Astro.cookies.set("email", data.user?.email || "");
+  // Astro.cookies.set("email", data.user?.email || "");
 
   if (!data.user?.id) throw new Error("User not found");
 
@@ -57,19 +57,19 @@ if (refreshToken && accessToken) {
 
   // if user has uncompleted goals in supabase, redirect to /goals
   // 24hrs to complete goals
-  const { count } = await supabase
+  const { count, data:d } = await supabase
     .from("goals")
-    .select("*", { count: "exact", head: true })
+    .select("*", { count: "exact", head: false })
     .eq("uid", data.user?.id)
     .is("completed", null)
-    .gte(
-      "created_at",
-      new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-    );
+    .gte("created_at", new Date().toISOString().split("T")[0]);
+
+    console.log("count", count, d);
 
   if (count && count > 0) {
-    console.log("redirecting to /goals");
-    return rewrite("/goals");
+   //  console.log("redirecting to /goals");
+    hasGoals = true;
+    // return rewrite("/goals");
   }
 
   // if (data.user?.email) email = data.user?.email;
@@ -81,12 +81,10 @@ if (check) return check;
 ---
 
 <Layout title="Choose Your Goals" transition:animate="fade">
-  {
-    name ? (
-      <h3 class="text-white w-full text-center">User: {name}</h3>
-    ) : (
-      "Not loggin in"
-    )
-  }
-  <ActivitiesPage />
+  {hasGoals ? (
+    <GoalList />
+    <PostSection />
+  ) : (
+     <ActivitiesPage />
+  )}
 </Layout>
