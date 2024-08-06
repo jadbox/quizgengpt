@@ -2,6 +2,8 @@
 import { supabase } from "../lib/supabase";
 const uid = Astro.cookies.get("uid")?.value;
 
+// const { supabase } = await setAstroSession(Astro.cookies);
+
 async function fetchGoals() {
   const { data: goals, error } = await supabase
     .from("goals")

@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ActivitiesPage from "../components/ActivitiesPage.astro";
-import { supabase } from "../lib/supabase";
+import { setAstroSession } from "../lib/supabase";
 import { loginCheck } from "@/lib/auth";
 
 import GoalList from "../components/GoalList.astro";
@@ -9,8 +9,7 @@ import PostSection from "../components/PostSection.astro";
 
 const { cookies, redirect, rewrite } = Astro;
 
-const accessToken = cookies.get("sb-access-token")?.value;
-const refreshToken = cookies.get("sb-refresh-token")?.value;
+
 
 Astro.request.headers.set("Cache-Control", "no-store");
 
@@ -19,29 +18,11 @@ Astro.request.headers.set("Cache-Control", "no-store");
 // let email = "";
 let name = "";
 let hasGoals = false;
-if (refreshToken && accessToken) {
-  const { data, error } = await supabase.auth.setSession({
-    refresh_token: refreshToken,
-    access_token: accessToken,
-  });
 
-  // On Auth issue
-  if (error || !data.user?.email) {
-    console.error("ERROR", error);
 
-    cookies.delete("sb-access-token", {
-      path: "/",
-    });
-    cookies.delete("sb-refresh-token", {
-      path: "/",
-    });
+  const {supabase, data} = await setAstroSession(Astro.cookies);
 
-    return rewrite("/signin");
-  }
-
-  // set name
-
-  // Astro.cookies.set("email", data.user?.email || "");
+  if (data) {
 
   if (!data.user?.id) throw new Error("User not found");
 
@@ -64,7 +45,7 @@ if (refreshToken && accessToken) {
     .is("completed", null)
     .gte("created_at", new Date().toISOString().split("T")[0]);
 
-    console.log("count", count, d);
+    // console.log("count", count, d);
 
   if (count && count > 0) {
    //  console.log("redirecting to /goals");

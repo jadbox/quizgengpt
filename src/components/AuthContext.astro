@@ -1,0 +1,55 @@
+---
+const { cookies, redirect, rewrite } = Astro;
+
+const access_token = cookies.get("sb-access-token")?.value;
+const refresh_token = cookies.get("sb-refresh-token")?.value;
+---
+
+<RootElement data={{ access_token, refresh_token }}>
+  <session
+    id="session"
+    access_token={access_token}
+    refresh_token={refresh_token}
+    class="hidden"></session>
+</RootElement>
+
+<script>
+  import { supabase } from "../lib/supabase";
+
+  const access_token = document
+    .getElementById("session")
+    ?.getAttribute("access_token");
+  const refresh_token = document
+    .getElementById("session")
+    ?.getAttribute("refresh_token");
+
+  if (access_token && refresh_token) initDB(access_token, refresh_token);
+
+  //   RootElement.ready(($, ctx) => {
+  //     const { access_token, refresh_token } = ctx.data;
+  //     initDB(access_token, refresh_token);
+  //   });
+
+  async function initDB(access_token: string, refresh_token: string) {
+    if (access_token && refresh_token) {
+      // get cookie using JS
+      // const cookies = document.cookie.split(";").reduce((acc:any, cookie) => {
+      //   const [key, value] = cookie.split("=");
+      //   acc[key.trim()] = value;
+      //   return acc;
+      // }, {});
+
+      const { data, error } = await supabase.auth.setSession({
+        access_token: access_token,
+        refresh_token: refresh_token,
+      });
+      if (error) {
+        console.error("Error setting session", error);
+      }
+
+      //   if (data) {
+      //     console.log("User data", data);
+      //   }
+    }
+  }
+</script>
