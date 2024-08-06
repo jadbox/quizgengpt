@@ -53,7 +53,7 @@ const _comments = comments.map((comment) => {
   <div class="flex flex-col items-center justify-center max-h-screen pt-4">
     <h1 class="text-xl font-bold text-green-400">Shared goals chat</h1>
     <div
-      class="p-2 glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
+      class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
       id="commentbox"
     >
       {
@@ -96,7 +96,10 @@ const _comments = comments.map((comment) => {
                   </span>
                 </>
                 <span class="flex-between space-x-3">
-                  <like-btn confetti-button class="flex items-center">
+                  <emoji-reaction-btn
+                    animation-class="animate-pulseGreen"
+                    class="flex items-center"
+                  >
                     <button
                       class="material-icons mr-1 text-lg"
                       aria-label="Thumbs Up"
@@ -104,8 +107,12 @@ const _comments = comments.map((comment) => {
                       thumb_up
                     </button>
                     <span>0</span>
-                  </like-btn>
-                  <heart-btn confetti-button class="flex items-center">
+                  </emoji-reaction-btn>
+                  <emoji-reaction-btn
+                    confetti-button
+                    animation-class="animate-pulseRed"
+                    class="flex items-center"
+                  >
                     <button
                       class="material-icons mr-1 text-lg"
                       aria-label="Heart"
@@ -113,8 +120,11 @@ const _comments = comments.map((comment) => {
                       favorite
                     </button>
                     <span>0</span>
-                  </heart-btn>
-                  <happy-btn confetti-button class="flex items-center">
+                  </emoji-reaction-btn>
+                  <emoji-reaction-btn
+                    animation-class="animate-pulseYellow"
+                    class="flex items-center"
+                  >
                     <button
                       class="material-icons mr-1 text-lg"
                       aria-label="Happy Face"
@@ -122,8 +132,11 @@ const _comments = comments.map((comment) => {
                       sentiment_very_satisfied
                     </button>
                     <span>0</span>
-                  </happy-btn>
-                  <sad-btn class="flex items-center">
+                  </emoji-reaction-btn>
+                  <emoji-reaction-btn
+                    animation-class="animate-pulseYellow"
+                    class="flex items-center"
+                  >
                     <button
                       class="material-icons mr-1 text-lg"
                       aria-label="Sad Face"
@@ -131,7 +144,7 @@ const _comments = comments.map((comment) => {
                       sentiment_dissatisfied
                     </button>
                     <span>0</span>
-                  </sad-btn>
+                  </emoji-reaction-btn>
                 </span>
               </p>
             </div>
@@ -176,7 +189,7 @@ const _comments = comments.map((comment) => {
 
       const handleSubmit = async () => {
         const input = document.getElementById(
-          "messageInput"
+          "messageInput",
         ) as HTMLInputElement;
 
         if (!input.value) return;
@@ -204,7 +217,7 @@ const _comments = comments.map((comment) => {
 
       // Handle Submit button click
       const submitButton = document.getElementById(
-        "handleSubmitBtn"
+        "handleSubmitBtn",
       ) as HTMLButtonElement;
 
       if (!submitButton) throw new Error("submitButton for comments not found");
@@ -217,7 +230,7 @@ const _comments = comments.map((comment) => {
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const input = document.getElementById(
-            "messageInput"
+            "messageInput",
           ) as HTMLInputElement;
           const message = input.value;
 
@@ -231,7 +244,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
 
@@ -240,7 +253,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
       console.log("subscribed to messages channel");

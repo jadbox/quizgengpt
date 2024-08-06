@@ -6,104 +6,44 @@ buttons.forEach((button) => {
   button.addEventListener("click", () => confetti());
 });
 
-// Custom like button elements
-class HeartBtn extends HTMLElement {
+// Generic Emoji Reaction Button
+class EmojiReactionBtn extends HTMLElement {
+  private count: number = 0;
+  private button: HTMLButtonElement | null = null;
+  private countSpan: HTMLSpanElement | null = null;
+  private animationClass: string;
+
   constructor() {
     super();
-    let count = 0;
+    this.animationClass = this.getAttribute('animation-class') || 'animate-pulse';
+  }
 
-    const heartButton = this.querySelector("button");
-    const countSpan = this.querySelector("span");
+  connectedCallback() {
+    this.button = this.querySelector("button");
+    this.countSpan = this.querySelector("span");
 
-    if (heartButton && countSpan)
-      heartButton.addEventListener("click", () => {
-        count++;
-        countSpan.textContent = count.toString();
+    if (this.button && this.countSpan) {
+      this.button.addEventListener("click", this.handleClick.bind(this));
+    }
+  }
 
-        // Add the pulse animation class
-        heartButton.classList.add('animate-pulseRed');
+  private handleClick() {
+    this.count++;
+    if (this.countSpan) {
+      this.countSpan.textContent = this.count.toString();
+    }
 
-        // Remove the pulse animation class after animation completes
-        heartButton.addEventListener('animationend', () => {
-          heartButton.classList.remove('animate-pulseRed');
-        }, { once: true });
-      });
+    if (this.button) {
+      // Add the pulse animation class
+      this.button.classList.add(this.animationClass);
+
+      // Remove the pulse animation class after animation completes
+      this.button.addEventListener('animationend', () => {
+        this.button?.classList.remove(this.animationClass);
+      }, { once: true });
+    }
   }
 }
 
-class LikeBtn extends HTMLElement {
-  constructor() {
-    super();
-    let count = 0;
-
-    const likeButton = this.querySelector("button");
-    const countSpan = this.querySelector("span");
-
-    if (likeButton && countSpan)
-      likeButton.addEventListener("click", () => {
-        count++;
-        countSpan.textContent = count.toString();
-
-        // Add the pulse animation class
-        likeButton.classList.add('animate-pulseGreen');
-
-        // Remove the pulse animation class after animation completes
-        likeButton.addEventListener('animationend', () => {
-          likeButton.classList.remove('animate-pulseGreen');
-        }, { once: true });
-      });
-  }
-}
-
-class HappyBtn extends HTMLElement {
-  constructor() {
-    super();
-    let count = 0;
-
-    const happyButton = this.querySelector("button");
-    const countSpan = this.querySelector("span");
-
-    if (happyButton && countSpan)
-      happyButton.addEventListener("click", () => {
-        count++;
-        countSpan.textContent = count.toString();
-
-        // Add the pulse animation class
-        happyButton.classList.add('animate-pulseYellow');
-
-        // Remove the pulse animation class after animation completes
-        happyButton.addEventListener('animationend', () => {
-          happyButton.classList.remove('animate-pulseYellow');
-        }, { once: true });
-      });
-  }
-}
-
-class SadBtn extends HTMLElement {
-  constructor() {
-    super();
-    let count = 0;
-
-    const sadButton = this.querySelector("button");
-    const countSpan = this.querySelector("span");
-
-    if (sadButton && countSpan)
-      sadButton.addEventListener("click", () => {
-        count++;
-        countSpan.textContent = count.toString();
-
-        // Add the pulse animation class
-        sadButton.classList.add('animate-pulseYellow');
-
-        // Remove the pulse animation class after animation completes
-        sadButton.addEventListener('animationend', () => {
-          sadButton.classList.remove('animate-pulseYellow');
-        }, { once: true });
-      });
-  }
-}
-
-customElements.define("happy-btn", HappyBtn);
-customElements.define("sad-btn", SadBtn);
-customElements.define("like-btn", LikeBtn);
-customElements.define("heart-btn", HeartBtn);
+// Define custom elements
+customElements.define("emoji-reaction-btn", EmojiReactionBtn);
