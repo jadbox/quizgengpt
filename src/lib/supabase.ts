@@ -14,9 +14,16 @@ export type Goal = Tables<"goals">;
 
 const serverkey = !globalThis.window && process.env.SUPABASE_SERVICE_KEY;
 
+export const supabaseServer = !serverkey
+  ? null
+  : createClient<Database>(
+      import.meta.env.PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY as string
+    );
+
 export const supabase = createClient<Database>(
   import.meta.env.PUBLIC_SUPABASE_URL,
-  serverkey || import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
   {
     auth: {
       flowType: "pkce",

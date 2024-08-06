@@ -12,10 +12,14 @@ class EmojiReactionBtn extends HTMLElement {
   private button: HTMLButtonElement | null = null;
   private countSpan: HTMLSpanElement | null = null;
   private animationClass: string;
+  private target: string;
 
   constructor() {
     super();
-    this.animationClass = this.getAttribute('animation-class') || 'animate-pulse';
+    this.animationClass =
+      this.getAttribute("animation-class") || "animate-pulse";
+
+    this.target = this.getAttribute("target") || "emoji-reaction-btn";
   }
 
   connectedCallback() {
@@ -38,9 +42,13 @@ class EmojiReactionBtn extends HTMLElement {
       this.button.classList.add(this.animationClass);
 
       // Remove the pulse animation class after animation completes
-      this.button.addEventListener('animationend', () => {
-        this.button?.classList.remove(this.animationClass);
-      }, { once: true });
+      this.button.addEventListener(
+        "animationend",
+        () => {
+          this.button?.classList.remove(this.animationClass);
+        },
+        { once: true }
+      );
     }
   }
 }

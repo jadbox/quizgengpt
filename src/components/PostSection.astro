@@ -1,12 +1,15 @@
 ---
-import { supabase } from "@/lib/supabase";
+import { setAstroSession } from "@/lib/supabase";
+import EmojiSection from "./EmojiSection.astro";
 // import { extract } from "oembed-parser";
 // populate comments from supabase message table with content field
+
+const { supabase } = await setAstroSession(Astro.cookies);
 
 // newer than 24hrs
 const { data, error } = await supabase
   .from("messages")
-  .select("content, profile_id, created_at")
+  .select("content, profile_id, created_at, id")
   .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
   .limit(20)
   .order("created_at", { ascending: false });
@@ -95,57 +98,7 @@ const _comments = comments.map((comment) => {
                     {formattedDate}
                   </span>
                 </>
-                <span class="flex-between space-x-3">
-                  <emoji-reaction-btn
-                    animation-class="animate-pulseGreen"
-                    class="flex items-center"
-                  >
-                    <button
-                      class="material-icons mr-1 text-lg"
-                      aria-label="Thumbs Up"
-                    >
-                      thumb_up
-                    </button>
-                    <span>0</span>
-                  </emoji-reaction-btn>
-                  <emoji-reaction-btn
-                    confetti-button
-                    animation-class="animate-pulseRed"
-                    class="flex items-center"
-                  >
-                    <button
-                      class="material-icons mr-1 text-lg"
-                      aria-label="Heart"
-                    >
-                      favorite
-                    </button>
-                    <span>0</span>
-                  </emoji-reaction-btn>
-                  <emoji-reaction-btn
-                    animation-class="animate-pulseYellow"
-                    class="flex items-center"
-                  >
-                    <button
-                      class="material-icons mr-1 text-lg"
-                      aria-label="Happy Face"
-                    >
-                      sentiment_very_satisfied
-                    </button>
-                    <span>0</span>
-                  </emoji-reaction-btn>
-                  <emoji-reaction-btn
-                    animation-class="animate-pulseYellow"
-                    class="flex items-center"
-                  >
-                    <button
-                      class="material-icons mr-1 text-lg"
-                      aria-label="Sad Face"
-                    >
-                      sentiment_dissatisfied
-                    </button>
-                    <span>0</span>
-                  </emoji-reaction-btn>
-                </span>
+                <EmojiSection id={comment.id} />
               </p>
             </div>
           );
@@ -189,7 +142,7 @@ const _comments = comments.map((comment) => {
 
       const handleSubmit = async () => {
         const input = document.getElementById(
-          "messageInput",
+          "messageInput"
         ) as HTMLInputElement;
 
         if (!input.value) return;
@@ -217,7 +170,7 @@ const _comments = comments.map((comment) => {
 
       // Handle Submit button click
       const submitButton = document.getElementById(
-        "handleSubmitBtn",
+        "handleSubmitBtn"
       ) as HTMLButtonElement;
 
       if (!submitButton) throw new Error("submitButton for comments not found");
@@ -230,7 +183,7 @@ const _comments = comments.map((comment) => {
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const input = document.getElementById(
-            "messageInput",
+            "messageInput"
           ) as HTMLInputElement;
           const message = input.value;
 
@@ -244,7 +197,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
-          handleInserts,
+          handleInserts
         )
         .subscribe();
 
@@ -253,7 +206,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "messages" },
-          handleInserts,
+          handleInserts
         )
         .subscribe();
       console.log("subscribed to messages channel");

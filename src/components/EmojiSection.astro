@@ -1,0 +1,130 @@
+---
+import { setAstroSession } from "@/lib/supabase";
+
+const { supabase } = await setAstroSession(Astro.cookies);
+
+const id = Astro.props.id;
+const uid = Astro.cookies.get("uid")?.value;
+// use supabase to get all reactions from reactions table that match reactions.message_id
+const { data: reactions, error } = await supabase
+  .from("reactions")
+  .select("uid, emoji")
+  .match({ message_id: id });
+
+// group by emoji with count
+const groupedReactions = reactions?.reduce(
+  (acc: any, reaction: any) => {
+    if (!acc[reaction.emoji]) acc[reaction.emoji] = 0;
+    acc[reaction.emoji]++;
+    return acc;
+  },
+  { "0": 0, "1": 0, "2": 0, "3": 0 }
+);
+---
+
+<RootElement data={{ id, uid }}>
+  <span class="flex-between space-x-3">
+    <emoji-reaction-btn
+      animation-class="animate-pulseGreen"
+      class="flex items-center"
+    >
+      <button
+        data-emotion="0"
+        data-target="emoji-reaction-btn"
+        class="material-icons mr-1 text-lg"
+        aria-label="Thumbs Up"
+      >
+        thumb_up
+      </button>
+      <span>{groupedReactions[0]}</span>
+    </emoji-reaction-btn>
+
+    <emoji-reaction-btn
+      data-target="emoji-reaction-btn"
+      confetti-button
+      animation-class="animate-pulseRed"
+      class="flex items-center"
+    >
+      <button
+        data-emotion="1"
+        data-target="emoji-reaction-btn"
+        class="material-icons mr-1 text-lg"
+        aria-label="Heart"
+      >
+        favorite
+      </button>
+      <span>{groupedReactions[1]}</span>
+    </emoji-reaction-btn>
+    <emoji-reaction-btn
+      animation-class="animate-pulseYellow"
+      class="flex items-center"
+    >
+      <button
+        data-emotion="2"
+        data-target="emoji-reaction-btn"
+        class="material-icons mr-1 text-lg"
+        aria-label="Happy Face"
+      >
+        sentiment_very_satisfied
+      </button>
+      <span>{groupedReactions[2]}</span>
+    </emoji-reaction-btn>
+    <emoji-reaction-btn
+      animation-class="animate-pulseYellow"
+      class="flex items-center"
+    >
+      <button
+        data-emotion="3"
+        data-target="emoji-reaction-btn"
+        class="material-icons mr-1 text-lg"
+        aria-label="Sad Face"
+      >
+        sentiment_dissatisfied
+      </button>
+      <span>{groupedReactions[3]}</span>
+    </emoji-reaction-btn>
+  </span>
+</RootElement>
+
+<script>
+  // import "@/scripts/emoji-reactions.js";
+  import { supabase } from "@/lib/supabase";
+  import { navigate } from "astro:transitions/client";
+
+  RootElement.ready(async ($, ctx) => {
+    const id = ctx.data.id as string;
+    const uid = ctx.data.uid as string;
+
+    const handleSubmit = async (emoji: number) => {
+      console.log("saving", emoji);
+
+      // toggle emoji reaction in supabase. do not use upsert
+      // if click on emoji that is already selected, remove it
+      await supabase
+        .from("reactions")
+        .delete()
+        .match({ message_id: id, uid })
+        .select("emoji");
+
+      await supabase.from("reactions").insert([
+        {
+          message_id: id,
+          uid,
+          emoji,
+        },
+      ]);
+    };
+
+    $.all("emoji-reaction-btn").forEach((btn: any) => {
+      // console.log("hookup", btn.getAttribute("data-emotion"));
+      btn.addEventListener("click", async () => {
+        const emoji = btn.getAttribute("data-emotion");
+        if (emoji) {
+          btn.disabled = true;
+          await handleSubmit(parseInt(emoji));
+          navigate(location.href);
+        }
+      });
+    });
+  });
+</script>
