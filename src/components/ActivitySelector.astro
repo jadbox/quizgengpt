@@ -9,55 +9,64 @@ const activities = await getActivities();
     --animate-duration: 0.2s;
   }
 </style>
-<div class="grid grid-cols-4 gap-4 mb-4 md:grid-cols-5 mt-4 aq">
-  {
-    activities.map((activity) => (
-      <div
-        class="flex rounded flex-col items-center text-center text-green-400 cursor-pointer activity-item"
-        data-activity={activity.val || activity.label}
-      >
-        <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-700 bg-gray-900 activity-icon">
-          <span class="material-icons text-3xl">{activity.icon}</span>
+<RootElement>
+  <div class="grid grid-cols-4 gap-4 mb-4 md:grid-cols-5 mt-4 aq">
+    {
+      activities.map((activity) => (
+        <div
+          class="flex rounded flex-col items-center text-center text-green-400 cursor-pointer activity-item"
+          data-activity={activity.val || activity.label}
+        >
+          <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-700 bg-gray-900 activity-icon">
+            <span class="material-icons text-3xl">{activity.icon}</span>
+          </div>
+          <p class="text-xs">{activity.label}</p>
         </div>
-        <p class="text-xs">{activity.label}</p>
-      </div>
-    ))
-  }
-</div>
-
+      ))
+    }
+  </div>
+</RootElement>
 <script>
   import { selectedActivities } from "@/scripts/store.js";
 
   // Activity Selector Logic
   var selected: string[] = [];
-  const activityItems =
-    document.querySelectorAll<HTMLElement>(".activity-item");
 
-  activityItems.forEach((activityItem) => {
-    activityItem.addEventListener("click", (event) => {
-      const activity = (event.currentTarget as HTMLElement).getAttribute(
-        "data-activity"
-      );
-      //console.log(activity);
+  RootElement.ready(($, ctx) => {
+    selected = [];
 
-      activityItem.classList.toggle("bg-blue-500");
-      activityItem.classList.toggle("rounded-xl");
-      activityItem.classList.toggle("text-white");
-      activityItem.classList.toggle("animate__animated");
-      activityItem.classList.toggle("animate__pulse");
+    const activityItems =
+      document.querySelectorAll<HTMLElement>(".activity-item");
 
-      // update selected activities for all animate__animated items
-      selected = Array.from(
-        document.querySelectorAll(".activity-item.animate__animated")
-      ).map(
-        (item) => (item as HTMLElement).getAttribute("data-activity") || ""
-      );
+    activityItems.forEach((activityItem) => {
+      activityItem.addEventListener("click", (event) => {
+        const activity = (event.currentTarget as HTMLElement).getAttribute(
+          "data-activity"
+        );
+        //console.log(activity);
 
-      // console.log("selected", selected);
+        activityItem.classList.toggle("bg-blue-500");
+        activityItem.classList.toggle("rounded-xl");
+        activityItem.classList.toggle("text-white");
+        activityItem.classList.toggle("animate__animated");
+        activityItem.classList.toggle("animate__pulse");
 
-      // Set activities to the store
-      selectedActivities.set(selected);
-      //console.log(selectedActivities.get());
+        // update selected activities for all animate__animated items
+        selected = Array.from(
+          document.querySelectorAll(".activity-item.animate__animated")
+        ).map(
+          (item) => (item as HTMLElement).getAttribute("data-activity") || ""
+        );
+
+        // console.log("selected", selected);
+
+        // Set activities to the store
+        selectedActivities.set(selected);
+        //console.log(selectedActivities.get());
+      });
     });
+
+    // Set activities to the store
+    selectedActivities.set(selected);
   });
 </script>
