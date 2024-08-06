@@ -1,13 +1,15 @@
 ---
-import { supabase } from "../lib/supabase";
-const uid = Astro.cookies.get("uid")?.value;
+import { setAstroSession } from "../lib/supabase";
 
+const { supabase, data } = await setAstroSession(Astro.cookies);
+
+let uid = data?.user?.id;
 async function fetchProfile() {
-  if (!uid) return [];
+  if (!data?.user?.id) return [];
   const { data: goals, error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", uid.toString());
+    .eq("id", data?.user?.id);
 
   if (error) {
     console.error("Error fetching goals:", error);

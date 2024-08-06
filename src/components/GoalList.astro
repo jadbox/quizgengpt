@@ -1,7 +1,9 @@
 ---
 import GoalItem from "./GoalItem.astro";
-import { supabase, Goal } from "../lib/supabase";
-const uid = Astro.cookies.get("uid")?.value;
+import { Goal, setAstroSession } from "../lib/supabase";
+
+const { supabase, data } = await setAstroSession(Astro.cookies);
+const uid = data?.user?.id;
 
 // get goals created on this day
 const { data: goals, error } = await supabase
@@ -47,18 +49,30 @@ if (error) {
       // are you sure?
       if (!confirm("Are you sure you want to reset today's goals?")) return;
 
-      const uid = ctx.data.uid;
+      const uid = ctx.data.uid as string;
 
       $<HTMLButtonElement>("returnico").disabled = true;
       $("returnico").classList.add("cursor-not-allowed"); // alpha
       $("returnico").classList.add("alpha-50"); // alpha
+
+      if (!uid) {
+        alert("User not found");
+        return;
+      }
 
       // delete uncompleted goals
       const { data, error } = await supabase
         .from("goals")
         .delete()
         .eq("uid", uid)
-        .is("completed", null);
+        .is("completed", null)
+        .select();
+
+      if (error) {
+        console.error("Error deleting goals", error);
+        alert("Error deleting goals");
+        return;
+      }
 
       // window.location.href = "/";
       navigate("/");

@@ -80,16 +80,20 @@ const name = Astro.cookies.get("name")?.value || "";
           origin: { y: 0.6 },
         });
 
-        // disable button
-        button.disabled = true;
-        button.classList.add("opacity-50");
-
         let message = `${ctx.data.name} started goals ${goals.join(", ")}`;
         if (postfield.value) message += ". " + postfield.value;
 
-        const uid = ctx.data.uid; // postfield.getAttribute("data-uid")?.toString();
+        const uid = ctx.data.uid as string; // postfield.getAttribute("data-uid")?.toString();
 
-        console.log("Message:", message, "UID:", uid);
+        if (!uid) {
+          alert("User not found");
+          console.log("Message:", message, "UID:", uid);
+          return;
+        }
+
+        // disable button
+        button.disabled = true;
+        button.classList.add("opacity-50");
 
         // if (message) {
         const c = await supabase
@@ -98,7 +102,11 @@ const name = Astro.cookies.get("name")?.value || "";
 
         // log any errors
         if (c.error) {
+          alert("Error inserting message: " + c.error.message);
           console.error("Error inserting message:", c.error);
+          button.disabled = false;
+          button.classList.remove("opacity-50");
+          return;
         } else {
           console.log("Message inserted successfully:", c.data);
           postfield.value = "";
@@ -120,20 +128,25 @@ const name = Astro.cookies.get("name")?.value || "";
             .is("completed", null);
 
           if (r.error) {
+            button.disabled = false;
+            button.classList.remove("opacity-50");
+
+            alert("Error deleting goals:" + r.error.message);
             console.error("Error deleting goals:", r.error);
             return;
           } else {
             console.log("Deleted goals:", r.data);
           }
           // Refactor the above loop to be a single query transactions
+          console.log("uid", uid);
           const re = await supabase
             .from("goals")
-            .insert(goals.map((goal) => ({ uid, goal })))
-            .select();
+            .insert(goals.map((goal) => ({ uid, goal })));
+          // .select();
 
           if (re.error) {
-            alert("Error inserting goals:" + re.error);
-            console.error("Error inserting goals:", re.error);
+            alert("Error inserting goals:" + re.error.message);
+            console.error("Error inserting goals:", re.error.message);
             return;
           }
           // console.log("Goals inserted:", goals, JSON.stringify(re.data));
