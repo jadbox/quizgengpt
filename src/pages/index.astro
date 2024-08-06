@@ -64,7 +64,7 @@ if (check) return check;
 <Layout title="Choose Your Goals" transition:animate="fade">
   {hasGoals ? (
     <GoalList />
-    <PostSection transition:persist client:idle />
+    <PostSection server:defer />
   ) : (
      <ActivitiesPage />
   )}

@@ -11,7 +11,7 @@ const { data, error } = await supabase
   .from("messages")
   .select("content, profile_id, created_at, id")
   .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-  .limit(20)
+  .limit(10)
   .order("created_at", { ascending: false });
 
 if (error) {
