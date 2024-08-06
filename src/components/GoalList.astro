@@ -65,8 +65,7 @@ if (error) {
         .from("goals")
         .delete()
         .eq("uid", uid)
-        .is("completed", null)
-        .select();
+        .is("completed", null);
 
       if (error) {
         console.error("Error deleting goals", error);
@@ -74,8 +73,7 @@ if (error) {
         return;
       }
 
-      // window.location.href = "/";
-      navigate("/");
+      window.location.href = "/"; // do a full refresh for reset
     });
   });
 </script>
