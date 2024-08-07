@@ -1,6 +1,8 @@
 ---
-import { getActivities } from "../scripts/globals";
-const activities = await getActivities();
+import { getActivities, getFeelings } from "../scripts/globals";
+const activities = Astro.props.feelings
+  ? await getFeelings()
+  : await getActivities();
 ---
 
 <style>

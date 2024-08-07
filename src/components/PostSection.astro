@@ -1,6 +1,7 @@
 ---
 import { setAstroSession } from "@/lib/supabase";
 import EmojiSection from "./EmojiSection.astro";
+import ActivitySelector from "./ActivitySelector.astro";
 // import { extract } from "oembed-parser";
 // populate comments from supabase message table with content field
 
@@ -54,6 +55,37 @@ const _comments = comments.map((comment) => {
 
 <RootElement data={{ name, uid }}>
   <div class="flex flex-col items-center justify-center max-h-screen pt-4">
+    <ActivitySelector feelings="true" />
+
+    <table
+      class="glassmorphism w-full md:w-2/3 bg-gray-900 p-4 rounded-xl mt-5 mb-2"
+    >
+      <thead>
+        <tr>
+          <th class="text-left text-green-400">Name</th>
+          <th class="text-left text-green-400">Status</th>
+          <th class="text-left text-green-400">Activity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-left text-gray-200">Alice</td>
+          <td class="text-left text-gray-200">Happy</td>
+          <td class="text-left text-gray-200">Reading</td>
+        </tr>
+        <tr>
+          <td class="text-left text-gray-200">Bob</td>
+          <td class="text-left text-gray-200">Sad</td>
+          <td class="text-left text-gray-200">Writing</td>
+        </tr>
+        <tr>
+          <td class="text-left text-gray-200">Charlie</td>
+          <td class="text-left text-gray-200">Excited</td>
+          <td class="text-left text-gray-200">Coding</td>
+        </tr>
+      </tbody>
+    </table>
+
     <h1 class="text-xl font-bold text-green-400">Shared goals chat</h1>
     <div
       class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
