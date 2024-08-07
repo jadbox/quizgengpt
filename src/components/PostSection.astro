@@ -65,6 +65,7 @@ const _comments = comments.map((comment) => {
           <th class="text-left text-green-400">Name</th>
           <th class="text-left text-green-400">Status</th>
           <th class="text-left text-green-400">Activity</th>
+          <th class="text-left text-green-400">Reactions</th>
         </tr>
       </thead>
       <tbody>
@@ -72,16 +73,32 @@ const _comments = comments.map((comment) => {
           <td class="text-left text-gray-200">Alice</td>
           <td class="text-left text-gray-200">Happy</td>
           <td class="text-left text-gray-200">Reading</td>
-        </tr>
-        <tr>
-          <td class="text-left text-gray-200">Bob</td>
-          <td class="text-left text-gray-200">Sad</td>
-          <td class="text-left text-gray-200">Writing</td>
-        </tr>
-        <tr>
-          <td class="text-left text-gray-200">Charlie</td>
-          <td class="text-left text-gray-200">Excited</td>
-          <td class="text-left text-gray-200">Coding</td>
+          <td class="text-left text-gray-200">
+            <emoji-reaction-btn
+              animation-class="animate-pulseGreen"
+              class="flex items-center"
+            >
+              <button
+                data-emotion="0"
+                data-target="emoji-reaction-btn"
+                class="material-icons mr-1 text-lg"
+                aria-label="Thumbs Up"
+              >
+                thumb_up
+              </button>
+              <span>1</span>
+            </emoji-reaction-btn>
+          </td>
+          <tr>
+            <td class="text-left text-gray-200">Bob</td>
+            <td class="text-left text-gray-200">Sad</td>
+            <td class="text-left text-gray-200">Writing</td>
+          </tr>
+          <tr>
+            <td class="text-left text-gray-200">Charlie</td>
+            <td class="text-left text-gray-200">Excited</td>
+            <td class="text-left text-gray-200">Coding</td>
+          </tr>
         </tr>
       </tbody>
     </table>
