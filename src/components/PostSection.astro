@@ -56,7 +56,6 @@ const _comments = comments.map((comment) => {
 <RootElement data={{ name, uid }}>
   <div class="flex flex-col items-center justify-center max-h-screen pt-4">
     <h1 class="text-xl font-bold text-green-400">Set current mood:</h1>
-    <ActivitySelector feelings="true" />
 
     <h1 class="text-xl font-bold text-green-400">People nearby:</h1>
     <table
@@ -169,6 +168,7 @@ const _comments = comments.map((comment) => {
     </table>
 
     <h1 class="text-xl font-bold text-green-400">Set your status:</h1>
+    <ActivitySelector feelings="true" />
     <div class="flex-center flex-col w-full">
       <input
         data-uid={uid}
