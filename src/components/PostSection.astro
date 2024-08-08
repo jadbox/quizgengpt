@@ -2,6 +2,7 @@
 import { setAstroSession } from "@/lib/supabase";
 import EmojiSection from "./EmojiSection.astro";
 import ActivitySelector from "./ActivitySelector.astro";
+import SocialStatus from "./social/SocialStatus.astro";
 // import { extract } from "oembed-parser";
 // populate comments from supabase message table with content field
 
@@ -14,12 +15,17 @@ const { data, error } = await supabase
   .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
   .limit(10)
   .order("created_at", { ascending: false });
+// .order("created_at", { ascending: false })
+// .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+// .order("messages(created_at)", { ascending: false });
 
 if (error) {
   console.error("Error fetching messages:", error);
 }
 
 var comments = data || [];
+
+console.log("comments", comments);
 
 const { cookies, redirect } = Astro;
 const uid = cookies.get("uid")?.value || "";
@@ -30,7 +36,7 @@ const name = cookies.get("name")?.value || "";
 const detectImageUrl = (text: string) => {
   const urlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp|webm))/i;
   const match = text.match(urlRegex);
-  return match ? match[0] : null;
+  return match ? (match[0] as string) : null;
 };
 
 // detect link url intest
@@ -49,126 +55,21 @@ const _comments = comments.map((comment) => {
       comment.content = comment.content.replace(link, "");
     }
   }
-  return { ...comment, imageUrl, link };
+  return { ...comment, imageUrl: imageUrl as string, link: link };
 });
 ---
 
 <RootElement data={{ name, uid }}>
   <div class="flex flex-col items-center justify-center max-h-screen pt-4">
-    <h1 class="text-xl font-bold text-green-400">Set current mood:</h1>
+    <!-- <h1 class="text-xl font-bold text-green-400">Set current mood:</h1> -->
 
     <h1 class="text-xl font-bold text-green-400">People nearby:</h1>
-    <table
-      class="glassmorphism w-full md:w-2/3 bg-gray-900 p-4 rounded-xl mt-5 mb-2"
-    >
-      <thead>
-        <tr>
-          <th class="text-left text-green-400">Name</th>
-          <th class="text-left text-green-400">Status</th>
-          <th class="text-left text-green-400">Activity</th>
-          <th class="text-left text-green-400">Reactions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-left text-gray-200">Alice</td>
-          <td class="text-left text-gray-200"
-            >😄 <small>[8/7/2024, 9:57 AM]</small></td
-          >
-          <td class="text-left text-gray-200">Reading</td>
-          <td class="text-left text-gray-200">
-            <emoji-reaction-btn
-              animation-class="animate-pulseGreen"
-              class="flex items-center"
-            >
-              <button
-                data-emotion="0"
-                data-target="emoji-reaction-btn"
-                class="material-icons mr-1 text-lg"
-                aria-label="Thumbs Up"
-              >
-                thumb_up
-              </button>
-              <span>1</span>
-            </emoji-reaction-btn>
-          </td>
-        </tr>
-        <tr>
-          <td class="text-left text-gray-200">Bob</td>
-          <td class="text-left text-gray-200"
-            >😢😫 <small>[8/7/2024, 9:57 AM]</small></td
-          >
-          <td class="text-left text-gray-200">Writing</td>
-          <td class="text-left text-gray-200">
-            <emoji-reaction-btn
-              animation-class="animate-pulseGreen"
-              class="flex items-center"
-            >
-              <button
-                data-emotion="0"
-                data-target="emoji-reaction-btn"
-                class="material-icons mr-1 text-lg"
-                aria-label="Thumbs Up"
-              >
-                thumb_up
-              </button>
-              <span>0</span>
-            </emoji-reaction-btn>
-          </td>
-        </tr>
-        <tr>
-          <td class="text-left text-gray-200">Charlie</td>
-          <td class="text-left text-gray-200"
-            >Looking forward to our project launch🤩 <small
-              >[8/7/2024, 9:57 AM]</small
-            ></td
-          >
-          <td class="text-left text-gray-200">Coding</td>
-          <td class="text-left text-gray-200">
-            <emoji-reaction-btn
-              animation-class="animate-pulseGreen"
-              class="flex items-center"
-            >
-              <button
-                data-emotion="0"
-                data-target="emoji-reaction-btn"
-                class="material-icons mr-1 text-lg"
-                aria-label="Thumbs Up"
-              >
-                thumb_up
-              </button>
-              <span>2</span>
-            </emoji-reaction-btn>
-          </td>
-        </tr>
-        <tr>
-          <td class="text-left text-gray-200">David</td>
-          <td class="text-left text-gray-200"
-            >Feeling adventurous today 😄 <small>[8/7/2024, 9:57 AM]</small></td
-          >
-          <td class="text-left text-gray-200">Hiking</td>
-          <td class="text-left text-gray-200">
-            <emoji-reaction-btn
-              animation-class="animate-pulseGreen"
-              class="flex items-center"
-            >
-              <button
-                data-emotion="0"
-                data-target="emoji-reaction-btn"
-                class="material-icons mr-1 text-lg"
-                aria-label="Thumbs Up"
-              >
-                thumb_up
-              </button>
-              <span>3</span>
-            </emoji-reaction-btn>
-          </td>
-        </tr>
-      </tbody>
-    </table>
 
-    <h1 class="text-xl font-bold text-green-400">Set your status:</h1>
-    <ActivitySelector feelings="true" />
+    <!--<h1 class="text-xl font-bold text-green-400">Set your status:</h1>
+     <ActivitySelector feelings="true" /> -->
+
+    <SocialStatus comments={comments} />
+
     <div class="flex-center flex-col w-full">
       <input
         data-uid={uid}
@@ -180,9 +81,9 @@ const _comments = comments.map((comment) => {
       <button class="black_btn w-1/3 md:h-full md:w-1/5" id="handleSubmitBtn">
         submit
       </button>
-    </div><br /><br />
+    </div><br />
 
-    <!-- <div
+    <div
       class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
       id="commentbox"
     >
@@ -231,7 +132,7 @@ const _comments = comments.map((comment) => {
           );
         })
       }
-    </div> -->
+    </div>
   </div>
 
   <script>
@@ -243,7 +144,7 @@ const _comments = comments.map((comment) => {
 
     RootElement.ready(($, ctx) => {
       function makeComment(comment: string) {
-        navigate("/");
+        // navigate("/");
       }
 
       const handleInserts = (payload: any) => {
@@ -256,7 +157,7 @@ const _comments = comments.map((comment) => {
 
       const handleSubmit = async () => {
         const input = document.getElementById(
-          "messageInput"
+          "messageInput",
         ) as HTMLInputElement;
 
         if (!input.value) return;
@@ -277,14 +178,14 @@ const _comments = comments.map((comment) => {
           } else {
             console.log("Message inserted successfully:", data);
             input.value = "";
-            makeComment(message);
+            // makeComment(message);
           }
         }
       };
 
       // Handle Submit button click
       const submitButton = document.getElementById(
-        "handleSubmitBtn"
+        "handleSubmitBtn",
       ) as HTMLButtonElement;
 
       if (!submitButton) throw new Error("submitButton for comments not found");
@@ -297,7 +198,7 @@ const _comments = comments.map((comment) => {
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const input = document.getElementById(
-            "messageInput"
+            "messageInput",
           ) as HTMLInputElement;
           const message = input.value;
 
@@ -311,7 +212,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
 
@@ -320,7 +221,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
       console.log("subscribed to messages channel");

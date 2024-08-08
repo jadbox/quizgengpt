@@ -11,6 +11,8 @@ import type { Tables } from "../../supabase/supabase";
 
 export let messages: Tables<"messages">;
 export type Goal = Tables<"goals">;
+export type Comment = Tables<"messages">;
+export type Reaction = Tables<"reactions">;
 
 const serverkey = !globalThis.window && process.env.SUPABASE_SERVICE_KEY;
 
