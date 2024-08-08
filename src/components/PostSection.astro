@@ -1,12 +1,12 @@
 ---
-import { setAstroSession } from "@/lib/supabase";
+import { setAstroSession, Profile } from "@/lib/supabase";
 import EmojiSection from "./EmojiSection.astro";
 import ActivitySelector from "./ActivitySelector.astro";
 import SocialStatus from "./social/SocialStatus.astro";
 // import { extract } from "oembed-parser";
 // populate comments from supabase message table with content field
 
-const { supabase } = await setAstroSession(Astro.cookies);
+const { supabase, user } = await setAstroSession(Astro.cookies);
 
 // newer than 24hrs
 const { data, error } = await supabase
@@ -25,15 +25,15 @@ if (error) {
 
 var comments = data || [];
 
-console.log("comments", comments);
+// console.log("comments", comments);
 
 const { cookies, redirect } = Astro;
-const uid = cookies.get("uid")?.value || "";
+const uid = user?.user?.id as string; //cookies.get("uid")?.value || "";
 
 const name = cookies.get("name")?.value || "";
 
 // Function to detect image URL in the post body
-const detectImageUrl = (text: string) => {
+const detectImageUrl = (text: string): string | null => {
   const urlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp|webm))/i;
   const match = text.match(urlRegex);
   return match ? (match[0] as string) : null;
@@ -47,16 +47,43 @@ const detectLinkUrl = (text: string) => {
 };
 
 const _comments = comments.map((comment) => {
-  const imageUrl = detectImageUrl(comment.content);
-  const link = !imageUrl && detectLinkUrl(comment.content);
-  if (imageUrl) comment.content = comment.content.replace(imageUrl, "");
-  else {
-    if (link) {
-      comment.content = comment.content.replace(link, "");
-    }
-  }
-  return { ...comment, imageUrl: imageUrl as string, link: link };
+  // const imageUrl = detectImageUrl(comment.content);
+  // const link = !imageUrl && detectLinkUrl(comment.content);
+  // if (imageUrl) comment.content = comment.content.replace(imageUrl, "");
+  // else {
+  //   if (link) {
+  //     comment.content = comment.content.replace(link, "");
+  //   }
+  // }
+  return comment;
 });
+
+// get all user infos
+// const uniqueCommentUids = new Set<string>();
+// comments.forEach((comment) => {
+//   uniqueCommentUids.add(comment.profile_id);
+// });
+
+// const {data: locationData} = await supabase
+//   .from("profiles")
+//   .select("location")
+//   .eq("uid", uid).single();
+// const location = locationData?.location;
+
+// // use supabase to get location of each user by uid and get the instance from this user's uid
+// const { data: profiles, error: profilesError } = await supabase
+//   .from("profiles")
+//   .select("*")
+//   .in("uid", Array.from(uniqueCommentUids));
+
+// if (profilesError) {
+//   console.error("Error fetching profiles:", profilesError);
+// }
+
+// const profileMap = new Map<string, Profile>();
+// profiles?.forEach((profile) => {
+//   profileMap.set(profile.id, profile);
+// });
 ---
 
 <RootElement data={{ name, uid }}>
@@ -68,13 +95,13 @@ const _comments = comments.map((comment) => {
     <!--<h1 class="text-xl font-bold text-green-400">Set your status:</h1>
      <ActivitySelector feelings="true" /> -->
 
-    <SocialStatus comments={comments} />
+    <!-- <SocialStatus comments={comments} /> -->
 
     <div class="flex-center flex-col w-full">
       <input
         data-uid={uid}
         type="text"
-        placeholder="Type to inspire others..."
+        placeholder="Offer inspiration, request help, or offer support..."
         class="w-full md:w-2/3 p-2 mt-2 mb-4 border border-green-400 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-500"
         id="messageInput"
       />
@@ -141,10 +168,11 @@ const _comments = comments.map((comment) => {
   <script>
     import { supabase } from "@/lib/supabase";
     import { navigate } from "astro:transitions/client";
+    import { getAndSaveLocation } from "@/scripts/getAndSaveLocation";
 
     RootElement.ready(($, ctx) => {
       function makeComment(comment: string) {
-        // navigate("/");
+        navigate("/");
       }
 
       const handleInserts = (payload: any) => {
@@ -157,7 +185,7 @@ const _comments = comments.map((comment) => {
 
       const handleSubmit = async () => {
         const input = document.getElementById(
-          "messageInput",
+          "messageInput"
         ) as HTMLInputElement;
 
         if (!input.value) return;
@@ -173,6 +201,13 @@ const _comments = comments.map((comment) => {
           const { data, error } = await supabase
             .from("messages")
             .insert([{ content: message, profile_id: uid }]);
+
+          // update last_post in profiles table
+          await supabase
+            .from("profiles")
+            .update({ last_post: new Date().toISOString() })
+            .match({ id: uid });
+
           if (error) {
             console.error("Error inserting message:", error);
           } else {
@@ -185,7 +220,7 @@ const _comments = comments.map((comment) => {
 
       // Handle Submit button click
       const submitButton = document.getElementById(
-        "handleSubmitBtn",
+        "handleSubmitBtn"
       ) as HTMLButtonElement;
 
       if (!submitButton) throw new Error("submitButton for comments not found");
@@ -198,7 +233,7 @@ const _comments = comments.map((comment) => {
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const input = document.getElementById(
-            "messageInput",
+            "messageInput"
           ) as HTMLInputElement;
           const message = input.value;
 
@@ -212,7 +247,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
-          handleInserts,
+          handleInserts
         )
         .subscribe();
 
@@ -221,10 +256,13 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "messages" },
-          handleInserts,
+          handleInserts
         )
         .subscribe();
       console.log("subscribed to messages channel");
+
+      // Get and save location when the page loads
+      getAndSaveLocation(ctx.data.uid, document);
     });
   </script>
 </RootElement>
