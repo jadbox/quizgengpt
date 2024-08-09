@@ -1,37 +1,74 @@
 ---
-import { Comment, supabase } from "../../lib/supabase";
-console.log("SocialStatus", Astro.props.comments);
-const comments = Astro.props.comments || [
-  {
-    id: "123",
-    username: "joe",
-    last_post: "2024-02-14 12:00:00",
-    status: "Reading, Gym",
-    distance: 3.414,
-    reactions: 1,
-    goals: "goal1, goal2, goal3",
-  },
-];
+import { listenKeys } from "nanostores";
+import { Comment, supabase, supabaseServer } from "../../lib/supabase";
+// console.log("SocialStatus", Astro.props.comments);
 
-// last 24hrs goals
+const { data: nearBy, error } = await supabase.rpc("get_nearest_profiles", {
+  // user_location: userLocation,
+  user_id: Astro.props.uid,
+  limit_count: 10,
+});
 
-const goalsMatchingEachCommentProfileQ = await supabase
-  .from("profiles")
-  .select("id, goals(goal, id)")
-  .eq("profiles.id", "goals.id")
-  .in(
-    "profiles.id",
-    comments.map((comment) => comment.id),
+if (error) {
+  console.error("Error fetching messages:", error);
+}
+
+let people = nearBy || []; //  || [
+//   {
+//     id: "123",
+//     username: "joe",
+//     last_post: "2024-02-14 12:00:00",
+//     status: "Reading, Gym",
+//     distance: 3.414,
+//     reactions: 1,
+//     goals: "goal1, goal2, goal3",
+//   },
+// ];
+
+// populate goals from each profile in comments list
+const ids = people.map((p: any) => p.id);
+
+if (!supabaseServer) throw new Error("supabaseServer not found");
+const goalsMatchingEachCommentProfileQ = await supabaseServer
+  .from("goals")
+  .select("goal, id, uid, completed, started")
+  //.eq("profiles.id", "goals.id")
+  .in("uid", ids);
+// .not("started", "is", null)
+// .is("completed", null);
+
+console.log(
+  ids,
+  "goalsMatchingEachCommentProfileQ",
+  goalsMatchingEachCommentProfileQ
+);
+
+people.forEach((p: any) => {
+  const m = goalsMatchingEachCommentProfileQ.data?.filter(
+    (profilegoal: any) => profilegoal.uid === p.id
   );
 
-// comments.forEach((comment) => {
-//   const goalsMatchingEachCommentProfile =
-//     goalsMatchingEachCommentProfileQ.filter((goal) => goal.id === comment.id);
+  // add completed checkmark emoji if goal is completed
+  const goalsDone =
+    m
+      ?.filter((x) => x.completed === null)
+      .map((goal: any) => "✔️ " + goal.goal) || [];
 
-//   comment.goals = goalsMatchingEachCommentProfile.join(", ");
-// });
+  const goalsStarted =
+    m
+      ?.filter((x) => x.started !== null && x.completed === null)
+      .map((goal: any) => "⏰ " + goal.goal) || [];
 
-const commentsFormatted = comments;
+  // use emooji empty check box if goal is not started
+  const goalsNotStarted =
+    m
+      ?.filter((x) => x.started === null)
+      .map((goal: any) => "⭕ " + goal.goal) || [];
+
+  p.goals = goalsDone.concat(goalsStarted).concat(goalsNotStarted).join(", ");
+});
+
+const commentsFormatted = people;
 // .map((comment) => ({
 //   name: comment.content.split(" ")[0],
 //   status: comment.profiles.username,
@@ -53,14 +90,14 @@ const commentsFormatted = comments;
   </thead>
   <tbody>
     {
-      commentsFormatted.map((comment) => (
+      commentsFormatted.map((comment: any) => (
         <tr>
           <td class="text-left text-gray-200">{comment.username}</td>
           <td class="text-left text-gray-200">{comment.status}</td>
           <td class="text-left text-gray-200">
             {Number(comment.distance.toFixed(1))}
           </td>
-          <td class="text-left text-gray-200">{comment.reactions}</td>
+          <td class="text-left text-gray-200">{comment.goals}</td>
         </tr>
       ))
     }

@@ -15,12 +15,11 @@ export async function getAndSaveLocation(uid: string, document:Document) {
       const location = `POINT(${longitude} ${latitude})`;
 
       console.log('location', location);
-      // return;
 
       // Save to Supabase profile
       const { error } = await supabase
         .from('profiles')
-        .update({ location })
+        .update({ location: location })
         .eq('id', uid);
 
       if (error) {
