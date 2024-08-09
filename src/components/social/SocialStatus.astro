@@ -30,7 +30,7 @@ const ids = people.map((p: any) => p.id);
 
 // ids [ "3bf547ef-150c-4195-8818-4fc1c1b25667", "0bbf6034-091b-4370-829d-31c67a8754aa" ]
 
-// console.log("ids", ids);
+console.log("ids", ids);
 
 if (!supabaseServer) throw new Error("supabaseServer not found");
 const goalsMatchingEachCommentProfileQ = await supabaseServer
@@ -56,12 +56,12 @@ people.forEach((p: any) => {
     (profilegoal: any) => profilegoal.uid === p.id
   );
 
-  console.log(goalsMatchingEachCommentProfileQ, "m", m);
+  // console.log(goalsMatchingEachCommentProfileQ, "m", m);
 
   // add completed checkmark emoji if goal is completed
   const goalsDone =
     m
-      ?.filter((x) => x.completed === null)
+      ?.filter((x) => x.completed !== null)
       .map((goal: any) => "✔️ " + goal.goal) || [];
 
   const goalsStarted =
@@ -78,15 +78,9 @@ people.forEach((p: any) => {
   p.goals = goalsDone.concat(goalsStarted).concat(goalsNotStarted).join(", ");
 });
 
-console.log("people", people);
+// console.log("people", people);
 
 const commentsFormatted = people;
-// .map((comment) => ({
-//   name: comment.content.split(" ")[0],
-//   status: comment.profiles.username,
-//   activity: comment.activity,
-//   reactions: 0,
-// }));
 ---
 
 <div

@@ -12,7 +12,12 @@ const { data: goals, error } = await supabase
   .select("*")
   .match({ uid })
   // .is("completed", null) // TODO: remove
-  .gte("created_at", new Date().toISOString().split("T")[0])
+  // .gte("created_at", new Date().toISOString().split("T")[0])
+  // older than 24 hours
+  .gt(
+    "created_at",
+    new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+  )
   .order("id", { ascending: true });
 
 if (error) {
