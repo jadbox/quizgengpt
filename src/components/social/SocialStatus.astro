@@ -1,0 +1,68 @@
+---
+import { Comment, supabase } from "../../lib/supabase";
+console.log("SocialStatus", Astro.props.comments);
+const comments = Astro.props.comments || [
+  {
+    id: "123",
+    username: "joe",
+    last_post: "2024-02-14 12:00:00",
+    status: "Reading, Gym",
+    distance: 3.414,
+    reactions: 1,
+    goals: "goal1, goal2, goal3",
+  },
+];
+
+// last 24hrs goals
+
+const goalsMatchingEachCommentProfileQ = await supabase
+  .from("profiles")
+  .select("id, goals(goal, id)")
+  .eq("profiles.id", "goals.id")
+  .in(
+    "profiles.id",
+    comments.map((comment) => comment.id),
+  );
+
+// comments.forEach((comment) => {
+//   const goalsMatchingEachCommentProfile =
+//     goalsMatchingEachCommentProfileQ.filter((goal) => goal.id === comment.id);
+
+//   comment.goals = goalsMatchingEachCommentProfile.join(", ");
+// });
+
+const commentsFormatted = comments;
+// .map((comment) => ({
+//   name: comment.content.split(" ")[0],
+//   status: comment.profiles.username,
+//   activity: comment.activity,
+//   reactions: 0,
+// }));
+---
+
+<table
+  class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
+>
+  <thead>
+    <tr>
+      <th class="text-left text-green-400">Name</th>
+      <th class="text-left text-green-400">Status</th>
+      <th class="text-left text-green-400">Distance</th>
+      <th class="text-left text-green-400">Goals</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      commentsFormatted.map((comment) => (
+        <tr>
+          <td class="text-left text-gray-200">{comment.username}</td>
+          <td class="text-left text-gray-200">{comment.status}</td>
+          <td class="text-left text-gray-200">
+            {Number(comment.distance.toFixed(1))}
+          </td>
+          <td class="text-left text-gray-200">{comment.reactions}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

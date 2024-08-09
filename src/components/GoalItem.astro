@@ -1,6 +1,7 @@
 ---
 import { Goal } from "../lib/supabase";
 import GoalSocialIndicator from "./GoalSocialIndicator.astro";
+import SocialStatus from "./social/SocialStatus.astro";
 
 const goal = Astro.props.goal as Goal;
 const name = Astro.cookies.get("name")?.value;
@@ -57,6 +58,18 @@ if (completedTime) {
       }
     </div>
   </div>
+
+  <!-- <div class="w-full center">
+    <div class="flex flex-col space-y-2">
+      <div
+        class="flex items-center space-x-2 bg-gray-700 p-2 rounded-lg max-w-md"
+      >
+        <span class="text-green-400">Let's GO👍</span>
+        <span class="text-gray-500">John Doe</span>
+        <span class="text-gray-500">2 days ago</span>
+      </div>
+    </div>
+  </div> -->
 
   <script>
     import { navigate } from "astro:transitions/client";

@@ -132,6 +132,9 @@ export type Database = {
           avatar_url: string | null
           email: string | null
           id: string
+          last_post: string | null
+          location: unknown | null
+          status: string | null
           updated_at: string | null
           username: string | null
         }
@@ -139,6 +142,9 @@ export type Database = {
           avatar_url?: string | null
           email?: string | null
           id: string
+          last_post?: string | null
+          location?: unknown | null
+          status?: string | null
           updated_at?: string | null
           username?: string | null
         }
@@ -146,6 +152,9 @@ export type Database = {
           avatar_url?: string | null
           email?: string | null
           id?: string
+          last_post?: string | null
+          location?: unknown | null
+          status?: string | null
           updated_at?: string | null
           username?: string | null
         }
@@ -210,6 +219,19 @@ export type Database = {
             }
             Returns: unknown
           }
+      get_nearest_profiles: {
+        Args: {
+          user_id: string
+          limit_count: number
+        }
+        Returns: {
+          id: string
+          username: string
+          last_post: string
+          status: string
+          distance: number
+        }[]
+      }
       halfvec_avg: {
         Args: {
           "": number[]

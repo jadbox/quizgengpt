@@ -11,6 +11,9 @@ import type { Tables } from "../../supabase/supabase";
 
 export let messages: Tables<"messages">;
 export type Goal = Tables<"goals">;
+export type Comment = Tables<"messages">;
+export type Reaction = Tables<"reactions">;
+export type Profile = Tables<"profiles">;
 
 const serverkey = !globalThis.window && process.env.SUPABASE_SERVICE_KEY;
 
@@ -60,5 +63,5 @@ export const setAstroSession = async (cookies: any) => {
     return { supabase, data: null };
   }
 
-  return { supabase, data };
+  return { supabase, data, user: data };
 };
