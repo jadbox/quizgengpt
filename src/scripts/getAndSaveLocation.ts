@@ -4,14 +4,18 @@ export async function getAndSaveLocation(uid: string, document:Document) {
   if ('geolocation' in navigator) {
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        });
       });
 
       const { latitude, longitude } = position.coords;
-      const location = `POINT(${42.3212} ${85.1797})`;
+      const location = `POINT(${longitude} ${latitude})`;
 
-      console.log(location);
-      return;
+      console.log('location', location);
+      // return;
 
       // Save to Supabase profile
       const { error } = await supabase

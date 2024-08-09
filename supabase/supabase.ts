@@ -219,6 +219,19 @@ export type Database = {
             }
             Returns: unknown
           }
+      get_nearest_profiles: {
+        Args: {
+          user_id: string
+          limit_count: number
+        }
+        Returns: {
+          id: string
+          username: string
+          last_post: string
+          status: string
+          distance: number
+        }[]
+      }
       halfvec_avg: {
         Args: {
           "": number[]

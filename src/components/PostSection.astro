@@ -9,26 +9,62 @@ import SocialStatus from "./social/SocialStatus.astro";
 const { supabase, user } = await setAstroSession(Astro.cookies);
 
 // newer than 24hrs
-const { data, error } = await supabase
+const { data } = await supabase
   .from("messages")
   .select("content, profile_id, created_at, id")
   .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
   .limit(10)
   .order("created_at", { ascending: false });
+
 // .order("created_at", { ascending: false })
 // .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
 // .order("messages(created_at)", { ascending: false });
 
+const uid = user?.user?.id as string;
+// get closest 10 users to uid profiles.last_post and using distance from location that's a postgis field
+const { data: userRow } = await supabase
+  .from("profiles")
+  .select(`id, username, last_post, location, status`)
+  .eq("id", uid)
+  .single();
+
+const userLocation = userRow?.location;
+
+console.log(userRow?.id.slice(0, 5), "userLocation", "__", userLocation); // 0101000020E6100000C444B9FAA02145401369490F4AEF54C0
+
+const { data: nearBy, error } = await supabase.rpc("get_nearest_profiles", {
+  // user_location: userLocation,
+  user_id: uid,
+  limit_count: 10,
+});
+
+//SRID=26918;POINT(583571.9 4506714.3)
+// const { data, error } = await supabase
+//   .from("profiles")
+//   .select(
+//     `
+//     id,
+//     username,
+//     last_post,
+//     status,
+//     ST_Distance(profiles.location, '${userLocation}'::geometry) AS distance
+//   `,
+//   )
+//   .order("distance", { ascending: false }) // get the closest users to userLocations
+//   .order("last_post", { ascending: false })
+//   .limit(10);
+
+//  .order("location", { ascending: true })
+
 if (error) {
   console.error("Error fetching messages:", error);
 }
-
+console.log("data", data);
 var comments = data || [];
 
 // console.log("comments", comments);
 
 const { cookies, redirect } = Astro;
-const uid = user?.user?.id as string; //cookies.get("uid")?.value || "";
 
 const name = cookies.get("name")?.value || "";
 
@@ -47,15 +83,15 @@ const detectLinkUrl = (text: string) => {
 };
 
 const _comments = comments.map((comment) => {
-  // const imageUrl = detectImageUrl(comment.content);
-  // const link = !imageUrl && detectLinkUrl(comment.content);
-  // if (imageUrl) comment.content = comment.content.replace(imageUrl, "");
-  // else {
-  //   if (link) {
-  //     comment.content = comment.content.replace(link, "");
-  //   }
-  // }
-  return comment;
+  const imageUrl = detectImageUrl(comment.content);
+  const link = !imageUrl && detectLinkUrl(comment.content);
+  if (imageUrl) comment.content = comment.content.replace(imageUrl, "");
+  else {
+    if (link) {
+      comment.content = comment.content.replace(link, "");
+    }
+  }
+  return { imageUrl: imageUrl, link: link, ...comment };
 });
 
 // get all user infos
@@ -90,12 +126,12 @@ const _comments = comments.map((comment) => {
   <div class="flex flex-col items-center justify-center max-h-screen pt-4">
     <!-- <h1 class="text-xl font-bold text-green-400">Set current mood:</h1> -->
 
-    <h1 class="text-xl font-bold text-green-400">People nearby:</h1>
+    <h1 class="text-xl font-bold text-green-400">Local Bulletin Board</h1>
 
     <!--<h1 class="text-xl font-bold text-green-400">Set your status:</h1>
      <ActivitySelector feelings="true" /> -->
 
-    <!-- <SocialStatus comments={comments} /> -->
+    <SocialStatus comments={nearBy} />
 
     <div class="flex-center flex-col w-full">
       <input
@@ -109,6 +145,8 @@ const _comments = comments.map((comment) => {
         submit
       </button>
     </div><br />
+
+    <h1 class="text-xl font-bold text-green-400">Global Feed</h1>
 
     <div
       class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
@@ -169,6 +207,7 @@ const _comments = comments.map((comment) => {
     import { supabase } from "@/lib/supabase";
     import { navigate } from "astro:transitions/client";
     import { getAndSaveLocation } from "@/scripts/getAndSaveLocation";
+    import { throttle } from "throttle-debounce";
 
     RootElement.ready(($, ctx) => {
       function makeComment(comment: string) {
@@ -185,11 +224,11 @@ const _comments = comments.map((comment) => {
 
       const handleSubmit = async () => {
         const input = document.getElementById(
-          "messageInput"
+          "messageInput",
         ) as HTMLInputElement;
 
         if (!input.value) return;
-        const message = `${ctx.data.name}: ${input.value}`;
+        const message = `${input.value}`;
 
         const uid = input.getAttribute("data-uid")?.toString();
         // console.log("{ content: message, profile_id: uid }", {
@@ -200,12 +239,14 @@ const _comments = comments.map((comment) => {
         if (message) {
           const { data, error } = await supabase
             .from("messages")
-            .insert([{ content: message, profile_id: uid }]);
+            .insert([
+              { content: `${ctx.data.name}: ${message}`, profile_id: uid },
+            ]);
 
           // update last_post in profiles table
           await supabase
             .from("profiles")
-            .update({ last_post: new Date().toISOString() })
+            .update({ last_post: new Date().toISOString(), status: message })
             .match({ id: uid });
 
           if (error) {
@@ -220,7 +261,7 @@ const _comments = comments.map((comment) => {
 
       // Handle Submit button click
       const submitButton = document.getElementById(
-        "handleSubmitBtn"
+        "handleSubmitBtn",
       ) as HTMLButtonElement;
 
       if (!submitButton) throw new Error("submitButton for comments not found");
@@ -233,7 +274,7 @@ const _comments = comments.map((comment) => {
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const input = document.getElementById(
-            "messageInput"
+            "messageInput",
           ) as HTMLInputElement;
           const message = input.value;
 
@@ -247,7 +288,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
 
@@ -256,10 +297,10 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
-      console.log("subscribed to messages channel");
+      // console.log("subscribed to messages channel");
 
       // Get and save location when the page loads
       getAndSaveLocation(ctx.data.uid, document);
