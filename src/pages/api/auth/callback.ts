@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { supabase } from "../../../lib/supabase";
+import { supabase, supabaseServer } from "../../../lib/supabase";
 
 export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
   const authCode = url.searchParams.get("code") || "";
@@ -25,13 +25,28 @@ export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
     throw new Error("User not found");
   }
 
-  let name = data.user?.user_metadata?.name;
-  if (!name) throw new Error("Name not found");
+  if (!supabaseServer) throw new Error("supabaseServer not found");
+  const { data: profile } = await supabaseServer
+    .from("profiles")
+    .select("username")
+    .eq("id", data.user.id)
+    .single();
 
-  if (name) {
-    const names = name.split(" ");
-    name = names[0] + " " + names[names.length - 1].charAt(0) + "";
+  let name = data.user?.user_metadata?.name;
+  // if (name) {
+  //   const names = name.split(" ");
+  //   name = names[0] + " " + names[names.length - 1].charAt(0) + "";
+  // }
+
+  if (profile?.username) name = profile.username;
+  else if (name) {
+    // update supabase
+    await supabaseServer
+      .from("profiles")
+      .update({ username: name })
+      .eq("id", data.user.id);
   }
+
   cookies.set("name", name, {
     path: "/",
   });
