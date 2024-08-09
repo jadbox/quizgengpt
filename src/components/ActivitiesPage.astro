@@ -10,14 +10,14 @@ const name = Astro.cookies.get("name")?.value || "";
 
 <RootElement data={{ name, uid }}>
   <div
-    class="max-h-screen flex flex-col items-center py-8 space-y-12 text-slate-200"
+    class="max-h-screen flex flex-col items-center py-8 space-y-10"
   >
-    <h1 class="text-2xl uppercase mb-4 text-green-400 mt-4">
+    <h1 class="text-2xl uppercase mb-4 text-black font-semibold mt-4">
       What's your plan for today?
     </h1>
     <ActivitySelector />
 
-    <div class="comment">
+    <div class="comment w-[300px] h-[70px]">
       <textarea
         data-uid={uid}
         id="postfield"
@@ -25,7 +25,7 @@ const name = Astro.cookies.get("name")?.value || "";
         placeholder="Post what inspires you today..."></textarea>
     </div>
 
-    <div class="flex-between w-11/12 mt-4 md:w-3/4">
+    <div class="flex-between w-11/12 mt-2 md:w-3/4">
       <div
         class="fixed bottom-8 inset-x-0 flex flex-col items-center md:relative md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
       >
@@ -35,17 +35,9 @@ const name = Astro.cookies.get("name")?.value || "";
         >
           check
         </button>
-        <p class="mt-2 text-green-400">Crush Goals!</p>
+        <p class="mt-2 text-black text-lg font-bold">Crush Goals!</p>
       </div>
     </div>
-    <!-- <div class="fixed bottom-8 right-8 flex flex-col items-center">
-      <button
-        class="material-icons bg-gray-900 text-green-400 p-3 rounded-full shadow-lg border-2 border-gray-700"
-      >
-        edit
-      </button>
-      <p class="mt-2 text-green-400">Edit Activities</p>
-    </div> -->
   </div>
 
   <script>
@@ -78,6 +70,7 @@ const name = Astro.cookies.get("name")?.value || "";
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
+          colors: ["#ff0000", "#00ff00", "#0000ff"],
         });
 
         let message = `${ctx.data.name} started goals ${goals.join(", ")}`;

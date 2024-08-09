@@ -28,15 +28,23 @@ let people = nearBy || []; //  || [
 // populate goals from each profile in comments list
 const ids = people.map((p: any) => p.id);
 
+// ids [ "3bf547ef-150c-4195-8818-4fc1c1b25667", "0bbf6034-091b-4370-829d-31c67a8754aa" ]
+
+// console.log("ids", ids);
+
 if (!supabaseServer) throw new Error("supabaseServer not found");
 const goalsMatchingEachCommentProfileQ = await supabaseServer
   .from("goals")
   .select("goal, id, uid, completed, started")
   //.eq("profiles.id", "goals.id")
   .in("uid", ids)
-  // not older than 1 week
-  .gt("created_At", new Date(Date.now() - 1000 * 60 * 60 * 24 * 1));
+  // not older than 24 hours
+  .gt(
+    "created_at",
+    new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+  );
 
+// console.log("--", goalsMatchingEachCommentProfileQ);
 // console.log(
 //   ids,
 //   "goalsMatchingEachCommentProfileQ",
@@ -47,6 +55,8 @@ people.forEach((p: any) => {
   const m = goalsMatchingEachCommentProfileQ.data?.filter(
     (profilegoal: any) => profilegoal.uid === p.id
   );
+
+  console.log(goalsMatchingEachCommentProfileQ, "m", m);
 
   // add completed checkmark emoji if goal is completed
   const goalsDone =
@@ -68,6 +78,8 @@ people.forEach((p: any) => {
   p.goals = goalsDone.concat(goalsStarted).concat(goalsNotStarted).join(", ");
 });
 
+console.log("people", people);
+
 const commentsFormatted = people;
 // .map((comment) => ({
 //   name: comment.content.split(" ")[0],
@@ -77,29 +89,33 @@ const commentsFormatted = people;
 // }));
 ---
 
-<table
-  class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
+<div
+  class="glassmorphism w-full md:w-2/3 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
 >
-  <thead>
-    <tr>
-      <th class="text-left text-green-400">Name</th>
-      <th class="text-left text-green-400">Status</th>
-      <th class="text-left text-green-400">Distance</th>
-      <th class="text-left text-green-400">Goals</th>
-    </tr>
-  </thead>
-  <tbody>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {
       commentsFormatted.map((comment: any) => (
-        <tr>
-          <td class="text-left text-gray-200">{comment.username}</td>
-          <td class="text-left text-gray-200">{comment.status}</td>
-          <td class="text-left text-gray-200">
-            {Number(comment.distance.toFixed(1))}
-          </td>
-          <td class="text-left text-gray-200">{comment.goals}</td>
-        </tr>
+        <div class="bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+          <div class="flex items-center mb-2">
+            <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center mr-3">
+              <span class="text-xl text-white">
+                {comment.username.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <h3 class="text-lg font-semibold text-white">{comment.username}</h3>
+          </div>
+          <div class="space-y-2">
+            <p class="text-sm font-medium text-green-400">{comment.status}</p>
+            <p class="text-sm text-gray-300">
+              <span class="font-semibold">Distance:</span>{" "}
+              {Number(comment.distance.toFixed(1))}mi
+            </p>
+            <p class="text-sm text-gray-300">
+              <span class="font-semibold">Goals:</span> {comment.goals}
+            </p>
+          </div>
+        </div>
       ))
     }
-  </tbody>
-</table>
+  </div>
+</div>

@@ -65,9 +65,9 @@ const _comments = comments.map((comment) => {
 
 <RootElement data={{ name, uid }}>
   <div class="flex flex-col items-center justify-center max-h-screen pt-4">
-    <h1 class="text-xl font-bold text-green-400">Bulletin Board</h1>
+    <h1 class="text-xl font-bold text-black">Bulletin Board</h1>
 
-    <!-- <h1 class="text-xl font-bold text-green-400">Set your status:</h1>
+    <!-- <h1 class="text-xl font-bold text-slate-600">Set your status:</h1>
      <ActivitySelector feelings="true" /> -->
 
     <SocialStatus uid={uid} } />
@@ -85,7 +85,7 @@ const _comments = comments.map((comment) => {
       </button>
     </div><br />
 
-    <h1 class="text-xl font-bold text-green-400">Global Feed</h1>
+    <h1 class="text-xl font-bold text-black">Global Feed</h1>
 
     <div
       class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
@@ -100,7 +100,7 @@ const _comments = comments.map((comment) => {
               <p
                 class={`${
                   isUserMessage
-                    ? "bg-blue-700 text-slate-200 self-end"
+                    ? "bg-blue-700 text-gray-200 self-end"
                     : "bg-gray-700 text-gray-200 self-start"
                 } p-2 rounded-lg max-w-xs break-words`}
               >

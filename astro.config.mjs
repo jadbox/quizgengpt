@@ -9,7 +9,7 @@ import simpleStackQuery from "simple-stack-query";
 // https://astro.build/config
 export default defineConfig({
   // host: true,
-  site: "https://app.thrivetogether.ai",
+  site: "https://app.thrivetogether.xyz",
   output: "server",
   adapter: bun({
     host: true,

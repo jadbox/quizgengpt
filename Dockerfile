@@ -32,7 +32,7 @@ ENV PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
 ENV PUBLIC_SUPABASE_URL="https://bfamhutcvrljgrfxndpt.supabase.co"
 ENV ASTRO_DEV_PORT=4321
 ENV PORT=4321
-ENV SITE="https://app.thrivetogether.ai"
+ENV SITE="https://app.thrivetogether.xyz"
 ENV PROD=true
 ENV NODE_ENV=production
 
@@ -53,7 +53,7 @@ COPY --from=build /app /app
 # ENV PUBLIC_SUPABASE_ANON_KEY=${PUBLIC_SUPABASE_ANON_KEY}
 # ENV PUBLIC_SUPABASE_URL=${PUBLIC_SUPABASE_URL}
 ENV NODE_ENV=production
-ENV SITE="https://app.thrivetogether.ai"
+ENV SITE="https://app.thrivetogether.xyz"
 ENV ASTRO_DEV_PORT=4321
 ENV PORT=4321
 ENV PROD=true
