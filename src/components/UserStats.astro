@@ -25,12 +25,12 @@ function formatDuration(duration: number) {
 const goals = await fetchGoals();
 ---
 
-<div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
-  <h1 class="text-2xl font-bold text-green-400">Goal Tracking Stats</h1>
+<div class="flex flex-col items-center p-4 space-y-4">
+  <h1 class="text-2xl font-bold text-black">Goal Tracking Stats</h1>
 
   <!-- Number of Goals Completed -->
   <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-2">
-    <h2 class="text-xl font-bold text-green-400">Goals Completed</h2>
+    <h2 class="text-xl font-bold text-slate-600">Goals Completed</h2>
     <div class="text-lg font-medium">
       <span id="goals-completed" class="text-white">
         {
@@ -38,13 +38,14 @@ const goals = await fetchGoals();
             return goal.completed ? count + 1 : count;
           }, 0)
         }
-      </span> goals completed
+      </span> 
+      <span class="text-white">goals completed</span>
     </div>
   </div>
 
   <!-- Cumulative Time Spent on Each Goal -->
   <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-2">
-    <h2 class="text-xl font-bold text-green-400">Time Spent on Goals</h2>
+    <h2 class="text-xl font-bold text-slate-600">Time Spent on Goals</h2>
     <ul id="goal-times" class="list-disc pl-5 space-y-1">
       {
         goals.map((goal) => (
@@ -66,7 +67,7 @@ const goals = await fetchGoals();
 
   <!-- Rankings of Time Spent Compared to Other Users -->
   <!-- <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-2">
-    <h2 class="text-xl font-bold text-green-400">Rankings</h2>
+    <h2 class="text-xl font-bold text-slate-600">Rankings</h2>
     <table class="min-w-full text-left text-white">
       <thead>
         <tr class="border-b border-gray-700">

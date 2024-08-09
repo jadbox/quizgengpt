@@ -10,19 +10,63 @@ const activities = Astro.props.feelings
     animation: fadeIn 1.2s;
     --animate-duration: 0.2s;
   }
+
+  .activity-icon {
+    transition: border-color 0.3s ease;
+  }
+
+  .split-hover-bg {
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
+  }
+
+  .split-hover-bg::before,
+  .split-hover-bg::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+  }
+
+  .split-hover-bg::before {
+    left: 0;
+    background-color: #3b82f6; /* Tailwind blue-500 */
+  }
+
+  .split-hover-bg::after {
+    right: 0;
+    background-color: #fb7185; /* Tailwind rose-400 */
+  }
+
+  .activity-item:hover .split-hover-bg {
+    transform: translateX(0);
+  }
+
+  .activity-item:hover .activity-icon {
+    border-color: #e2e8f0;
+  }
+
+  .activity-item:hover .material-icons {
+    color: white;
+  }
 </style>
+
 <RootElement>
   <div class="grid grid-cols-4 gap-4 mb-4 md:grid-cols-5 mt-4 aq">
     {
       activities.map((activity) => (
         <div
-          class="flex rounded flex-col items-center text-center text-green-400 cursor-pointer activity-item"
+          class="flex rounded flex-col items-center text-center text-slate-300 cursor-pointer activity-item"
           data-activity={activity.val || activity.label}
         >
-          <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-700 bg-gray-900 activity-icon">
-            <span class="material-icons text-3xl">{activity.icon}</span>
+          <div class="w-16 h-16 flex items-center justify-center rounded-full mb-2 border-2 border-gray-700 bg-gray-900 activity-icon relative overflow-hidden">
+            <span class="material-icons text-3xl relative z-10">
+              {activity.icon}
+            </span>
+            <div class="absolute inset-0 split-hover-bg" />
           </div>
-          <p class="text-xs">{activity.label}</p>
+          <p class="text-s font-semibold text-black">{activity.label}</p>
         </div>
       ))
     }
@@ -43,7 +87,7 @@ const activities = Astro.props.feelings
     activityItems.forEach((activityItem) => {
       activityItem.addEventListener("click", (event) => {
         const activity = (event.currentTarget as HTMLElement).getAttribute(
-          "data-activity"
+          "data-activity",
         );
         //console.log(activity);
 
@@ -55,9 +99,9 @@ const activities = Astro.props.feelings
 
         // update selected activities for all animate__animated items
         selected = Array.from(
-          document.querySelectorAll(".activity-item.animate__animated")
+          document.querySelectorAll(".activity-item.animate__animated"),
         ).map(
-          (item) => (item as HTMLElement).getAttribute("data-activity") || ""
+          (item) => (item as HTMLElement).getAttribute("data-activity") || "",
         );
 
         // console.log("selected", selected);

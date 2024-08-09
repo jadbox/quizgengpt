@@ -1,13 +1,13 @@
 .comment {
   margin: 0 auto;
   padding: 1em;
-  width: 300px;
-  background: #1c1f2b;
+  background: #3b3e4d;
   border-radius: 10px;
   position: relative;
+  /* Remove fixed width */
 }
 
-@property --angle{
+@property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
@@ -16,17 +16,13 @@
 .comment::after, .comment::before {
   content: "";
   position: absolute;
-  height: 100%;
-  width: 102%;
+  inset: -3px; /* Use inset instead of height/width/top/left */
   background-image: conic-gradient(from var(--angle), #ff4545, #00ff99, #006aff, #ff0095, #ff4545);
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
   z-index: -1;
-  padding: 15%;
-  border-radius: 10px;
+  border-radius: inherit; /* Inherit border-radius from parent */
   animation: 3s spin infinite linear;
 }
+
 .comment::before {
   filter: blur(1.5rem);
   opacity: 0.5;

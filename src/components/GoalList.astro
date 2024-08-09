@@ -20,19 +20,22 @@ if (error) {
   return Response.json({ error: "Error fetching goals" });
 }
 ---
+<style>
+  @import "../styles/animated-border.css";
+</style>
 
 <RootElement data={{ uid }}>
-  <div class="flex flex-col items-center p-4 space-y-4 text-slate-200">
+  <div class="flex flex-col items-center p-4 space-y-4">
     <user id="user" uid={uid} class="hidden"></user>
-    <div class="flex items-center p-4 space-x-2 text-slate-200">
-      <div class="text-green-400 flex" title="Reset today's goals">
-        <a href="#" data-target="returnico" class="text-green-400 flex">
+    <div class="flex items-center p-4 space-x-2">
+      <div class="flex" title="Reset today's goals">
+        <a href="#" data-target="returnico" class="flex">
           <i class="material-icons">backspace</i>
         </a>
       </div>
-      <h1 class="text-2xl font-bold text-green-400 flex">{name} Goals Today</h1>
+      <h1 class="text-2xl font-bold text-black flex">{name} Goals Today</h1>
     </div>
-    <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3">
+    <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3 comment">
       <div class="container space-y-4" id="goalContainer">
         <!-- Activities will be rendered here -->
         {goals.map((goal: Goal) => <GoalItem goal={goal} />)}
