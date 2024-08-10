@@ -26,11 +26,7 @@ let people = nearBy || []; //  || [
 // ];
 
 // populate goals from each profile in comments list
-const ids = people.map((p: any) => p.id);
-
-// ids [ "3bf547ef-150c-4195-8818-4fc1c1b25667", "0bbf6034-091b-4370-829d-31c67a8754aa" ]
-
-console.log("ids", ids);
+const ids = people.map((p: any) => p.id); // ids [ "3bf547ef-150c-4195-8818-4fc1c1b25667", "0bbf6034-091b-4370-829d-31c67a8754aa" ]
 
 if (!supabaseServer) throw new Error("supabaseServer not found");
 const goalsMatchingEachCommentProfileQ = await supabaseServer
@@ -44,21 +40,11 @@ const goalsMatchingEachCommentProfileQ = await supabaseServer
     new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
   );
 
-// console.log("--", goalsMatchingEachCommentProfileQ);
-// console.log(
-//   ids,
-//   "goalsMatchingEachCommentProfileQ",
-//   goalsMatchingEachCommentProfileQ
-// );
-
 people.forEach((p: any) => {
   const m = goalsMatchingEachCommentProfileQ.data?.filter(
     (profilegoal: any) => profilegoal.uid === p.id
   );
 
-  // console.log(goalsMatchingEachCommentProfileQ, "m", m);
-
-  // add completed checkmark emoji if goal is completed
   const goalsDone =
     m
       ?.filter((x) => x.completed !== null)
@@ -78,13 +64,11 @@ people.forEach((p: any) => {
   p.goals = goalsDone.concat(goalsStarted).concat(goalsNotStarted).join(", ");
 });
 
-// console.log("people", people);
-
 const commentsFormatted = people;
 ---
 
 <div
-  class="glassmorphism w-full md:w-2/3 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
+  class="glassmorphism w-full md:w-2/3 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-visible"
 >
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {

@@ -64,7 +64,7 @@ const _comments = comments.map((comment) => {
 ---
 
 <RootElement data={{ name, uid }}>
-  <div class="flex flex-col items-center justify-center max-h-screen pt-4">
+  <div class="flex flex-col items-center justify-center pt-4">
     <h1 class="text-xl font-bold text-black">Bulletin Board</h1>
 
     <!-- <h1 class="text-xl font-bold text-slate-600">Set your status:</h1>
@@ -88,7 +88,7 @@ const _comments = comments.map((comment) => {
     <h1 class="text-xl font-bold text-black">Global Feed</h1>
 
     <div
-      class="glassmorphism w-full md:w-2/3 space-y-6 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-auto max-h-[50vh]"
+      class="glassmorphism w-full md:w-2/3 space-y-2 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-visible"
       id="commentbox"
     >
       {
