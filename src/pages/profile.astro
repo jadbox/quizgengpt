@@ -5,6 +5,7 @@ import UserProfile from "@/components/UserProfile.astro";
 import { setAstroSession } from "@/lib/supabase";
 
 const { supabase, data } = await setAstroSession(Astro.cookies);
+if (!data) return Astro.redirect("/api/auth/signout");
 
 const check = loginCheck(Astro);
 if (check) return check;

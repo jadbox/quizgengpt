@@ -54,7 +54,7 @@ export const setAstroSession = async (cookies: any) => {
 
   if (error) {
     console.error("Error:", error);
-    return { supabase, data: null };
+    return { supabase, data: null, error };
     // return new Response(error.message, { status: 500 });
   }
 
@@ -63,5 +63,5 @@ export const setAstroSession = async (cookies: any) => {
     return { supabase, data: null };
   }
 
-  return { supabase, data, user: data };
+  return { supabase, data, user: data, error: null };
 };

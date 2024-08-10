@@ -9,32 +9,18 @@ import PostSection from "../components/PostSection.astro";
 
 const { cookies, redirect, rewrite } = Astro;
 
-
-
 Astro.request.headers.set("Cache-Control", "no-store");
 
 // console.log("accessToken", accessToken, refreshToken, process.env.SITE);
 
-// let email = "";
-let name = "";
 let hasGoals = false;
 
+const {supabase, data, error} = await setAstroSession(Astro.cookies);
+if(error) return Astro.redirect("/api/auth/signout");
 
-  const {supabase, data} = await setAstroSession(Astro.cookies);
-
-  if (data) {
+if (data) {
 
   if (!data.user?.id) throw new Error("User not found");
-
-  // delete goals older than 24hrs
-  // await supabase
-  //   .from("goals")
-  //   .delete()
-  //   .eq("uid", data.user?.id)
-  //   .lt(
-  //     "created_at",
-  //     new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  //   );
 
   // if user has uncompleted goals in supabase, redirect to /goals
   // 24hrs to complete goals
