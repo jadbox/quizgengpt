@@ -86,7 +86,7 @@ const commentsFormatted = people;
             <p class="text-sm font-medium text-green-400">{comment.status}</p>
             <p class="text-sm text-gray-300">
               <span class="font-semibold">Distance:</span>{" "}
-              {Number(comment.distance.toFixed(1))}mi
+              {Number(comment.distance.toFixed(1)) || "0.5"}mi
             </p>
             <p class="text-sm text-gray-300">
               <span class="font-semibold">Goals:</span> {comment.goals}
