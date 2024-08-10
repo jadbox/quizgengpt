@@ -146,11 +146,19 @@ const _comments = comments.map((comment) => {
     import { supabase } from "@/lib/supabase";
     import { navigate } from "astro:transitions/client";
     import { getAndSaveLocation } from "@/scripts/getAndSaveLocation";
-    import { throttle } from "throttle-debounce";
+    import { debounce } from "throttle-debounce";
+
+    const actionReload = debounce(
+      3000,
+      () => navigate("/", { history: "replace" }),
+      {
+        atBegin: false,
+      }
+    );
 
     RootElement.ready(($, ctx) => {
       function makeComment(comment: string) {
-        navigate("/");
+        actionReload();
       }
 
       const handleInserts = (payload: any) => {
@@ -166,35 +174,49 @@ const _comments = comments.map((comment) => {
           "messageInput"
         ) as HTMLInputElement;
 
-        if (!input.value) return;
+        if (!input.value) {
+          alert("Please enter a message");
+          return;
+        }
         const message = `${input.value}`;
 
-        const uid = input.getAttribute("data-uid")?.toString();
+        const uid = input.getAttribute("data-uid")?.toString() as string;
         // console.log("{ content: message, profile_id: uid }", {
         //   content: message,
         //   profile_id: uid,
         // });
 
-        if (message) {
-          const { data, error } = await supabase
-            .from("messages")
-            .insert([
-              { content: `${ctx.data.name}: ${message}`, profile_id: uid },
-            ]);
+        // delete last user status messages older than 24 hours
+        await supabase
+          .from("messages")
+          .delete()
+          .eq("profile_id", uid)
+          .like("content", "%: %")
+          .gt(
+            "created_at",
+            new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+          );
 
-          // update last_post in profiles table
-          await supabase
-            .from("profiles")
-            .update({ last_post: new Date().toISOString(), status: message })
-            .match({ id: uid });
+        const { data, error } = await supabase
+          .from("messages")
+          .insert([
+            { content: `${ctx.data.name}: ${message}`, profile_id: uid },
+          ]);
 
-          if (error) {
-            console.error("Error inserting message:", error);
-          } else {
-            console.log("Message inserted successfully:", data);
-            input.value = "";
-            // makeComment(message);
-          }
+        // update last_post in profiles table
+        await supabase
+          .from("profiles")
+          .update({ last_post: new Date().toISOString(), status: message })
+          .match({ id: uid });
+
+        if (error) {
+          alert("Error inserting message: " + error.message);
+          console.error("Error inserting message:", error);
+        } else {
+          console.log("Message inserted successfully:", data);
+          input.value = "";
+          navigate("/", { history: "replace" });
+          // makeComment(message);
         }
       };
 

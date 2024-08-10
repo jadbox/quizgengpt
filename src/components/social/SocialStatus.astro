@@ -64,6 +64,16 @@ people.forEach((p: any) => {
   p.goals = goalsDone.concat(goalsStarted).concat(goalsNotStarted).join(", ");
 });
 
+const uid = Astro.props.uid;
+
+// ensure my uid profile is first
+people.unshift(
+  people.splice(
+    people.findIndex((p) => p.id === Astro.props.uid),
+    1
+  )[0]
+);
+
 const commentsFormatted = people;
 ---
 
@@ -73,7 +83,9 @@ const commentsFormatted = people;
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {
       commentsFormatted.map((comment: any) => (
-        <div class="bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+        <div
+          class={`bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300 ${comment.id === uid ? "border-2 border-green-500" : ""}`}
+        >
           <div class="flex items-center mb-2">
             <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center mr-3">
               <span class="text-xl text-white">
