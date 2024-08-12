@@ -3,9 +3,10 @@ const { cookies, redirect, rewrite } = Astro;
 
 const access_token = cookies.get("sb-access-token")?.value;
 const refresh_token = cookies.get("sb-refresh-token")?.value;
+const uid = cookies.get("uid")?.value;
 ---
 
-<RootElement data={{ access_token, refresh_token }}>
+<RootElement data={{ access_token, refresh_token, uid }}>
   <session
     id="session"
     access_token={access_token}
