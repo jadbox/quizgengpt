@@ -15,7 +15,7 @@ const name = Astro.cookies.get("name")?.value || "";
     </h1>
     <ActivitySelector />
 
-    <div class="comment min-w-[400px] min-h-[70px] w-1/2">
+    <div class="comment min-w-[400px] min-h-[70px] w-1/2 max-w-md">
       <textarea
         data-uid={uid}
         id="postfield"
@@ -26,7 +26,7 @@ const name = Astro.cookies.get("name")?.value || "";
 
     <div class="flex-between w-11/12 mt-2 md:w-3/4">
       <div
-        class="mx-auto inset-x-0 flex flex-col items-center md:relative md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
+        class="mx-auto inset-x-0 flex flex-col items-center md:bottom-auto md:left-1/2 md:transform md:-translate-x-1/2"
       >
         <button
           id="submitButton"
@@ -34,7 +34,7 @@ const name = Astro.cookies.get("name")?.value || "";
         >
           check
         </button>
-        <p class="mt-2 text-black text-lg font-bold">Crush Goals!</p>
+        <p class="mt-2 text-black text-lg font-bold">Post Goals!</p>
       </div>
     </div>
   </div>
