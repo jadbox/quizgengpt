@@ -31,12 +31,12 @@ const activities = Astro.props.feelings
 
   .split-hover-bg::before {
     left: 0;
-    background-color: #3b82f6; /* Tailwind blue-500 */
+    background-color: #7cd3fc;
   }
 
   .split-hover-bg::after {
     right: 0;
-    background-color: #fb7185; /* Tailwind rose-400 */
+    background-color: #fef9c3; /* Tailwind rose-400 */
   }
 
   .activity-item:hover .split-hover-bg {
@@ -48,7 +48,7 @@ const activities = Astro.props.feelings
   }
 
   .activity-item:hover .material-icons {
-    color: white;
+    color: black;
   }
 </style>
 
@@ -87,7 +87,7 @@ const activities = Astro.props.feelings
     activityItems.forEach((activityItem) => {
       activityItem.addEventListener("click", (event) => {
         const activity = (event.currentTarget as HTMLElement).getAttribute(
-          "data-activity",
+          "data-activity"
         );
         //console.log(activity);
 
@@ -99,9 +99,9 @@ const activities = Astro.props.feelings
 
         // update selected activities for all animate__animated items
         selected = Array.from(
-          document.querySelectorAll(".activity-item.animate__animated"),
+          document.querySelectorAll(".activity-item.animate__animated")
         ).map(
-          (item) => (item as HTMLElement).getAttribute("data-activity") || "",
+          (item) => (item as HTMLElement).getAttribute("data-activity") || ""
         );
 
         // console.log("selected", selected);
