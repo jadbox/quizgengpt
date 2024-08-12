@@ -31,20 +31,25 @@ const ids = people.map((p: any) => p.id); // ids [ "3bf547ef-150c-4195-8818-4fc1
 if (!supabaseServer) throw new Error("supabaseServer not found");
 const goalsMatchingEachCommentProfileQ = await supabaseServer
   .from("goals")
-  .select("goal, id, uid, completed, started")
+  .select("goal, id, uid, completed, started, created_at")
   //.eq("profiles.id", "goals.id")
-  .in("uid", ids);
-// not older than 24 hours
-// .gt(
-//   "created_at",
-//   new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
-// );
+  .in("uid", ids)
+  // not older than 24 hours
+  // .gt(
+  //   "created_at",
+  //   new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString()
+  // )
+  .order("completed", { ascending: false })
+  .limit(12);
+
+const goalNum = goalsMatchingEachCommentProfileQ.data?.length || 0;
 
 people.forEach((p: any) => {
   const m = goalsMatchingEachCommentProfileQ.data?.filter(
     (profilegoal: any) => profilegoal.uid === p.id
   );
 
+  // limit to 3
   const goalsDone =
     m
       ?.filter((x) => x.completed !== null)
@@ -61,7 +66,7 @@ people.forEach((p: any) => {
       ?.filter((x) => x.started === null)
       .map((goal: any) => "⭕ " + goal.goal) || [];
 
-  p.goals = goalsDone.concat(goalsStarted).concat(goalsNotStarted).join(", ");
+  p.goals = goalsStarted.concat(goalsNotStarted).concat(goalsDone).join(", ");
 });
 
 const uid = Astro.props.uid;
