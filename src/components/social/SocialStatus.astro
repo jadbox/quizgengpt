@@ -67,58 +67,105 @@ people.forEach((p: any) => {
 const uid = Astro.props.uid;
 
 // ensure my uid profile is first
-const userIndex = people.findIndex((p) => p.id === Astro.props.uid);
+let userIndex = people.findIndex((p) => p.id === Astro.props.uid);
 if (userIndex !== -1) {
   people.unshift(people.splice(userIndex, 1)[0]);
+  userIndex = 0;
 }
-
-// console.log("people", people);
 
 const commentsFormatted = people;
 ---
 
-<div
-  class="glassmorphism w-full md:w-2/3 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-visible"
->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    {
-      commentsFormatted.map((comment: any) => (
-        <div
-          class={`bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300 ${comment?.id === uid ? "border-2 border-green-500" : ""}`}
-        >
-          <div class="flex items-center mb-2">
-            <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center mr-3">
-              <span class="text-xl text-white">
-                {comment.username.charAt(0).toUpperCase()}
-              </span>
+<RootElement data={{ uid }}>
+  <div
+    class="glassmorphism w-full md:w-2/3 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-visible"
+  >
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {
+        commentsFormatted.map((comment: any, i: number) => (
+          <div
+            class={`bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300 ${comment?.id === uid ? "border-2 border-green-500" : ""}`}
+          >
+            <div class="flex items-center mb-2">
+              <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center mr-3">
+                <span class="text-xl text-white">
+                  {comment.username.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              )
+              <h3 class="text-lg font-semibold text-white">
+                {comment.username}
+              </h3>
             </div>
-            )
-            <h3 class="text-lg font-semibold text-white">{comment.username}</h3>
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-green-400">{comment.status}</p>
+              <p class="text-sm text-gray-300">
+                <span class="font-semibold">Distance:</span>{" "}
+                {comment.distance === null
+                  ? "??"
+                  : `${Number(comment.distance?.toFixed(1)) || "0.5"}mi`}
+              </p>
+              <p class="text-sm text-gray-300">
+                <span class="font-semibold">Goals:</span> {comment.goals}
+              </p>
+              <div class="flex items-center justify-center space-x-2">
+                <a
+                  href={`mailto:${encodeURI(comment.email)}?subject=TT Re:${encodeURI(comment.status)}&body=${encodeURI("Hello, I am responding to your message on ThriveTogether.xyz Weekly Bulletin Board.")}`}
+                >
+                  <button
+                    class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mt-2 text-sm"
+                    data-target="email-click"
+                  >
+                    <span class="material-icons mr-2">email</span> Reply
+                  </button>
+                </a>
+                {i === userIndex && (
+                  <button
+                    class="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg mt-2 text-sm"
+                    data-target="delete-click"
+                  >
+                    <span class="material-icons">delete</span>
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-          <div class="space-y-2">
-            <p class="text-sm font-medium text-green-400">{comment.status}</p>
-            <p class="text-sm text-gray-300">
-              <span class="font-semibold">Distance:</span>{" "}
-              {comment.distance === null
-                ? "??"
-                : `${Number(comment.distance?.toFixed(1)) || "0.5"}mi`}
-            </p>
-            <p class="text-sm text-gray-300">
-              <span class="font-semibold">Goals:</span> {comment.goals}
-            </p>
-            <a
-              href={`mailto:${encodeURI(comment.email)}?subject=TT Re:${encodeURI(comment.status)}&body=${encodeURI("Hello, I am responding to your message on ThriveTogether.xyz Weekly Bulletin Board.")}`}
-            >
-              <button
-                class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mt-2 text-sm"
-                data-target="email-click"
-              >
-                <span class="material-icons mr-2">email</span> Reply
-              </button>
-            </a>
-          </div>
-        </div>
-      ))
-    }
+        ))
+      }
+    </div>
   </div>
-</div>
+</RootElement>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+  import { navigate } from "astro:transitions/client";
+  RootElement.ready(($, ctx) => {
+    console.log("ready");
+    $("delete-click").addEventListener("click", async (e) => {
+      console.log("delete-click", e);
+      e.preventDefault();
+      const uid = ctx.data.uid;
+      if (!uid) throw new Error("uid not found");
+
+      await supabase.from("profiles").update({ status: null }).eq("id", uid);
+
+      const { data: messages, error } = await supabase
+        .from("messages")
+        .delete()
+        .eq("profile_id", uid)
+        .like("content", "%: %")
+        .gt(
+          "created_at",
+          new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+        );
+
+      if (error) {
+        console.error("Error deleting messages:", error);
+        alert("Error deleting messages:" + error.message);
+        return;
+      }
+
+      navigate("/");
+    });
+  });
+</script>
