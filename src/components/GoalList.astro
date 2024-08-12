@@ -6,18 +6,22 @@ const { supabase, data } = await setAstroSession(Astro.cookies);
 const uid = data?.user?.id;
 const name = Astro.cookies.get("name")?.value;
 
+// .gte("created_at", new Date().toISOString().split("T")[0])
+// older than 24 hours
+// .gt(
+//   "created_at",
+//   new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+// )
+
 // get goals created on this day
 const { data: goals, error } = await supabase
   .from("goals")
   .select("*")
   .match({ uid })
-  // .is("completed", null) // TODO: remove
-  // .gte("created_at", new Date().toISOString().split("T")[0])
-  // older than 24 hours
-  .gt(
-    "created_at",
-    new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
-  )
+  .is("completed", null) // TODO: remove
+  // or completed is not null and completed is older than 24 hours
+  // .or("completed.is.null,and(completed.gt,created_at,now(-24h))")
+
   .order("id", { ascending: true });
 
 if (error) {
@@ -34,20 +38,34 @@ if (error) {
   <div class="flex flex-col items-center p-4 space-y-4">
     <user id="user" uid={uid} class="hidden"></user>
     <div class="flex items-center p-4 space-x-2">
-      <h1 class="text-2xl font-bold text-black flex">{name} Goals Today</h1>
+      <h1 class="text-2xl font-bold text-black flex">{name} Goals</h1>
     </div>
+    <!-- <div class="text-sm text-black">
+      Uncompleted goals will be removed after 7 days, so keep them up to date!
+    </div> -->
     <div class="bg-gray-800 p-4 rounded-lg space-y-4 w-full md:w-2/3 comment">
       <div class="container space-y-4" id="goalContainer">
         <!-- Activities will be rendered here -->
         {goals.map((goal: Goal) => <GoalItem goal={goal} />)}
       </div>
 
-      <div class="flex mx-auto center-text" title="Reset today's goals">
+      <div
+        class="flex mx-auto center-text space-x-2"
+        title="Reset today's goals"
+      >
         <a href="#" data-target="returnico" class="flex">
           <button
             class="bg-gray-800 text-sm hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full"
           >
             Update Goals
+          </button>
+        </a>
+
+        <a href="/stats" class="flex">
+          <button
+            class="bg-gray-800 text-sm hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full"
+          >
+            History
           </button>
         </a>
       </div>

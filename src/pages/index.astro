@@ -29,7 +29,7 @@ if (data) {
     .select("*", { count: "exact", head: false })
     .eq("uid", data.user?.id)
     .is("completed", null)
-    .gte("created_at", new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString());
+    // .gte("created_at", new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString());
     //.gte("created_at", new Date().toISOString().split("T")[0]);
 
     // console.log("count", count, d);

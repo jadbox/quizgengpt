@@ -33,12 +33,12 @@ const goalsMatchingEachCommentProfileQ = await supabaseServer
   .from("goals")
   .select("goal, id, uid, completed, started")
   //.eq("profiles.id", "goals.id")
-  .in("uid", ids)
-  // not older than 24 hours
-  .gt(
-    "created_at",
-    new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
-  );
+  .in("uid", ids);
+// not older than 24 hours
+// .gt(
+//   "created_at",
+//   new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+// );
 
 people.forEach((p: any) => {
   const m = goalsMatchingEachCommentProfileQ.data?.filter(
@@ -108,7 +108,7 @@ const commentsFormatted = people;
               <p class="text-sm text-gray-300">
                 <span class="font-semibold">Goals:</span> {comment.goals}
               </p>
-              <div class="flex items-center justify-center space-x-2">
+              <div class="flex items-center justify-center space-x-2m mt-4 space-x-2">
                 <a
                   href={`mailto:${encodeURI(comment.email)}?subject=TT Re:${encodeURI(comment.status)}&body=${encodeURI("Hello, I am responding to your message on ThriveTogether.xyz Weekly Bulletin Board.")}`}
                 >
