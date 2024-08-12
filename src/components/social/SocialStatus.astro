@@ -6,7 +6,7 @@ import { Comment, supabase, supabaseServer } from "../../lib/supabase";
 const { data: nearBy, error } = await supabase.rpc("get_nearest_profiles2", {
   // user_location: userLocation,
   user_id: Astro.props.uid,
-  limit_count: 10,
+  limit_count: 24,
 });
 
 if (error) {
