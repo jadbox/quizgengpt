@@ -232,6 +232,20 @@ export type Database = {
           distance: number
         }[]
       }
+      get_nearest_profiles2: {
+        Args: {
+          user_id: string
+          limit_count: number
+        }
+        Returns: {
+          id: string
+          username: string
+          email: string
+          last_post: string
+          status: string
+          distance: number
+        }[]
+      }
       halfvec_avg: {
         Args: {
           "": number[]

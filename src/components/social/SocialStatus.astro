@@ -3,7 +3,7 @@ import { listenKeys } from "nanostores";
 import { Comment, supabase, supabaseServer } from "../../lib/supabase";
 // console.log("SocialStatus", Astro.props.comments);
 
-const { data: nearBy, error } = await supabase.rpc("get_nearest_profiles", {
+const { data: nearBy, error } = await supabase.rpc("get_nearest_profiles2", {
   // user_location: userLocation,
   user_id: Astro.props.uid,
   limit_count: 10,
@@ -67,14 +67,12 @@ people.forEach((p: any) => {
 const uid = Astro.props.uid;
 
 // ensure my uid profile is first
-people.unshift(
-  people.splice(
-    people.findIndex((p) => p.id === Astro.props.uid),
-    1
-  )[0]
-);
+const userIndex = people.findIndex((p) => p.id === Astro.props.uid);
+if (userIndex !== -1) {
+  people.unshift(people.splice(userIndex, 1)[0]);
+}
 
-console.log("people", people);
+// console.log("people", people);
 
 const commentsFormatted = people;
 ---
@@ -86,7 +84,7 @@ const commentsFormatted = people;
     {
       commentsFormatted.map((comment: any) => (
         <div
-          class={`bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300 ${comment.id === uid ? "border-2 border-green-500" : ""}`}
+          class={`bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300 ${comment?.id === uid ? "border-2 border-green-500" : ""}`}
         >
           <div class="flex items-center mb-2">
             <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center mr-3">
@@ -94,6 +92,7 @@ const commentsFormatted = people;
                 {comment.username.charAt(0).toUpperCase()}
               </span>
             </div>
+            )
             <h3 class="text-lg font-semibold text-white">{comment.username}</h3>
           </div>
           <div class="space-y-2">
@@ -107,6 +106,16 @@ const commentsFormatted = people;
             <p class="text-sm text-gray-300">
               <span class="font-semibold">Goals:</span> {comment.goals}
             </p>
+            <a
+              href={`mailto:${encodeURI(comment.email)}?subject=TT Re:${encodeURI(comment.status)}&body=${encodeURI("Hello, I am responding to your message on ThriveTogether.xyz Weekly Bulletin Board.")}`}
+            >
+              <button
+                class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mt-2 text-sm"
+                data-target="email-click"
+              >
+                <span class="material-icons mr-2">email</span> Reply
+              </button>
+            </a>
           </div>
         </div>
       ))
