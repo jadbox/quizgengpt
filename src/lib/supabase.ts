@@ -44,8 +44,9 @@ let lastSession: AuthResponse;
 export const setAstroSession = async (cookies: any) => {
   const access_token = cookies.get("sb-access-token")?.value as string;
   const refresh_token = cookies.get("sb-refresh-token")?.value as string;
+  const uid = cookies.get("uid")?.value as string;
 
-  if (!access_token || !refresh_token) {
+  if (!access_token || !refresh_token || !uid) {
     return { supabase, data: null };
   }
 
@@ -57,7 +58,7 @@ export const setAstroSession = async (cookies: any) => {
 
     if (error) {
       console.error("Error:", error);
-      return { supabase, data: null, error };
+      return { supabase, data: null, error, user: null };
       // return new Response(error.message, { status: 500 });
     }
     if (typeof window !== "undefined") lastSession = data as any; // cache on browser
