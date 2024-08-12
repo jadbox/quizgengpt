@@ -147,8 +147,10 @@ const commentsFormatted = people;
   RootElement.ready(($, ctx) => {
     console.log("ready");
     $("delete-click").addEventListener("click", async (e) => {
-      console.log("delete-click", e);
       e.preventDefault();
+      const r = await confirm("Are you sure you want to delete your status?");
+      if (!r) return;
+
       const uid = ctx.data.uid;
       if (!uid) throw new Error("uid not found");
 
