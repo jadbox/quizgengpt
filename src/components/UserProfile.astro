@@ -5,7 +5,7 @@ const { supabase, data } = await setAstroSession(Astro.cookies);
 
 let uid = data?.user?.id;
 const profile = Astro.props.profile as Profile;
-console.log("profile", profile);
+// console.log("profile", profile);
 // const username = new URL(Astro.request.url).searchParams.get("name");
 // if (username) {
 //   const user = username;
@@ -14,12 +14,13 @@ console.log("profile", profile);
 // }
 ---
 
-<div class="flex flex-col items-center p-4 space-y-4 w-full">
-  <user id="user" uid={uid} class="hidden"></user>
-  <h1 class="text-2xl font-bold text-black">Profile</h1>
+<RootElement data={{ uid }}>
+  <div class="flex flex-col items-center p-4 space-y-4 w-full">
+    <user id="user" uid={uid} class="hidden"></user>
+    <h1 class="text-2xl font-bold text-black">Profile</h1>
 
-  <!-- Avatar Selection -->
-  <!-- <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-4">
+    <!-- Avatar Selection -->
+    <!-- <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-4">
     <h2 class="text-xl font-bold text-slate-600">Select Your Avatar</h2>
     <div class="flex space-x-4">
       <img
@@ -41,39 +42,39 @@ console.log("profile", profile);
         id="avatar3"
       />
         -->
-</div>
+  </div>
 
-<!-- Bio and Personal Info -->
-<div class="flex-center mx-auto text-center">
-  <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-4">
-    <h2 class="text-xl font-bold text-slate-600">Personal Information</h2>
-    <form id="profile-form" method="get" class="space-y-4" action="/profile">
-      <div>
-        <label for="name" class="block text-sm font-medium text-slate-400"
-          >Name</label
-        >
-        <input
-          type="text"
-          id="name"
-          name="name"
-          class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-green-400"
-          placeholder={profile?.username || "Enter your name"}
-        />
-      </div>
-      <div>
-        <label for="email" class="block text-sm font-medium text-slate-400"
-          >Email</label
-        >
-        <input
-          type="email"
-          id="email"
-          name="email"
-          class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-green-400 hover:cursor-not-allowed"
-          placeholder={profile?.email}
-          disabled
-        />
-      </div>
-      <!-- <div>
+  <!-- Bio and Personal Info -->
+  <div class="flex-center mx-auto text-center">
+    <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-4">
+      <h2 class="text-xl font-bold text-slate-600">Personal Information</h2>
+      <form id="profile-form" method="get" class="space-y-4" action="/profile">
+        <div>
+          <label for="name" class="block text-sm font-medium text-slate-400"
+            >Your Name</label
+          >
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-green-400"
+            placeholder={profile?.username || "Enter your name"}
+          />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-400"
+            >Email (sign out to change)</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-green-400 hover:cursor-not-allowed"
+            placeholder={profile?.email}
+            disabled
+          />
+        </div>
+        <!-- <div>
         <label for="location" class="block text-sm font-medium text-slate-400"
           >Address</label
         >
@@ -84,64 +85,83 @@ console.log("profile", profile);
           class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-green-400"
         />
       </div> -->
-      <button
-        type="submit"
-        class="bg-green-400 text-gray-900 px-4 py-2 rounded-lg"
-        >Save
-      </button>
-      <!-- sign Out -->
-      <a href="/api/auth/signout">
         <button
-          type="button"
-          class="bg-red-400 text-gray-900 px-4 py-2 rounded-lg ml-2"
-          >Sign Out</button
-        ></a
-      >
+          type="submit"
+          class="bg-green-400 text-gray-900 px-4 py-2 rounded-lg"
+          >Save
+        </button>
+        <!-- sign Out -->
+        <a href="/api/auth/signout">
+          <button
+            type="button"
+            class="bg-red-400 text-gray-900 px-4 py-2 rounded-lg ml-2"
+            >Sign Out</button
+          ></a
+        >
 
-      <script>
-        import { supabase } from "../lib/supabase";
+        <script>
+          import { supabase } from "../lib/supabase";
 
-        const uid = document.getElementById("user")?.getAttribute("uid");
-        if (!uid) throw new Error("no uid");
+          RootElement.ready(($, ctx) => {
+            const uid = document.getElementById("user")?.getAttribute("uid");
+            if (!uid) throw new Error("no uid");
 
-        // Handle avatar selection
-        document.querySelectorAll('img[id^="avatar"]').forEach((img) => {
-          img.addEventListener("click", () => {
+            // Handle avatar selection
             document.querySelectorAll('img[id^="avatar"]').forEach((img) => {
-              img.classList.remove("border-green-400");
-              img.classList.add("border-transparent");
+              img.addEventListener("click", () => {
+                document
+                  .querySelectorAll('img[id^="avatar"]')
+                  .forEach((img) => {
+                    img.classList.remove("border-green-400");
+                    img.classList.add("border-transparent");
+                  });
+                img.classList.remove("border-transparent");
+                img.classList.add("border-green-400");
+                // Handle avatar selection logic here, e.g., save the selected avatar ID to the user's profile
+              });
             });
-            img.classList.remove("border-transparent");
-            img.classList.add("border-green-400");
-            // Handle avatar selection logic here, e.g., save the selected avatar ID to the user's profile
+
+            // Handle form submission
+            const form = document.getElementById("profile-form");
+            if (!form) throw new Error("Form not found");
+            form.addEventListener("submit", async (event) => {
+              event.preventDefault();
+
+              const nameInput = document.getElementById(
+                "name"
+              ) as HTMLInputElement;
+              const name = nameInput.value;
+
+              if (!name) {
+                alert("Please enter a name");
+                throw new Error("Name is required");
+              }
+
+              const c = await confirm(
+                "Are you sure you want to change your name? Your message history will be deleted."
+              );
+              if (!c) return;
+
+              const { data, error } = await supabase
+                .from("profiles")
+                .update({ username: name })
+                .match({ id: uid });
+
+              // delete all previous messages to purge username
+              const { data: messages, error: messageError } = await supabase
+                .from("messages")
+                .delete()
+                .match({ profile_id: uid });
+
+              if (error) {
+                console.error("Error updating name:", error);
+              }
+
+              window.location.href = "/profile";
+            });
           });
-        });
-
-        // Handle form submission
-        const form = document.getElementById("profile-form");
-        if (!form) throw new Error("Form not found");
-        form.addEventListener("submit", async (event) => {
-          event.preventDefault();
-
-          const nameInput = document.getElementById("name") as HTMLInputElement;
-          const name = nameInput.value;
-
-          if (!name) {
-            alert("Please enter a name");
-            throw new Error("Name is required");
-          }
-          const { data, error } = await supabase
-            .from("profiles")
-            .update({ username: name })
-            .match({ id: uid });
-
-          if (error) {
-            console.error("Error updating name:", error);
-          }
-
-          window.location.href = "/profile";
-        });
-      </script>
-    </form>
+        </script>
+      </form>
+    </div>
   </div>
-</div>
+</RootElement>
