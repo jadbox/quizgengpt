@@ -17,11 +17,11 @@ const { data } = await supabase
 
 const uid = user?.user?.id as string;
 // get closest 10 users to uid profiles.last_post and using distance from location that's a postgis field
-const { data: userRow } = await supabase
-  .from("profiles")
-  .select(`id, username, last_post, location, status`)
-  .eq("id", uid)
-  .single();
+// const { data: userRow } = await supabase
+//   .from("profiles")
+//   .select(`id, username, last_post, location, status`)
+//   .eq("id", uid)
+//   .single();
 
 // const userLocation = userRow?.location;
 
@@ -83,11 +83,11 @@ const _comments = comments.map((comment) => {
         id="messageInput"
       />
       <button class="black_btn w-1/3 md:h-full md:w-1/5" id="handleSubmitBtn">
-        update status
+        update your post
       </button>
     </div><br />
 
-    <h1 class="text-xl font-bold text-black">Global Feed</h1>
+    <h1 class="text-xl font-bold text-black">Goal News Feed</h1>
 
     <div
       class="glassmorphism w-full md:w-2/3 space-y-2 bg-gray-900 p-4 rounded-xl mt-5 mb-2 overflow-y-visible"
@@ -128,11 +128,11 @@ const _comments = comments.map((comment) => {
                 )}
                 <>
                   <br />
-                  <span class="text-xs text-gray-500 mt-1">
+                  <span class="text-xs text-gray-200 mt-1">
                     {formattedDate}
                   </span>
                 </>
-                {/* <EmojiSection id={comment.id} /> */}
+                <EmojiSection id={comment.id} />
               </p>
             </div>
           );

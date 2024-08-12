@@ -118,6 +118,7 @@ const commentsFormatted = people;
                   href={`mailto:${encodeURI(comment.email)}?subject=TT Re:${encodeURI(comment.status)}&body=${encodeURI("Hello, I am responding to your message on ThriveTogether.xyz Weekly Bulletin Board.")}`}
                 >
                   <button
+                    title="email reply to post"
                     class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mt-2 text-sm"
                     data-target="email-click"
                   >
@@ -126,6 +127,7 @@ const commentsFormatted = people;
                 </a>
                 {i === userIndex && (
                   <button
+                    title="delete post"
                     class="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg mt-2 text-sm"
                     data-target="delete-click"
                   >
