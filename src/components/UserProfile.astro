@@ -48,7 +48,7 @@ const profile = Astro.props.profile as Profile;
   <div class="flex-center mx-auto text-center">
     <div class="bg-gray-800 p-4 rounded-lg w-full md:w-2/3 space-y-4">
       <h2 class="text-xl font-bold text-slate-600">Personal Information</h2>
-      <form id="profile-form" method="get" class="space-y-4" action="/profile">
+      <form id="profile-form" method="get" class="space-y-4" action="#">
         <div>
           <label for="name" class="block text-sm font-medium text-slate-400"
             >Your Name</label
@@ -100,6 +100,7 @@ const profile = Astro.props.profile as Profile;
         >
 
         <script>
+          import { navigate } from "astro:transitions/client";
           import { supabase } from "../lib/supabase";
 
           RootElement.ready(($, ctx) => {
@@ -157,7 +158,8 @@ const profile = Astro.props.profile as Profile;
                 console.error("Error updating name:", error);
               }
 
-              window.location.href = "/profile";
+              // window.location.href = "/profile";
+              navigate("/");
             });
           });
         </script>
