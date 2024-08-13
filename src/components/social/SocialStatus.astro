@@ -1,13 +1,9 @@
 ---
 import { listenKeys } from "nanostores";
-import {
-  Comment,
-  supabaseServerUserClient,
-  supabaseServer,
-} from "../../lib/supabase";
+import { Comment, supabaseServer, setAstroSession } from "../../lib/supabase";
 // console.log("SocialStatus", Astro.props.comments);
 
-const supabase = await supabaseServerUserClient(Astro.cookies);
+const { supabase } = await setAstroSession(Astro.cookies);
 const { data: nearBy, error } = await supabase.rpc("get_nearest_profiles2", {
   // user_location: userLocation,
   user_id: Astro.props.uid,

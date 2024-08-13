@@ -1,9 +1,9 @@
 ---
-import { supabaseServerUserClient, Goal } from "@/lib/supabase";
+import { setAstroSession, Goal } from "@/lib/supabase";
 
 const goal = Astro.props.goal as Goal;
 
-const supabase = await supabaseServerUserClient(Astro.cookies);
+const { supabase } = await setAstroSession(Astro.cookies);
 const { count, error, data } = await supabase
   .from("goals")
   .select("id", { count: "exact", head: false })

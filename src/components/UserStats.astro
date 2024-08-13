@@ -1,8 +1,8 @@
 ---
-import { supabaseServerUserClient } from "../lib/supabase";
+import { setAstroSession } from "../lib/supabase";
 const uid = Astro.cookies.get("uid")?.value;
 
-const supabase = await supabaseServerUserClient(Astro.cookies);
+const { supabase } = await setAstroSession(Astro.cookies);
 
 async function fetchGoals() {
   const { data: goals, error } = await supabase
