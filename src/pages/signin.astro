@@ -27,7 +27,7 @@ const isAndroidWV = !!Astro.request.headers.get("X-Requested-With");
 var iosWV = /wv/.test(userAgent); //iphone|ipod|ipad/.test(userAgent);
 if (iosWV || isAndroidWV) {
   return new Response(
-    "Error: not supported in webview. Please open https://thrivetogether.xyz in your browser.",
+    "Error: not supported in webview. Please open <a href='https://thrivetogether.xyz' target='_system'>https://thrivetogether.xyz</a> in your browser.",
     { status: 400 }
   );
 }
