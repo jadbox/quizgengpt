@@ -1,0 +1,60 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { supabaseServerUserClient } from "../../../lib/supabase";
+
+Astro.request.headers.set("Cache-Control", "no-store");
+
+const { cookies, redirect } = Astro;
+const accessToken = cookies.get("sb-access-token");
+const refreshToken = cookies.get("sb-refresh-token");
+
+const urlBase = "http://localhost:4321"; //Astro.request.url.split("/signin")[0];
+const url2 = new URL("/api/auth/callback", urlBase).href;
+// console.log("redirect url", url2);
+
+if (accessToken || refreshToken) {
+  if (cookies.has("uid")) return redirect("/");
+}
+
+const redirectURL = import.meta.env.PROD
+  ? "https://app.thrivetogether.xyz/api/auth/callback"
+  : url2; // import.meta.env.SITE
+console.log("redirectURL", redirectURL);
+
+const userAgent = Astro.request.headers.get("user-agent")?.toLowerCase();
+if (!userAgent) return new Response("Error: no user agent", { status: 400 });
+
+const isAndroidWV = !!Astro.request.headers.get("X-Requested-With");
+var iosWV = /wv/.test(userAgent); //iphone|ipod|ipad/.test(userAgent);
+var error = "";
+if (iosWV || isAndroidWV) {
+  error =
+    "Error: not supported in webview. Please open <a href='https://app.thrivetogether.xyz' target='_system'>thrivetogether.xyz</a> in your browser.";
+}
+
+var url = "";
+
+if (!error) {
+  const { data, error: error2 } = await supabaseServerUserClient(
+    cookies
+  ).auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: redirectURL,
+    },
+  });
+
+  if (error2) error = error2.message;
+
+  if (data?.url) {
+    url = data.url;
+    // redirect the user to the identity provider's authentication flow
+    return redirect(data.url);
+  }
+}
+---
+
+<Layout title="Sign in">
+  {!error && url && <h1 class="text-lg bold">Redirecting login...</h1>}
+  {error && <h1 class="text-lg bold" set:html={error} />}
+</Layout>
