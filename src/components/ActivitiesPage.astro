@@ -11,7 +11,7 @@ const name = Astro.cookies.get("name")?.value || "";
 <RootElement data={{ name, uid }}>
   <div class="max-h-screen flex flex-col items-center py-8 space-y-10">
     <h1 class="text-2xl uppercase mb-4 text-black font-semibold mt-4">
-      What's your plan for today?
+      What's your top priorities?
     </h1>
     <ActivitySelector />
 
@@ -20,7 +20,7 @@ const name = Astro.cookies.get("name")?.value || "";
         data-uid={uid}
         id="postfield"
         class="w-full bg-transparent border-none outline-none resize-none text-slate-400"
-        placeholder="Add a community note, question, or post request. (optional)"
+        placeholder="Need something? Add a community note, question, or make a request..."
       ></textarea>
     </div>
 
