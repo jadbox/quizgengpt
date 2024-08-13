@@ -1,28 +1,29 @@
 ---
 const { cookies, redirect, rewrite } = Astro;
 
-const access_token = cookies.get("sb-access-token")?.value;
-const refresh_token = cookies.get("sb-refresh-token")?.value;
+// const access_token = cookies.get("sb-access-token")?.value;
+// const refresh_token = cookies.get("sb-refresh-token")?.value;
+// access_token = { access_token };
+// refresh_token = { refresh_token };
 const uid = cookies.get("uid")?.value;
 ---
 
-<RootElement data={{ access_token, refresh_token, uid }}>
-  <session
-    id="session"
-    access_token={access_token}
-    refresh_token={refresh_token}
-    class="hidden"></session>
+<RootElement data={{ uid }}>
+  <session id="session" class="hidden"></session>
 </RootElement>
 
 <script>
   import { supabase } from "../lib/supabase";
 
-  const access_token = document
-    .getElementById("session")
-    ?.getAttribute("access_token");
-  const refresh_token = document
-    .getElementById("session")
-    ?.getAttribute("refresh_token");
+  // get from browser js cookies refresh_token
+  const cookies = document.cookie.split(";").reduce((acc: any, cookie) => {
+    const [key, value] = cookie.split("=");
+    acc[key.trim()] = value;
+    return acc;
+  }, {});
+
+  const access_token = cookies.access_token;
+  const refresh_token = cookies.refresh_token;
 
   if (access_token && refresh_token) initDB(access_token, refresh_token);
 

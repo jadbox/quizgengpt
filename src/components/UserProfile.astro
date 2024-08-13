@@ -16,7 +16,6 @@ const profile = Astro.props.profile as Profile;
 
 <RootElement data={{ uid }}>
   <div class="flex flex-col items-center p-4 space-y-4 w-full">
-    <user id="user" uid={uid} class="hidden"></user>
     <h1 class="text-2xl font-bold text-black">Profile</h1>
 
     <!-- Avatar Selection -->
@@ -86,7 +85,8 @@ const profile = Astro.props.profile as Profile;
         />
       </div> -->
         <button
-          type="submit"
+          type="button"
+          data-target="submit"
           class="bg-green-400 text-gray-900 px-4 py-2 rounded-lg"
           >Save
         </button>
@@ -104,28 +104,29 @@ const profile = Astro.props.profile as Profile;
           import { supabase } from "../lib/supabase";
 
           RootElement.ready(($, ctx) => {
-            const uid = document.getElementById("user")?.getAttribute("uid");
+            const uid = ctx.data.uid;
             if (!uid) throw new Error("no uid");
 
             // Handle avatar selection
-            document.querySelectorAll('img[id^="avatar"]').forEach((img) => {
-              img.addEventListener("click", () => {
-                document
-                  .querySelectorAll('img[id^="avatar"]')
-                  .forEach((img) => {
-                    img.classList.remove("border-green-400");
-                    img.classList.add("border-transparent");
-                  });
-                img.classList.remove("border-transparent");
-                img.classList.add("border-green-400");
-                // Handle avatar selection logic here, e.g., save the selected avatar ID to the user's profile
-              });
-            });
+            // document.querySelectorAll('img[id^="avatar"]').forEach((img) => {
+            //   img.addEventListener("click", () => {
+            //     document
+            //       .querySelectorAll('img[id^="avatar"]')
+            //       .forEach((img) => {
+            //         img.classList.remove("border-green-400");
+            //         img.classList.add("border-transparent");
+            //       });
+            //     img.classList.remove("border-transparent");
+            //     img.classList.add("border-green-400");
+            //     // Handle avatar selection logic here, e.g., save the selected avatar ID to the user's profile
+            //   });
+            // });
 
             // Handle form submission
             const form = document.getElementById("profile-form");
             if (!form) throw new Error("Form not found");
-            form.addEventListener("submit", async (event) => {
+
+            $("submit").addEventListener("submit", async (event) => {
               event.preventDefault();
 
               const nameInput = document.getElementById(
@@ -148,18 +149,23 @@ const profile = Astro.props.profile as Profile;
                 .update({ username: name })
                 .match({ id: uid });
 
+              if (error) {
+                console.error("Error updating name:", error);
+              }
+
               // delete all previous messages to purge username
               const { data: messages, error: messageError } = await supabase
                 .from("messages")
                 .delete()
                 .match({ profile_id: uid });
 
-              if (error) {
-                console.error("Error updating name:", error);
+              if (messageError) {
+                console.error("Error deleting messages:", messageError.message);
               }
+              return;
 
-              // window.location.href = "/profile";
-              navigate("/");
+              window.location.href = "/";
+              // navigate("/");
             });
           });
         </script>
