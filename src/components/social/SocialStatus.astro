@@ -157,7 +157,6 @@ const commentsFormatted = people;
   import { supabase } from "../../lib/supabase";
   import { navigate } from "astro:transitions/client";
   RootElement.ready(($, ctx) => {
-    console.log("ready");
     $("delete-click").addEventListener("click", async (e) => {
       e.preventDefault();
       const r = await confirm("Are you sure you want to delete your status?");

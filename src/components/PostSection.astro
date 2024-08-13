@@ -164,7 +164,7 @@ const _comments = comments.map((comment) => {
       }
 
       const handleInserts = (payload: any) => {
-        console.log("payload", payload);
+        // console.log("payload", payload);
         const newComment = payload.new.content;
         const el = document.getElementById("commentbox");
         makeComment(newComment);

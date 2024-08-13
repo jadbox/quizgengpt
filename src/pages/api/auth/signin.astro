@@ -19,7 +19,7 @@ if (accessToken || refreshToken) {
 const redirectURL = import.meta.env.PROD
   ? "https://app.thrivetogether.xyz/api/auth/callback"
   : url2; // import.meta.env.SITE
-console.log("redirectURL", redirectURL);
+// console.log("redirectURL", redirectURL);
 
 const userAgent = Astro.request.headers.get("user-agent")?.toLowerCase();
 if (!userAgent) return new Response("Error: no user agent", { status: 400 });
