@@ -1,6 +1,11 @@
-import { AuthResponse, createClient } from "@supabase/supabase-js";
+import {
+  AuthResponse,
+  createClient,
+  SupabaseClient,
+} from "@supabase/supabase-js";
 import type { Database } from "../../supabase/supabase";
 import type { Tables } from "../../supabase/supabase";
+import { AstroCookies } from "astro";
 
 // console.log(
 //   "PUBLIC_SUPABASE_URL",
@@ -37,6 +42,33 @@ export const supabase = createClient<Database>(
     },
   }
 );
+
+export function supabaseServerUserClient(cookies: AstroCookies) {
+  // if (!storage.getItem) throw new Error("storage.getItem not found");
+
+  // console.log("test", storage.getItem("uid"));
+
+  return createClient<Database>(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+    {
+      auth: {
+        flowType: "pkce",
+        // storage: globalThis.window ? localStorage : undefined,
+        // storageKey: "supabase.auth.token",
+        detectSessionInUrl: true,
+        persistSession: true,
+        storage: {
+          getItem: (key: string) => cookies.get(key)?.value as string,
+          setItem: (key: string, value: string) => {
+            cookies.set(key, value, { path: "/" });
+          },
+          removeItem: (key: string) => cookies.delete(key, { path: "/" }),
+        },
+      },
+    }
+  );
+}
 
 // Cache last session
 let lastSession: AuthResponse;

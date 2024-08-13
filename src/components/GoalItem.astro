@@ -1,7 +1,6 @@
 ---
 import { Goal } from "../lib/supabase";
 import GoalSocialIndicator from "./GoalSocialIndicator.astro";
-import SocialStatus from "./social/SocialStatus.astro";
 
 const goal = Astro.props.goal as Goal;
 const name = Astro.cookies.get("name")?.value;

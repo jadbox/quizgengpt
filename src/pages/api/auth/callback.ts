@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro";
 import {
-  supabase,
   supabaseServer,
   setAstroSession,
+  supabaseServerUserClient,
 } from "../../../lib/supabase";
 
 export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
@@ -14,7 +14,9 @@ export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
 
   console.log("authCode", authCode);
   try {
-    var { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
+    var { data, error } = await supabaseServerUserClient(
+      cookies
+    ).auth.exchangeCodeForSession(authCode);
     // console.log("data", data);
     if (error) {
       console.error("Callback Error:", error);

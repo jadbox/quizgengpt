@@ -5,12 +5,12 @@ export function loginCheck(Astro: any) {
 
   if (!accessToken || !refreshToken) {
     // console.log("no auth token");
-    return redirect("/signin");
+    return redirect("/api/auth/signin");
   }
 
   if (!cookies.get("uid")) {
     // console.log("no auth cookie");
-    return redirect("/signin");
+    return redirect("/api/auth/signin");
   }
 
   return null;
