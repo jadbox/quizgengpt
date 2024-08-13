@@ -1,5 +1,9 @@
 import type { APIRoute } from "astro";
-import { supabase, supabaseServer } from "../../../lib/supabase";
+import {
+  supabase,
+  supabaseServer,
+  setAstroSession,
+} from "../../../lib/supabase";
 
 export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
   const authCode = url.searchParams.get("code") || "";
@@ -9,14 +13,19 @@ export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
   }
 
   console.log("authCode", authCode);
-  const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
-
-  if (error) {
-    console.error("Error:", error);
-    return new Response(error.message, { status: 500 });
+  try {
+    var { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
+    // console.log("data", data);
+    if (error) {
+      console.error("Callback Error:", error);
+      return new Response("Callback error: " + error.message, { status: 500 });
+    }
+  } catch (e) {
+    console.error("Callback Throw Error:", e);
+    return new Response("Callback Throw error: " + e, { status: 500 });
   }
 
-  if (!data || !data.session.access_token) {
+  if (!data || !data.session?.access_token) {
     console.error("No data or session found", data);
     return new Response("No data or session found", { status: 500 });
   }
@@ -26,6 +35,17 @@ export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
   }
 
   if (!supabaseServer) throw new Error("supabaseServer not found");
+
+  // set cookies for auth
+  const { access_token, refresh_token } = data.session;
+
+  cookies.set("sb-access-token", access_token, {
+    path: "/",
+  });
+  cookies.set("sb-refresh-token", refresh_token, {
+    path: "/",
+  });
+
   const { data: profile } = await supabaseServer
     .from("profiles")
     .select("username")
@@ -56,16 +76,6 @@ export const GET: APIRoute = async ({ request, cookies, url, redirect }) => {
   });
 
   cookies.set("email", data.user.email as string, {
-    path: "/",
-  });
-
-  // set cookies for auth
-  const { access_token, refresh_token } = data.session;
-
-  cookies.set("sb-access-token", access_token, {
-    path: "/",
-  });
-  cookies.set("sb-refresh-token", refresh_token, {
     path: "/",
   });
 

@@ -30,11 +30,10 @@ export const supabase = createClient<Database>(
   {
     auth: {
       flowType: "pkce",
-      autoRefreshToken: true,
-      persistSession: true,
       // storage: globalThis.window ? localStorage : undefined,
       // storageKey: "supabase.auth.token",
       detectSessionInUrl: true,
+      persistSession: true,
     },
   }
 );
