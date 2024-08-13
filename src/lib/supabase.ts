@@ -65,6 +65,7 @@ export function supabaseServerUserClient(cookies: AstroCookies) {
           },
           removeItem: (key: string) => cookies.delete(key, { path: "/" }),
         },
+        storageKey: "supabase.auth.token",
       },
     }
   );
