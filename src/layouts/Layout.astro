@@ -9,6 +9,7 @@ interface Props {
   title: string;
 }
 
+const uid = Astro.cookies.get("uid");
 const { title } = Astro.props;
 ---
 
@@ -47,7 +48,7 @@ const { title } = Astro.props;
     class="min-h-screen h-full bg-gradient-to-b from-[_#E2879E] to-[_#63ACE5]"
   >
     <AuthContext />
-    <Nav />
+    {uid && <Nav />}
     <slot />
   </body>
 </html>

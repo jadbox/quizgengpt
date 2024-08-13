@@ -1,4 +1,5 @@
 ---
+import Layout from "@/layouts/Layout.astro";
 import { supabase } from "../lib/supabase";
 
 Astro.request.headers.set("Cache-Control", "no-store");
@@ -11,9 +12,9 @@ const urlBase = "http://localhost:4321"; //Astro.request.url.split("/signin")[0]
 const url2 = new URL("/api/auth/callback", urlBase).href;
 // console.log("redirect url", url2);
 
-// if (accessToken || refreshToken) {
-//   if (cookies.has("uid")) return redirect("/");
-// }
+if (accessToken || refreshToken) {
+  if (cookies.has("uid")) return redirect("/");
+}
 
 const redirectURL = import.meta.env.PROD
   ? "https://app.thrivetogether.xyz/api/auth/callback"
@@ -25,26 +26,33 @@ if (!userAgent) return new Response("Error: no user agent", { status: 400 });
 
 const isAndroidWV = !!Astro.request.headers.get("X-Requested-With");
 var iosWV = /wv/.test(userAgent); //iphone|ipod|ipad/.test(userAgent);
+var error = "";
 if (iosWV || isAndroidWV) {
-  return new Response(
-    "Error: not supported in webview. Please open <a href='https://thrivetogether.xyz' target='_system'>https://thrivetogether.xyz</a> in your browser.",
-    { status: 400 }
-  );
+  error =
+    "Error: not supported in webview. Please open <a href='https://app.thrivetogether.xyz' target='_system'>thrivetogether.xyz</a> in your browser.";
 }
 
-const { data, error } = await supabase.auth.signInWithOAuth({
-  provider: "google",
-  options: {
-    redirectTo: redirectURL,
-  },
-});
+var url = "";
 
-if (error) return new Response("Error: " + error.message, { status: 400 });
+if (!error) {
+  const { data, error: error2 } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: redirectURL,
+    },
+  });
 
-if (data?.url) {
-  // redirect the user to the identity provider's authentication flow
-  return redirect(data.url);
+  if (error2) error = error2.message;
+
+  if (data?.url) {
+    url = data.url;
+    // redirect the user to the identity provider's authentication flow
+    return redirect(data.url);
+  }
 }
 ---
 
-<h1><a href={data.url}>Click here to login {data.url}</a></h1>
+<Layout title="Sign in">
+  {!error && url && <h1 class="text-lg bold">Redirecting login...</h1>}
+  {error && <h1 class="text-lg bold" set:html={error} />}
+</Layout>
