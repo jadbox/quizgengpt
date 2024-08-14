@@ -122,7 +122,7 @@ const groupedReactions = reactions?.reduce(
         if (emoji) {
           btn.disabled = true;
           await handleSubmit(parseInt(emoji));
-          navigate("/");
+          navigate("/", { history: "replace" });
         }
       });
     });

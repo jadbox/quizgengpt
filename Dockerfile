@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Adjust BUN_VERSION as desired
-ARG BUN_VERSION=1.1.22
+ARG BUN_VERSION=1.1.24
 FROM oven/bun:${BUN_VERSION}-slim as base
 
 LABEL fly_launch_runtime="Bun"
@@ -23,7 +23,7 @@ FROM base as build
 # Install node modules
 # COPY --link bun.lockb package.json yarn.lock ./
 COPY --link bun.lockb package.json ./
-RUN bun install --frozen-lockfile --ci
+RUN bun install --frozen-lockfile --ci --production
 
 # Copy application code
 COPY --link . .
