@@ -35,7 +35,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "nanostores": "^0.10.3",
-    "openai": "^4.55.9",
+    "openai": "^4.56.0",
     "postcss": "^8.4.41",
     "signal-polyfill": "^0.1.2",
     "simple-stack-query": "^0.2.0",
