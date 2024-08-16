@@ -5,6 +5,9 @@ dist/
 
 # dependencies
 node_modules/
+node_modules_bun/
+node_modules_yarn/
+*.bak
 
 # logs
 npm-debug.log*

@@ -6,9 +6,11 @@ const { cookies, redirect, rewrite } = Astro;
 // access_token = { access_token };
 // refresh_token = { refresh_token };
 const uid = cookies.get("uid")?.value;
+const access_token = cookies.get("sb-access-token")?.value;
+const refresh_token = cookies.get("sb-refresh-token")?.value;
 ---
 
-<RootElement data={{ uid }}>
+<RootElement data={{ uid, access_token, refresh_token }}>
   <session id="session" class="hidden"></session>
 </RootElement>
 
@@ -16,23 +18,20 @@ const uid = cookies.get("uid")?.value;
   import { supabase } from "../lib/supabase";
 
   // get from browser js cookies refresh_token
-  const cookies = document.cookie.split(";").reduce((acc: any, cookie) => {
-    const [key, value] = cookie.split("=");
-    acc[key.trim()] = value;
-    return acc;
-  }, {});
 
-  const access_token = cookies.access_token;
-  const refresh_token = cookies.refresh_token;
+  // const access_token = cookies.access_token;
+  // const refresh_token = cookies.refresh_token;
+  ///  console.log("1", access_token, refresh_token);
 
-  if (access_token && refresh_token) initDB(access_token, refresh_token);
+  //if (access_token && refresh_token) initDB(access_token, refresh_token);
 
-  //   RootElement.ready(($, ctx) => {
-  //     const { access_token, refresh_token } = ctx.data;
-  //     initDB(access_token, refresh_token);
-  //   });
+  RootElement.ready(($, ctx) => {
+    const { access_token, refresh_token } = ctx.data;
+    initDB(access_token, refresh_token);
+  });
 
   async function initDB(access_token: string, refresh_token: string) {
+    // console.log("initDB", access_token, refresh_token);
     if (access_token && refresh_token) {
       // get cookie using JS
       // const cookies = document.cookie.split(";").reduce((acc:any, cookie) => {
