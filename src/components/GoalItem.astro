@@ -21,12 +21,12 @@ if (completedTime) {
   <div class="grid grid-cols-4 gap-4 items-center py-2">
     <div class="col-span-1">
       <span class="capitalize text-slate-300">{goal.goal}</span>
-      {goal.started && !goal.completed && <GoalSocialIndicator goal={goal} />}
+      <!-- {goal.started && !goal.completed && <GoalSocialIndicator goal={goal} />} -->
     </div>
-    <div class="col-span-1 text-center">
+    <!-- <div class="col-span-1 text-center">
       <span data-target="stopwatch" class="text-slate-300">00:00:00</span>
-    </div>
-    <div class="col-span-2 flex justify-end space-x-2">
+    </div> -->
+    <!-- <div class="col-span-2 flex justify-end space-x-2">
       {
         goal.started && !goal.completed && (
           <button
@@ -36,29 +36,33 @@ if (completedTime) {
             {!goal.paused ? "Pause" : "Resume"}
           </button>
         )
-      }
-      {
-        !goal.completed && (
-          <button
+      } -->
+    {
+      (
+        <label class="flex items-center space-x-2">
+          <input
+            type="checkbox"
             data-target="start-finish"
-            class="bg-gray-700 text-slate-300 border border-green-400 px-2 py-1 rounded-lg w-24"
-          >
-            {!goal.started ? `Start` : "Finish"}
-          </button>
-        )
-      }
-      {
-        goal.completed && (
-          <div class="text-slate-300 w-24 text-center">
-            Done!{" "}
-            <span class="text-xs text-gray-500 mt-1">{completedTime}</span>
-          </div>
-        )
-      }
-    </div>
+            class="form-checkbox h-5 w-5 text-gray-600 cursor-pointer"
+            checked={goal.completed}
+          />
+          <span class="text-slate-300">
+            {!goal.started ? `Start` : "Finished"}
+          </span>
+        </label>
+      )
+    }
+    <!-- {
+      goal.completed && (
+        <div class="text-slate-300 w-24 text-center">
+          Done! <span class="text-xs text-gray-500 mt-1">{completedTime}</span>
+        </div>
+      )
+    } -->
   </div>
+</RootElement>
 
-  <!-- <div class="w-full center">
+<!-- <div class="w-full center">
     <div class="flex flex-col space-y-2">
       <div
         class="flex items-center space-x-2 bg-gray-700 p-2 rounded-lg max-w-md"
@@ -70,139 +74,142 @@ if (completedTime) {
     </div>
   </div> -->
 
-  <script>
-    import { navigate } from "astro:transitions/client";
-    import { supabase, Goal } from "../lib/supabase";
+<script>
+  import { navigate } from "astro:transitions/client";
+  import { supabase, Goal } from "../lib/supabase";
 
-    RootElement.ready(($, ctx) => {
-      var goal = ctx.data.goal as Goal;
+  RootElement.ready(($, ctx) => {
+    var goal = ctx.data.goal as Goal;
 
-      timerUpdate();
+    //timerUpdate();
 
-      const elem = $.optional<HTMLButtonElement>(`start-finish`);
-      elem?.addEventListener("click", async () => {
-        elem.disabled = true;
-        elem.classList.add("opacity-50");
-        // console.log(elem.innerHTML, goal.id);
-        // console.log("a", $.self.getAttribute("data-test"));
+    const elem = $.optional<HTMLInputElement>(`start-finish`);
+    elem?.addEventListener("click", async () => {
+      console.log("start-finish", goal);
+      elem.disabled = true;
+      elem.classList.add("opacity-50");
+      // console.log(elem.innerHTML, goal.id);
+      // console.log("a", $.self.getAttribute("data-test"));
 
-        if (!goal.started) {
-          goal.started = new Date().toISOString();
-          goal.paused = false;
-          goal.resumed = goal.started;
-          goal.duration = 0;
-          // timerUpdate(true);
-          // goal.resumed = goal.started;
-        } else {
-          goal.duration = getDuration(goal);
-          goal.paused = false;
-          goal.resumed = null;
-          goal.completed = new Date().toISOString();
+      if (!goal.completed) {
+        goal.started = new Date().toISOString();
+        goal.paused = false;
+        goal.resumed = goal.started;
+        goal.duration = 0;
+        goal.completed = new Date().toISOString();
+        // timerUpdate(true);
+        // goal.resumed = goal.started;
+      } else {
+        goal.duration = 0; //getDuration(goal);
+        goal.paused = false;
+        goal.resumed = null;
+        goal.completed = null;
+        goal.started = null;
 
-          // send message to Supabase
-          const message = `${ctx.data.name} completed ${goal.goal} in ${formatDuration(goal)}`;
-          const { data, error } = await supabase
-            .from("messages")
-            .insert([{ content: message, profile_id: goal.uid }]);
-        }
-
-        console.log("goal", goal);
+        // send message to Supabase
+        const message = `${ctx.data.name} completed ${goal.goal}`; // in ${formatDuration(goal)}`;
         const { data, error } = await supabase
-          .from("goals")
-          .update(goal)
-          .match({ id: goal.id })
-          .select();
-
-        if (error) {
-          console.error("Error updating goal:", error);
-          return;
-        }
-
-        navigate("/", { history: "replace" });
-        // window.location.reload();
-        // push navigation to /
-        // old  window.history.replaceState({}, "", "/");
-        // updateStopwatch(goal);
-      });
-
-      // Handle pause-toggle button toggle click
-      const pauseToggle = $.optional<HTMLButtonElement>(`pause-toggle`);
-      pauseToggle?.addEventListener("click", async () => {
-        pauseToggle.disabled = true;
-        pauseToggle.classList.add("opacity-50");
-
-        const dur = getDuration(goal); // must be calc before we pause
-        goal.paused = !goal.paused;
-
-        if (goal.paused) {
-          goal.resumed = null;
-
-          // in seconds
-          // const now = new Date();
-          console.log("goal", goal);
-          // const resumedDate = new Date(goal.resumed || goal.started || "");
-          goal.duration = dur;
-          console.log("Paused duration:", goal.duration);
-        } else {
-          goal.resumed = new Date().toISOString();
-        }
-
-        const { data, error } = await supabase
-          .from("goals")
-          .update(goal)
-          .match({ id: goal.id })
-          .select();
-
-        if (error) {
-          console.error("Error updating goal:", error);
-          return;
-        }
-
-        // Object.assign(goal, data[0]);
-        navigate("/", { history: "replace" });
-        // window.location.reload();
-      });
-
-      function timerUpdate() {
-        const stopwatch = $(`stopwatch`);
-        if (!stopwatch) return;
-
-        stopwatch.textContent = formatDuration(goal);
-        if (!goal.started || goal.paused || goal.completed) return;
-
-        const intervalId = setInterval(() => {
-          stopwatch.textContent = formatDuration(goal);
-        }, 500);
-
-        return intervalId;
+          .from("messages")
+          .insert([{ content: message, profile_id: goal.uid }]);
       }
+
+      console.log("goal", goal);
+      const { data, error } = await supabase
+        .from("goals")
+        .update(goal)
+        .match({ id: goal.id })
+        .select();
+
+      if (error) {
+        console.error("Error updating goal:", error);
+        return;
+      }
+
+      navigate("/", { history: "replace" });
+      // window.location.reload();
+      // push navigation to /
+      // old  window.history.replaceState({}, "", "/");
+      // updateStopwatch(goal);
     });
+  });
 
-    function formatDuration(goal: Goal) {
-      const diff = getDuration(goal);
+  // Handle pause-toggle button toggle click
+  // const pauseToggle = $.optional<HTMLButtonElement>(`pause-toggle`);
+  // pauseToggle?.addEventListener("click", async () => {
+  //   pauseToggle.disabled = true;
+  //   pauseToggle.classList.add("opacity-50");
 
-      const hours = Math.floor(diff / 3600);
-      const minutes = Math.floor((diff % 3600) / 60);
-      const seconds = diff % 60;
+  //   // const dur = getDuration(goal); // must be calc before we pause
+  //   goal.paused = !goal.paused;
 
-      // format as 00:00:00
-      return `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-    }
+  //   if (goal.paused) {
+  //     goal.resumed = null;
 
-    function getDuration(goal: Goal) {
-      const duration = goal.duration;
+  //     // in seconds
+  //     // const now = new Date();
+  //     console.log("goal", goal);
+  //     // const resumedDate = new Date(goal.resumed || goal.started || "");
+  //     goal.duration = 0; // dur;
+  //     console.log("Paused duration:", goal.duration);
+  //   } else {
+  //     goal.resumed = new Date().toISOString();
+  //   }
 
-      let diff = duration;
-      if (!goal.paused && goal.started && !goal.completed) {
-        const lastStartedDate = goal.resumed as string;
-        const now = new Date();
-        const startedDate = new Date(lastStartedDate);
-        diff += Math.floor((now.getTime() - startedDate.getTime()) / 1000);
-      }
+  //   const { data, error } = await supabase
+  //     .from("goals")
+  //     .update(goal)
+  //     .match({ id: goal.id })
+  //     .select();
 
-      return diff;
-    }
-  </script>
-</RootElement>
+  //   if (error) {
+  //     console.error("Error updating goal:", error);
+  //     return;
+  //   }
+
+  //   // Object.assign(goal, data[0]);
+  //   navigate("/", { history: "replace" });
+  //   // window.location.reload();
+  // });
+
+  // function timerUpdate() {
+  //   const stopwatch = $(`stopwatch`);
+  //   if (!stopwatch) return;
+
+  //   stopwatch.textContent = formatDuration(goal);
+  //   if (!goal.started || goal.paused || goal.completed) return;
+
+  //   const intervalId = setInterval(() => {
+  //     stopwatch.textContent = formatDuration(goal);
+  //   }, 500);
+
+  //   return intervalId;
+  // }
+  // });
+
+  // function formatDuration(goal: Goal) {
+  //   const diff = getDuration(goal);
+
+  //   const hours = Math.floor(diff / 3600);
+  //   const minutes = Math.floor((diff % 3600) / 60);
+  //   const seconds = diff % 60;
+
+  //   // format as 00:00:00
+  //   return `${hours.toString().padStart(2, "0")}:${minutes
+  //     .toString()
+  //     .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  // }
+
+  // function getDuration(goal: Goal) {
+  //   const duration = goal.duration;
+
+  //   let diff = duration;
+  //   if (!goal.paused && goal.started && !goal.completed) {
+  //     const lastStartedDate = goal.resumed as string;
+  //     const now = new Date();
+  //     const startedDate = new Date(lastStartedDate);
+  //     diff += Math.floor((now.getTime() - startedDate.getTime()) / 1000);
+  //   }
+
+  //   return diff;
+  // }
+</script>

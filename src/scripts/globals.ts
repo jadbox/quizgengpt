@@ -17,24 +17,11 @@ export const activities = [
   { label: "Study", icon: "psychology", val: "study" },
 ];
 
+// Shows an icon for misc other activities
+const OtherActivity = { label: "Other", icon: "more_horiz", val: "other" };
+
 // Define acions that user can select while performing the activity above. These actvity actions tracks.
-// export const activityActions = {
-//   exercise: ["run", "yoga", "walk", "swim", "cycle"],
-//   meditate: ["breath", "mindfulness", "guided", "chanting", "mantra"],
-//   read: ["book", "article", "blog", "research", "study"],
-//   learn: ["course", "workshop", "tutorial", "seminar", "webinar"],
-//   work: ["project", "meeting", "email", "call", "presentation"],
-//   socialize: ["meet", "call", "chat", "party", "event"],
-//   cook: ["meal", "snack", "dessert", "drink", "bake"],
-//   clean: ["room", "closet", "kitchen", "bathroom", "garage"],
-//   relax: ["nap", "bath", "massage", "movie", "music"],
-//   plan: ["day", "week", "month", "year", "life"],
-//   create: ["art", "craft", "music", "dance", "writing"],
-//   connect: ["friend", "family", "colleague", "community", "stranger"],
-//   reflect: ["journal", "meditate", "walk", "talk", "write"],
-//   organize: ["desk", "closet", "kitchen", "bathroom", "garage"],
-//   explore: ["nature", "city", "culture", "food", "history"],
-// };
+export const activityActions = [];
 
 // Define status of anny activity actions while performing them. Example: ["starting", "in progress", "paused", "completed"]
 // tbd

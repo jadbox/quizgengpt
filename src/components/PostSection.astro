@@ -11,7 +11,7 @@ const { supabase, user } = await setAstroSession(Astro.cookies);
 const { data } = await supabase
   .from("messages")
   .select("content, profile_id, created_at, id")
-  .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+  // .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
   .limit(10)
   .order("created_at", { ascending: false });
 
@@ -78,7 +78,7 @@ const _comments = comments.map((comment) => {
       <input
         data-uid={uid}
         type="text"
-        placeholder="Need something? Add a community note, question, or make a request..."
+        placeholder="Ask to start a book club, meetup, or write something inspiring..."
         class="w-full md:w-2/3 p-2 mt-2 mb-4 border border-green-400 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-500"
         id="messageInput"
       />
@@ -155,7 +155,7 @@ const _comments = comments.map((comment) => {
       () => navigate("/", { history: "replace" }),
       {
         atBegin: false,
-      }
+      },
     );
 
     RootElement.ready(($, ctx) => {
@@ -173,7 +173,7 @@ const _comments = comments.map((comment) => {
 
       const handleSubmit = async () => {
         const input = document.getElementById(
-          "messageInput"
+          "messageInput",
         ) as HTMLInputElement;
 
         if (!input.value) {
@@ -196,7 +196,7 @@ const _comments = comments.map((comment) => {
           .like("content", "%: %")
           .gt(
             "created_at",
-            new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+            new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString(),
           );
 
         const { data, error } = await supabase
@@ -224,7 +224,7 @@ const _comments = comments.map((comment) => {
 
       // Handle Submit button click
       const submitButton = document.getElementById(
-        "handleSubmitBtn"
+        "handleSubmitBtn",
       ) as HTMLButtonElement;
 
       if (!submitButton) throw new Error("submitButton for comments not found");
@@ -237,7 +237,7 @@ const _comments = comments.map((comment) => {
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const input = document.getElementById(
-            "messageInput"
+            "messageInput",
           ) as HTMLInputElement;
           const message = input.value;
 
@@ -251,7 +251,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
 
@@ -260,7 +260,7 @@ const _comments = comments.map((comment) => {
         .on(
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "messages" },
-          handleInserts
+          handleInserts,
         )
         .subscribe();
       // console.log("subscribed to messages channel");

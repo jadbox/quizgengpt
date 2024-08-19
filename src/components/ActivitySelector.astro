@@ -17,7 +17,7 @@ const activities = Astro.props.feelings
 
   .split-hover-bg {
     transition: transform 0.3s ease;
-    transform: translateX(-100%);
+    transform: translateX(-103%);
   }
 
   .split-hover-bg::before,
@@ -87,7 +87,7 @@ const activities = Astro.props.feelings
     activityItems.forEach((activityItem) => {
       activityItem.addEventListener("click", (event) => {
         const activity = (event.currentTarget as HTMLElement).getAttribute(
-          "data-activity"
+          "data-activity",
         );
         //console.log(activity);
 
@@ -99,9 +99,9 @@ const activities = Astro.props.feelings
 
         // update selected activities for all animate__animated items
         selected = Array.from(
-          document.querySelectorAll(".activity-item.animate__animated")
+          document.querySelectorAll(".activity-item.animate__animated"),
         ).map(
-          (item) => (item as HTMLElement).getAttribute("data-activity") || ""
+          (item) => (item as HTMLElement).getAttribute("data-activity") || "",
         );
 
         // console.log("selected", selected);

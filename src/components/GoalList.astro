@@ -18,7 +18,11 @@ const { data: goals, error } = await supabase
   .from("goals")
   .select("*")
   .match({ uid })
-  .is("completed", null) // TODO: remove
+  .gt(
+    "created_at",
+    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
+  )
+  // .is("completed", null) // TODO: remove
   // or completed is not null and completed is older than 24 hours
   // .or("completed.is.null,and(completed.gt,created_at,now(-24h))")
 
@@ -82,7 +86,7 @@ if (error) {
       // are you sure?
       if (
         !confirm(
-          "Are you sure you want to reset today's incompleted goals? You'll keep all your completed goals."
+          "Are you sure you want to reset today's incompleted goals? You'll keep all your completed goals.",
         )
       )
         return;
@@ -114,7 +118,7 @@ if (error) {
         .like("content", "% started %")
         .gt(
           "created_at",
-          new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+          new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString(),
         );
 
       if (error) {
