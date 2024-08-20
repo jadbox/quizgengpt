@@ -3,6 +3,7 @@
 import ActivitySelector from "@/components/ActivitySelector.astro";
 import Layout from "@/layouts/Layout.astro";
 import { prompt } from "@/scripts/copilot";
+import PostSection from "@/components/PostSection.astro";
 import {
   DefaultActivities,
   ActivityDef,
@@ -20,12 +21,12 @@ if (querySearch && querySearch === "goal") {
   activities = MarshallRosenbergNeeds;
 } else if (querySearch) {
   const q = await prompt(
-    `Respond with strict data schema ONLY. List labels should be short 1-2 words. List should be no more than 15 items, no less than 3. Please return only a JSON response for a activity or informational genre directory for ${querySearch} menu list using the schema: \n` +
+    `Respond with strict data schema ONLY. List labels should be short 1-2 words. List should be no more than 15 items, no less than 3. Must use valid material symbol names.Please return only a JSON response for a activity or informational genre directory for ${querySearch} menu list using the schema: \n` +
       ActivityDef,
   );
-  const _q = q.replaceAll("```json", "").replaceAll("```", "").trim();
-  console.log("q", _q);
-  const parsed = JSON.parse(_q);
+  // const _q = q.replaceAll("```json", "").replaceAll("```", "").trim();
+  console.log("q", q);
+  const parsed = JSON.parse(q);
   activities = parsed.activities ? parsed.activities : parsed;
   console.log("activities", activities);
 }
@@ -100,6 +101,8 @@ if (querySearch && querySearch === "goal") {
         </div>
       )
     }
+
+    <PostSection />
   </RootElement>
 
   <script>
