@@ -9,17 +9,18 @@ import {
   MarshallRosenbergNeeds,
 } from "@/scripts/globals";
 
-const querySearch = Astro.url.searchParams.get("q")?.split("+");
+const querySearch = Astro.url.searchParams.get("q"); // ?.split("+");
 console.log("querySearch", querySearch);
 
 let activities = MarshallRosenbergNeeds;
 if (querySearch) {
   const q = await prompt(
-    `Respond with data schema ONLY. Please return only a JSON response for a list of ${querySearch} menu list using the schema: \n` +
+    `Respond with strict data schema ONLY. Please return only a JSON response for a activity or informational genre directory for ${querySearch} menu list using the schema: \n` +
       ActivityDef,
   );
-  console.log("q", q);
-  const parsed = JSON.parse(q);
+  const _q = q.replaceAll("```json", "").replaceAll("```", "").trim();
+  console.log("q", _q);
+  const parsed = JSON.parse(_q);
   activities = parsed.activities ? parsed.activities : parsed;
   console.log("activities", activities);
 }
@@ -93,7 +94,7 @@ if (querySearch) {
   selectedActivities.listen((activities) => {
     console.log("selectedActivities", activities);
     if (activities.length > 0)
-      navigate(`/story?q=${encodeURIComponent(activities.join("+"))}`);
+      navigate(`/directory?q=${encodeURIComponent(activities.join("+"))}`);
   });
   //});
 </script>
@@ -117,7 +118,7 @@ if (querySearch) {
         }
 
         wordSpan.classList.add("hidden-word");
-        slowReveal.appendChild(wordSpan);
+        slowReveal?.appendChild(wordSpan);
 
         setTimeout(() => {
           wordSpan.classList.remove("hidden-word");

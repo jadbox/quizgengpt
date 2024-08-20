@@ -13,46 +13,47 @@ Astro.request.headers.set("Cache-Control", "no-store");
 
 // console.log("accessToken", accessToken, refreshToken, process.env.SITE);
 
-let hasGoals = false;
+// let hasGoals = false;
 
-const {supabase, data, error} = await setAstroSession(Astro.cookies);
-if(error) return Astro.redirect("/api/auth/signout");
+const { supabase, data, error } = await setAstroSession(Astro.cookies);
+if (error) return Astro.redirect("/api/auth/signout");
 
-if (data) {
+// if (data) {
+//   if (!data.user?.id) throw new Error("User not found");
 
-  if (!data.user?.id) throw new Error("User not found");
+//   // if user has uncompleted goals in supabase, redirect to /goals
+//   // 24hrs to complete goals
+//   const { count, data: d } = await supabase
+//     .from("goals")
+//     .select("*", { count: "exact", head: false })
+//     .eq("uid", data.user?.id)
+//     .is("completed", null);
+//   // .gte("created_at", new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString());
+//   //.gte("created_at", new Date().toISOString().split("T")[0]);
 
-  // if user has uncompleted goals in supabase, redirect to /goals
-  // 24hrs to complete goals
-  const { count, data:d } = await supabase
-    .from("goals")
-    .select("*", { count: "exact", head: false })
-    .eq("uid", data.user?.id)
-    .is("completed", null)
-    // .gte("created_at", new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString());
-    //.gte("created_at", new Date().toISOString().split("T")[0]);
+//   // console.log("count", count, d);
 
-    // console.log("count", count, d);
+//   if (count && count > 0) {
+//     //  console.log("redirecting to /goals");
+//     hasGoals = true;
+//     // return rewrite("/goals");
+//   }
 
-  if (count && count > 0) {
-   //  console.log("redirecting to /goals");
-    hasGoals = true;
-    // return rewrite("/goals");
-  }
-
-  // if (data.user?.email) email = data.user?.email;
-}
+//   // if (data.user?.email) email = data.user?.email;
+// }
 // return data.user?.email;
 
 const check = loginCheck(Astro);
 if (check) return check;
+
+return redirect("/directory");
 ---
 
 <Layout title="Choose Your Goals" transition:animate="fade">
-  {hasGoals ? (
+  <!-- {hasGoals ? (
     <GoalList />
     <PostSection />
   ) : (
      <ActivitiesPage />
-  )}
+  )} -->
 </Layout>

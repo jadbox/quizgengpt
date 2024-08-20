@@ -1,5 +1,5 @@
 // icon field is a material-symbols icon name
-export const activities = [
+export const DefaultActivities = [
   { label: "Exercise", icon: "fitness_center", val: "exercise" },
   { label: "Meditate", icon: "self_improvement", val: "meditate" },
   { label: "Read", icon: "menu_book", val: "read" },
@@ -17,17 +17,46 @@ export const activities = [
   { label: "Study", icon: "psychology", val: "study" },
 ];
 
+export const MarshallRosenbergNeeds: ActivityList = [
+  { label: "Autonomy", icon: "person", val: "autonomy" },
+  { label: "Connection", icon: "favorite", val: "connection" },
+  { label: "Wellbeing", icon: "healing", val: "physical_wellbeing" },
+  { label: "Honesty", icon: "verified", val: "honesty" },
+  { label: "Play", icon: "sports_esports", val: "play" },
+  { label: "Meaning", icon: "lightbulb", val: "meaning" },
+  { label: "Learning", icon: "school", val: "learning" },
+  { label: "Creativity", icon: "palette", val: "creativity" },
+  { label: "Community", icon: "groups", val: "community" },
+  { label: "Safety", icon: "security", val: "safety" },
+  { label: "Rest", icon: "bedtime", val: "rest" },
+  { label: "Contribution", icon: "volunteer_activism", val: "contribution" },
+  { label: "Purpose", icon: "flag", val: "purpose" },
+  { label: "Celebration", icon: "celebration", val: "celebration" },
+];
+
 // Shows an icon for misc other activities
-const OtherActivity = { label: "Other", icon: "more_horiz", val: "other" };
+export const OtherActivity: Activity = {
+  label: "Other",
+  icon: "more_horiz",
+  val: "other",
+};
 
-// Define acions that user can select while performing the activity above. These actvity actions tracks.
-export const activityActions = [];
+export type ActivityList = Activity[];
+export type Activity = {
+  label: string;
+  icon: string;
+  val: string;
+};
 
-// Define status of anny activity actions while performing them. Example: ["starting", "in progress", "paused", "completed"]
-// tbd
+export const ActivityDef: string = `
+[{
+  label: string;
+  icon: string; // material-symbols icon name
+  val: string;
+}]`;
 
 // Define emotion list of 12 common task feelings while doing the activity. Use a list of objects: [{ label: "happy", icon: "material_icon_name", val: "happy" },]
-export const FEELINGS = [
+export const FEELINGS: ActivityList = [
   { label: "happy", icon: "😄", val: "happy" },
   { label: "sad", icon: "😢", val: "sad" },
   { label: "angry", icon: "😡", val: "angry" },
