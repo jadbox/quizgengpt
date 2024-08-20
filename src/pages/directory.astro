@@ -1,0 +1,134 @@
+---
+// This is a story page for a D&D game that uses a narrative text that playfully reveals on the page.
+import ActivitySelector from "@/components/ActivitySelector.astro";
+import Layout from "@/layouts/Layout.astro";
+import { prompt } from "@/scripts/copilot";
+import {
+  DefaultActivities,
+  ActivityDef,
+  MarshallRosenbergNeeds,
+} from "@/scripts/globals";
+
+const querySearch = Astro.url.searchParams.get("q")?.split("+");
+console.log("querySearch", querySearch);
+
+let activities = MarshallRosenbergNeeds;
+if (querySearch) {
+  const q = await prompt(
+    `Respond with data schema ONLY. Please return only a JSON response for a list of ${querySearch} menu list using the schema: \n` +
+      ActivityDef,
+  );
+  console.log("q", q);
+  const parsed = JSON.parse(q);
+  activities = parsed.activities ? parsed.activities : parsed;
+  console.log("activities", activities);
+}
+// const p = await prompt();
+// console.log("--", p);
+---
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=MedievalSharp&family=Roboto:wght@400;700&display=swap");
+
+  .story-container {
+    font-family: "Roboto", sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #2c3e50;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .story-container h1 {
+    font-family: "MedievalSharp", cursive;
+    font-size: 3rem;
+    color: #8b4513;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  #slow-reveal {
+    text-align: left;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem 0 1.5rem;
+  }
+
+  .revealed-word {
+    display: inline-block;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.5s ease-out;
+  }
+
+  .hidden-word {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .punctuation {
+    color: #d35400;
+    font-weight: bold;
+  }
+</style>
+
+<Layout title="D&D Story" transition:animate="fade">
+  <RootElement class="story-container">
+    <h1>Where do we begin?</h1>
+    <div id="slow-reveal"></div><br />
+    <div class="w-3/4 mx-auto max-w-lg">
+      <ActivitySelector activities={activities} />
+    </div>
+  </RootElement>
+</Layout>
+
+<script>
+  import { selectedActivities } from "@/scripts/store.js";
+  import { navigate } from "astro:transitions/client";
+  // RootElement.ready(($, ctx) => {
+  selectedActivities.listen((activities) => {
+    console.log("selectedActivities", activities);
+    if (activities.length > 0)
+      navigate(`/story?q=${encodeURIComponent(activities.join("+"))}`);
+  });
+  //});
+</script>
+
+<script>
+  RootElement.ready(($, ctx) => {
+    const slowReveal = document.getElementById("slow-reveal");
+    if (!slowReveal) throw new Error("Missing slow-reveal element");
+    const text = `This is home. A place of starting out on a new adventure. Where do we begin?`;
+
+    const words = text.split(/(\s+)/);
+    let currentIndex = 0;
+
+    function revealNextWord() {
+      if (currentIndex < words.length) {
+        const wordSpan = document.createElement("span");
+        wordSpan.textContent = words[currentIndex];
+
+        if (/[,.?!]/.test(words[currentIndex])) {
+          wordSpan.classList.add("punctuation");
+        }
+
+        wordSpan.classList.add("hidden-word");
+        slowReveal.appendChild(wordSpan);
+
+        setTimeout(() => {
+          wordSpan.classList.remove("hidden-word");
+          wordSpan.classList.add("revealed-word");
+        }, 30);
+
+        currentIndex++;
+        setTimeout(revealNextWord, Math.random() * 100 + 30);
+      }
+    }
+
+    revealNextWord();
+  });
+</script>
