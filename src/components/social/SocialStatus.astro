@@ -30,50 +30,47 @@ let people = nearBy || []; //  || [
 const ids = people.map((p: any) => p.id); // ids [ "3bf547ef-150c-4195-8818-4fc1c1b25667", "0bbf6034-091b-4370-829d-31c67a8754aa" ]
 
 if (!supabaseServer) throw new Error("supabaseServer not found");
-const goalsMatchingEachCommentProfileQ = await supabaseServer
-  .from("goals")
-  .select("goal, id, uid, completed, started, created_at")
-  //.eq("profiles.id", "goals.id")
-  .in("uid", ids)
-  // not older than 24 hours
-  .gt(
-    "created_at",
-    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString()
-  )
-  .order("started", { ascending: true })
-  .order("completed", { ascending: false });
 
-const goalNum = goalsMatchingEachCommentProfileQ.data?.length || 0;
+// const goalsMatchingEachCommentProfileQ = await supabaseServer
+//   .from("goals")
+//   .select("goal, id, uid, completed, started, created_at")
+//   //.eq("profiles.id", "goals.id")
+//   .in("uid", ids)
+//   // not older than 24 hours
+//   .gt(
+//     "created_at",
+//     new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
+//   )
+//   .order("started", { ascending: true })
+//   .order("completed", { ascending: false });
+
+// const goalNum = goalsMatchingEachCommentProfileQ.data?.length || 0;
 // console.log(
 //   "goalsMatchingEachCommentProfileQ",
 //   goalsMatchingEachCommentProfileQ
 // );
 
-people.forEach((p: any) => {
-  const m = goalsMatchingEachCommentProfileQ.data
-    ?.filter((profilegoal: any) => profilegoal.uid === p.id)
-    .slice(0, 4);
-
-  // limit to 3
-  const goalsDone =
-    m
-      ?.filter((x) => x.completed !== null)
-      .map((goal: any) => `✔️\u00A0${goal.goal}`) || [];
-
-  const goalsStarted =
-    m
-      ?.filter((x) => x.started !== null && x.completed === null)
-      .map((goal: any) => `⏰\u00A0${goal.goal}`) || [];
-
-  // use emooji empty check box if goal is not started
-  const goalsNotStarted =
-    m
-      ?.filter((x) => x.started === null)
-      .map((goal: any) => `⭕\u00A0${goal.goal}`) || [];
-
-  p.goals = goalsStarted.concat(goalsNotStarted).concat(goalsDone).join(", ");
-  if (!p.goals?.length) p.goals = "no goals set";
-});
+// people.forEach((p: any) => {
+//   // const m = goalsMatchingEachCommentProfileQ.data
+//   //   ?.filter((profilegoal: any) => profilegoal.uid === p.id)
+//   //   .slice(0, 4);
+//   // limit to 3
+//   // const goalsDone =
+//   //   m
+//   //     ?.filter((x) => x.completed !== null)
+//   //     .map((goal: any) => `✔️\u00A0${goal.goal}`) || [];
+//   // const goalsStarted =
+//   //   m
+//   //     ?.filter((x) => x.started !== null && x.completed === null)
+//   //     .map((goal: any) => `⏰\u00A0${goal.goal}`) || [];
+//   // // use emooji empty check box if goal is not started
+//   // const goalsNotStarted =
+//   //   m
+//   //     ?.filter((x) => x.started === null)
+//   //     .map((goal: any) => `⭕\u00A0${goal.goal}`) || [];
+//   // p.goals = goalsStarted.concat(goalsNotStarted).concat(goalsDone).join(", ");
+//   // if (!p.goals?.length) p.goals = "no goals set";
+// });
 
 const uid = Astro.props.uid;
 
@@ -108,10 +105,10 @@ const commentsFormatted = people;
                 <h3 class="text-lg font-semibold text-white">
                   {comment.username}
                 </h3>
-                <p class="text-sm text-gray-300">
+                {/* <p class="text-sm text-gray-300">
                   <span class="font-semibold" />
                   {comment.goals}
-                </p>
+                </p> */}
               </div>
             </div>
             <div class="space-y-2">
@@ -174,7 +171,7 @@ const commentsFormatted = people;
         .like("content", "%: %")
         .gt(
           "created_at",
-          new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString()
+          new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString(),
         );
 
       if (error) {
