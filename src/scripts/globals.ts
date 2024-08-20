@@ -54,12 +54,14 @@ export type Activity = {
   val: string;
 };
 
-export const ActivityDef: string = `
-[{
-  label: string;
-  icon: string; // material-symbols icon name
-  val: string;
-}]`;
+export const ActivityDef: string = `{
+  short_overview: string; // example: "Looking to cook a meal? Select a kind of recepe"
+  activities:[{
+    label: string;
+    icon: string; // material-symbols icon name
+    val: string;
+  }]
+}`;
 
 // Define emotion list of 12 common task feelings while doing the activity. Use a list of objects: [{ label: "happy", icon: "material_icon_name", val: "happy" },]
 export const FEELINGS: ActivityList = [
