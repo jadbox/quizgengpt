@@ -20,12 +20,20 @@ if (querySearch && querySearch === "goal") {
 } else if (querySearch && querySearch === "need") {
   activities = MarshallRosenbergNeeds;
 } else if (querySearch) {
+  console.log("querySearch2", querySearch.replace("_", " "));
   const q = await prompt(
-    `Respond with strict data schema ONLY. List labels should be short 1-2 words. List should be no more than 15 items, no less than 3. Must use valid material symbol names.Please return only a JSON response for a activity or informational genre directory for ${querySearch} menu list using the schema: \n` +
-      ActivityDef,
+    `Return a directory meny list for strictly "${querySearch.replace("_", " ")}" 
+    menu list that is targeted to the left-to-right search and try to get specific to the most 
+    common menu items for user (example recipes->breakfast or lunch->pancakes).
+    Respond with strict data schema ONLY. List labels should be short 1-2 words. 
+    List should be no more than 15 items, no less than 3. 
+    Must use valid material symbol names. 
+    Return only a JSON response for a activity or informational genre directory for query (left-to-right targeted search)
+    and get more specific with each step to guess what the user wants.
+    Must Use Schema:\n ${ActivityDef}`,
   );
   // const _q = q.replaceAll("```json", "").replaceAll("```", "").trim();
-  console.log("q", q);
+  // console.log("q", q);
   const parsed = JSON.parse(q);
   activities = parsed.activities ? parsed.activities : parsed;
   console.log("activities", activities);
