@@ -1,5 +1,11 @@
 // icon field is a material-symbols icon name
-export const DefaultActivities = [
+
+export const GoalOrNeed: ActivityList = [
+  { label: "Goal", icon: "person", val: "goal" },
+  { label: "Need", icon: "favorite", val: "need" },
+];
+
+export const DefaultActivities: ActivityList = [
   { label: "Exercise", icon: "fitness_center", val: "exercise" },
   { label: "Meditate", icon: "self_improvement", val: "meditate" },
   { label: "Read", icon: "menu_book", val: "read" },

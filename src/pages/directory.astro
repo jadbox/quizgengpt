@@ -6,16 +6,21 @@ import { prompt } from "@/scripts/copilot";
 import {
   DefaultActivities,
   ActivityDef,
+  GoalOrNeed,
   MarshallRosenbergNeeds,
 } from "@/scripts/globals";
 
 const querySearch = Astro.url.searchParams.get("q"); // ?.split("+");
 console.log("querySearch", querySearch);
 
-let activities = MarshallRosenbergNeeds;
-if (querySearch) {
+let activities = GoalOrNeed;
+if (querySearch && querySearch === "goal") {
+  activities = DefaultActivities;
+} else if (querySearch && querySearch === "need") {
+  activities = MarshallRosenbergNeeds;
+} else if (querySearch) {
   const q = await prompt(
-    `Respond with strict data schema ONLY. Please return only a JSON response for a activity or informational genre directory for ${querySearch} menu list using the schema: \n` +
+    `Respond with strict data schema ONLY. List labels should be short 1-2 words. List should be no more than 15 items, no less than 3. Please return only a JSON response for a activity or informational genre directory for ${querySearch} menu list using the schema: \n` +
       ActivityDef,
   );
   const _q = q.replaceAll("```json", "").replaceAll("```", "").trim();
@@ -78,58 +83,76 @@ if (querySearch) {
 </style>
 
 <Layout title="D&D Story" transition:animate="fade">
-  <RootElement class="story-container">
+  <RootElement class="story-container" data={{ querySearch }}>
     <h1>Where do we begin?</h1>
     <div id="slow-reveal"></div><br />
     <div class="w-3/4 mx-auto max-w-lg">
       <ActivitySelector activities={activities} />
     </div>
-  </RootElement>
-</Layout>
-
-<script>
-  import { selectedActivities } from "@/scripts/store.js";
-  import { navigate } from "astro:transitions/client";
-  // RootElement.ready(($, ctx) => {
-  selectedActivities.listen((activities) => {
-    console.log("selectedActivities", activities);
-    if (activities.length > 0)
-      navigate(`/directory?q=${encodeURIComponent(activities.join("+"))}`);
-  });
-  //});
-</script>
-
-<script>
-  RootElement.ready(($, ctx) => {
-    const slowReveal = document.getElementById("slow-reveal");
-    if (!slowReveal) throw new Error("Missing slow-reveal element");
-    const text = `This is home. A place of starting out on a new adventure. Where do we begin?`;
-
-    const words = text.split(/(\s+)/);
-    let currentIndex = 0;
-
-    function revealNextWord() {
-      if (currentIndex < words.length) {
-        const wordSpan = document.createElement("span");
-        wordSpan.textContent = words[currentIndex];
-
-        if (/[,.?!]/.test(words[currentIndex])) {
-          wordSpan.classList.add("punctuation");
-        }
-
-        wordSpan.classList.add("hidden-word");
-        slowReveal?.appendChild(wordSpan);
-
-        setTimeout(() => {
-          wordSpan.classList.remove("hidden-word");
-          wordSpan.classList.add("revealed-word");
-        }, 30);
-
-        currentIndex++;
-        setTimeout(revealNextWord, Math.random() * 100 + 30);
-      }
+    {
+      querySearch && (
+        <div class="text-center mt-4">
+          <a href="/directory">
+            <button type="button" class="btn btn-primary">
+              Reset
+            </button>
+          </a>
+        </div>
+      )
     }
+  </RootElement>
 
-    revealNextWord();
-  });
-</script>
+  <script>
+    import { selectedActivities } from "@/scripts/store.js";
+    import { navigate } from "astro:transitions/client";
+    // RootElement.ready(($, ctx) => {
+
+    RootElement.ready(($, ctx) => {
+      selectedActivities.listen((activities) => {
+        if (!activities[0]) return;
+        let search = ctx.data.querySearch || "";
+        if (search) search += "_" + activities[0];
+        else search = activities[0];
+
+        console.log(ctx.data.querySearch, "selectedActivities", search);
+
+        // return;
+        if (activities.length > 0) {
+          navigate(`/directory?q=${encodeURIComponent(search)}`);
+        }
+      });
+
+      //---
+      const slowReveal = document.getElementById("slow-reveal");
+      if (!slowReveal) throw new Error("Missing slow-reveal element");
+      const text = `This is home. A place of starting out on a new adventure. Where do we begin?`;
+
+      const words = text.split(/(\s+)/);
+      let currentIndex = 0;
+
+      function revealNextWord() {
+        if (currentIndex < words.length) {
+          const wordSpan = document.createElement("span");
+          wordSpan.textContent = words[currentIndex];
+
+          if (/[,.?!]/.test(words[currentIndex])) {
+            wordSpan.classList.add("punctuation");
+          }
+
+          wordSpan.classList.add("hidden-word");
+          slowReveal?.appendChild(wordSpan);
+
+          setTimeout(() => {
+            wordSpan.classList.remove("hidden-word");
+            wordSpan.classList.add("revealed-word");
+          }, 30);
+
+          currentIndex++;
+          setTimeout(revealNextWord, Math.random() * 100 + 30);
+        }
+      }
+
+      revealNextWord();
+    });
+  </script>
+</Layout>
