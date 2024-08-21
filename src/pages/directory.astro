@@ -4,8 +4,10 @@ import ActivitySelector from "@/components/ActivitySelector.astro";
 import Layout from "@/layouts/Layout.astro";
 import { prompt } from "@/scripts/copilot";
 import PostSection from "@/components/PostSection.astro";
+import { marked } from "marked";
 import {
   DefaultActivities,
+  DocumentDef,
   ActivityDef,
   GoalOrNeed,
   MarshallRosenbergNeeds,
@@ -14,17 +16,22 @@ import {
 const querySearch = Astro.url.searchParams.get("q"); // ?.split("+");
 console.log("querySearch", querySearch);
 
+const DEPTH_LIMIT = 3;
+
+let pageInnerHTML: string | null = null;
 let short_overview =
   "This is home. A place of starting out on a new adventure. Where do we begin?";
-let activities = GoalOrNeed;
-if (querySearch && querySearch === "goal") {
-  activities = DefaultActivities;
-} else if (querySearch && querySearch === "need") {
-  activities = MarshallRosenbergNeeds;
-} else if (querySearch) {
-  console.log("querySearch2", querySearch.replace("_", " "));
-  const q = await prompt(
-    `Return a directory meny list for strictly "${querySearch.replace("_", " ")}" 
+let activities = DefaultActivities;
+// if (querySearch && querySearch === "goal") {
+//   activities = DefaultActivities;
+// } else if (querySearch && querySearch === "need") {
+//   activities = MarshallRosenbergNeeds;
+// }
+if (querySearch) {
+  const depth = querySearch.split("__").length;
+  console.log(depth, "querySearch2", querySearch.replace("__", " "));
+
+  let request = `Return a directory meny list for strictly "${querySearch.replace("__", " ")}" 
     menu list that is targeted to the left-to-right search and try to get specific to the most 
     common menu items for user (example recipes->breakfast or lunch->pancakes).
     Respond with strict data schema ONLY. List labels should be short 1-2 words. 
@@ -32,14 +39,29 @@ if (querySearch && querySearch === "goal") {
     Must use valid material symbol names. 
     Return only a JSON response for a activity or informational genre directory for query (left-to-right targeted search)
     and get more specific with each step to guess what the user wants.
-    Must Use Schema:\n ${ActivityDef}`,
-  );
+    Must Use Schema:\n ${ActivityDef}`;
+
+  if (depth >= DEPTH_LIMIT) {
+    request = `Return a document for strictly "${querySearch.replace("__", " ")}" 
+    in strictly JSON format ${DocumentDef}. `;
+
+    console.log("request", request);
+  }
+
+  const q = await prompt(request);
   // const _q = q.replaceAll("```json", "").replaceAll("```", "").trim();
   // console.log("q", q);
   const parsed = JSON.parse(q);
-  activities = parsed.activities; // ? parsed.activities : parsed;
-  short_overview = parsed.short_overview || short_overview;
-  console.log("activities", activities);
+  console.log("parsed", parsed);
+  if (depth >= DEPTH_LIMIT) {
+    activities = [];
+    short_overview = "";
+    pageInnerHTML = await marked.parse(`${parsed.content_markdown}`);
+  } else {
+    activities = parsed.activities; // ? parsed.activities : parsed;
+    short_overview = parsed.short_overview || short_overview;
+    console.log("activities", activities);
+  }
 }
 
 // const p = await prompt();
@@ -97,11 +119,28 @@ if (querySearch && querySearch === "goal") {
 
 <Layout title="Directory AI" transition:animate="fade">
   <RootElement class="story-container" data={{ querySearch, short_overview }}>
-    <h1>Where do we begin?</h1>
-    <div id="slow-reveal"></div><br />
-    <div class="w-3/4 mx-auto max-w-lg">
-      <ActivitySelector activities={activities} />
-    </div>
+    {
+      !!pageInnerHTML && (
+        <div
+          class="page align-center mx-auto max-w-lg"
+          set:html={pageInnerHTML}
+        />
+      )
+    }
+    {
+      !pageInnerHTML && (
+        <div>
+          <h1>Where do we begin?</h1>
+          <>
+            <div id="slow-reveal" />
+            <br />
+          </>
+          <div class="w-3/4 mx-auto max-w-lg">
+            <ActivitySelector activities={activities} />
+          </div>
+        </div>
+      )
+    }
     {
       querySearch && (
         <div class="text-center mt-4">
@@ -113,7 +152,6 @@ if (querySearch && querySearch === "goal") {
         </div>
       )
     }
-
     <PostSection />
   </RootElement>
 
@@ -126,7 +164,7 @@ if (querySearch && querySearch === "goal") {
       selectedActivities.listen((activities) => {
         if (!activities[0]) return;
         let search = ctx.data.querySearch || "";
-        if (search) search += "_" + activities[0];
+        if (search) search += "__" + activities[0];
         else search = activities[0];
 
         console.log(ctx.data.querySearch, "selectedActivities", search);

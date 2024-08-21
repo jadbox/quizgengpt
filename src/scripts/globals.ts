@@ -63,6 +63,11 @@ export const ActivityDef: string = `{
   }]
 }`;
 
+export const DocumentDef: string = `{
+  title: string;
+  content_markdown: string;
+}`;
+
 // Define emotion list of 12 common task feelings while doing the activity. Use a list of objects: [{ label: "happy", icon: "material_icon_name", val: "happy" },]
 export const FEELINGS: ActivityList = [
   { label: "happy", icon: "😄", val: "happy" },
@@ -77,13 +82,13 @@ export const FEELINGS: ActivityList = [
   { label: "focused", icon: "🧐", val: "focused" },
 ];
 
-export type ActivityLabel = (typeof activities)[number]["label"];
+// export type ActivityLabel = (typeof DefaultActivities)[number]["label"];
 
 // Note, this is a fake API call, in a real app you would fetch this data from a server to include custom activities
-export async function getActivities() {
-  return activities;
-}
+// export async function getActivities() {
+//   return activities;
+// }
 
-export async function getFeelings() {
-  return FEELINGS;
-}
+// export async function getFeelings() {
+//   return FEELINGS;
+// }
