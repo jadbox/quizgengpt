@@ -1,0 +1,159 @@
+---
+export interface Option {
+  id: string;
+  text: string;
+}
+
+export interface Question {
+  type: string;
+  category: string;
+  subcategory: string;
+  difficulty: string;
+  clinicalScenario: string;
+  question: string;
+  options: Option[];
+  correctAnswer: string;
+  rationale: Record<string, string>;
+  nextSteps: string[];
+}
+
+export interface Props {
+  question: Question;
+}
+
+let answer: string | null = null;
+
+if (Astro.request.method === "POST") {
+  const body = await Astro.request.formData();
+  const selected = body.get("goal");
+  if (selected === Astro.props.question.correctAnswer) {
+    console.log("Correct!");
+
+    answer = selected;
+  } else {
+    console.log("Incorrect!");
+  }
+}
+
+const { question } = Astro.props;
+---
+
+<style>
+  #al_answer {
+    color: #2ecc71;
+    font-weight: bold;
+  }
+  #question {
+    margin: 0 auto;
+    width: 50%;
+    text-align: left;
+  }
+
+  #question h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+  #answers {
+    margin: 1rem auto 0 auto;
+  }
+  #answers label {
+    margin-right: 1rem;
+    cursor: pointer;
+  }
+  #answers input[type="radio"] {
+    margin-right: 0.5rem;
+    transform: scale(1.5);
+    cursor: pointer;
+  }
+
+  #submit {
+    margin-top: 1rem;
+    background-color: #f1c40f;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+  #submit:hover {
+    background-color: #f39c12;
+  }
+
+  #error-message {
+    display: none;
+    color: #e74c3c;
+    font-weight: bold;
+  }
+</style>
+
+<div id="question">
+  <h2>{question.question}</h2>
+  <form id="answers" action="/" method="POST">
+    {
+      question.options.map((option, i) => (
+        <div>
+          <input
+            type="radio"
+            id={"a" + option.id}
+            name="goal"
+            value={option.id}
+            tabindex={i}
+            checked={answer === option.id}
+            disabled={answer !== null}
+          />
+          <label
+            id={"al" + (option.id === answer ? "_answer" : option.id)}
+            for={option.id}
+          >
+            {option.text}
+          </label>
+          {option.id === answer && <span> - Correct!</span>}
+        </div>
+      ))
+    }
+
+    {
+      !answer && (
+        <button id="submit" type="submit">
+          Submit
+        </button>
+      )
+    }
+
+    {
+      answer && (
+        <div>
+          <h3>Rationale</h3>
+          <h3>{question.rationale[answer]}</h3>
+          <h3>Next Steps</h3>
+          <ul>
+            {question.nextSteps.map((step) => (
+              <li>{step}</li>
+            ))}
+          </ul>
+
+          <button id="submit" type="button">
+            Next
+          </button>
+        </div>
+      )
+    }
+  </form>
+  <p id="error-message">Please select an answer before submitting.</p>
+</div>
+
+<script>
+  const form = document.querySelector("form");
+  const errorMessage = document.getElementById("error-message") as HTMLElement;
+
+  form?.addEventListener("submit", (event) => {
+    const selectedOption = form.querySelector('input[name="goal"]:checked');
+
+    if (!selectedOption) {
+      event.preventDefault();
+      errorMessage.style.display = "block";
+    } else {
+      errorMessage.style.display = "none";
+    }
+  });
+</script>
