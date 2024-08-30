@@ -51,13 +51,15 @@ const { question } = Astro.props;
   }
   #question {
     margin: 0 auto;
-    width: 50%;
     text-align: left;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
-  #question h2 {
+  h2 {
     margin-bottom: 1rem;
     font-size: 1.5rem;
+    font-weight: bold;
   }
   #answers {
     margin: 1rem auto 0 auto;
@@ -70,6 +72,7 @@ const { question } = Astro.props;
     margin-right: 0.5rem;
     transform: scale(1.5);
     cursor: pointer;
+    font-size: 16px;
   }
 
   #submit {
@@ -85,6 +88,13 @@ const { question } = Astro.props;
     background-color: #f39c12;
   }
 
+  #question_text {
+    letter-spacing: normal;
+    line-height: 24px;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
   #error-message {
     display: none;
     color: #e74c3c;
@@ -93,8 +103,8 @@ const { question } = Astro.props;
 </style>
 
 <RootElement>
-  <div id="question">
-    <h2>{question.question}</h2>
+  <div id="question" class="w-full lg:max-w-lg px-4">
+    <div id="question_text">{question.question}</div>
     <form id="answers" action="/" method="POST">
       {
         question.options.map((option, i) => (
@@ -139,9 +149,9 @@ const { question } = Astro.props;
       {
         (answer || incorrectAnswer) && (
           <div class="mt-4">
-            <h3>Rationale</h3>
-            <p>{question.rationale[answer || ""]}</p>
-            <h3>Next Steps</h3>
+            <h2>Rationale:</h2>
+            <h3>{question.rationale[incorrectAnswer || answer || ""]}</h3>
+            <h2 style="font-bold">Next Steps</h2>
             <ul>
               {question.nextSteps.map((step) => (
                 <li>{step}</li>

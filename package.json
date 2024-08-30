@@ -14,8 +14,8 @@
     "db": "npx supabase gen types --lang=typescript --project-id 'bfamhutcvrljgrfxndpt' --schema public > supabase/supabase.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.26.1",
-    "@astrojs/check": "^0.8.3",
+    "@anthropic-ai/sdk": "^0.27.1",
+    "@astrojs/check": "^0.9.3",
     "@astrojs/mdx": "^3.1.4",
     "@astrojs/node": "^8.3.3",
     "@astrojs/react": "^3.6.2",
@@ -27,7 +27,6 @@
     "@supabase/supabase-js": "^2.45.1",
     "@types/canvas-confetti": "^1.6.4",
     "@types/oembed-parser": "^1.2.2",
-    "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
     "@types/throttle-debounce": "^5.0.2",
     "almond.css": "^1.2.2",
@@ -38,7 +37,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "marked": "^14.0.0",
-    "nanostores": "^0.10.3",
+    "nanostores": "^0.11.3",
     "openai": "^4.56.0",
     "postcss": "^8.4.41",
     "signal-polyfill": "^0.1.2",

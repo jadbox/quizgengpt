@@ -15,10 +15,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@anthropic-ai/sdk@^0.26.1":
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/@anthropic-ai/sdk/-/sdk-0.26.1.tgz#41f95cbd612d7550ab25009c12a770dcba5e3923"
-  integrity sha512-HeMJP1bDFfQPQS3XTJAmfXkFBdZ88wvfkE05+vsoA9zGn5dHqEaHOPsqkazf/i0gXYg2XlLxxZrf6rUAarSqzw==
+"@anthropic-ai/sdk@^0.27.1":
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/@anthropic-ai/sdk/-/sdk-0.27.1.tgz#96fb3d4ace581455e2b34783b509f39a03856eb1"
+  integrity sha512-AKFd/E8HO26+DOVPiZpEked3Pm2feA5d4gcX2FcJXr9veDkXbKO90hr2C7N2TL7mPIMwm040ldXlsIZQ416dHg==
   dependencies:
     "@types/node" "^18.11.18"
     "@types/node-fetch" "^2.6.4"
@@ -28,12 +28,12 @@
     formdata-node "^4.3.2"
     node-fetch "^2.6.7"
 
-"@astrojs/check@^0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@astrojs/check/-/check-0.8.3.tgz#3a60ccd34fd11d9b054b00ca54a9a45f0f63a07e"
-  integrity sha512-ajcSe+ezX5jCc3dreQlWzbknzXgSGnDETNe3C1mawUOtGpO4t5z2YGaD0y+wzB84lmgPWaWZa0fKSPwLq/wUHw==
+"@astrojs/check@^0.9.3":
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/@astrojs/check/-/check-0.9.3.tgz#e8b1ce5ccc5714c8861b55201a229d372fff609c"
+  integrity sha512-I6Dz45bMI5YRbp4yK2LKWsHH3/kkHRGdPGruGkLap6pqxhdcNh7oCgN04Ac+haDfc9ow5BYPGPmEhkwef15GQQ==
   dependencies:
-    "@astrojs/language-server" "^2.12.7"
+    "@astrojs/language-server" "^2.14.1"
     chokidar "^3.5.3"
     fast-glob "^3.3.1"
     kleur "^4.1.5"
@@ -49,7 +49,7 @@
   resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.4.1.tgz#ceb5de49346dbdbfb6cba1b683c07fef7df56e1c"
   integrity sha512-bMf9jFihO8YP940uD70SI/RDzIhUHJAolWVcO1v5PUivxGKvfLZTLTVVxEYzGYyPsA3ivdLNqMnL5VgmQySa+g==
 
-"@astrojs/language-server@^2.12.7":
+"@astrojs/language-server@^2.14.1":
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/@astrojs/language-server/-/language-server-2.14.1.tgz#2a95501863ec1da96a658e506ca20d21d9bacb58"
   integrity sha512-mkKtCTPRD4dyKdAqIP0zmmPyO/ZABOqFESnaVca47Dg/sAagJnDSEsDUDzNbHFh1+9Dj1o5y4iwNsxJboGdaNg==
@@ -1169,7 +1169,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^18.3.4":
+"@types/react@*":
   version "18.3.4"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.4.tgz#dfdd534a1d081307144c00e325c06e00312c93a3"
   integrity sha512-J7W30FTdfCxDDjmfRM+/JqLHBIyl7xUIp9kwK637FGmY7+mkSFSe6L4jpZzhj5QMfLssSDP4/i75AKkrdC7/Jw==
@@ -3567,10 +3567,10 @@ nanoid@^3.3.7:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.7.tgz#d0c301a691bc8d54efa0a2226ccf3fe2fd656bd8"
   integrity sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==
 
-nanostores@^0.10.3:
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/nanostores/-/nanostores-0.10.3.tgz#960b508dd465286a9bd8747ba0596fb679004c57"
-  integrity sha512-Nii8O1XqmawqSCf9o2aWqVxhKRN01+iue9/VEd1TiJCr9VT5XxgPFbF1Edl1XN6pwJcZRsl8Ki+z01yb/T/C2g==
+nanostores@^0.11.3:
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/nanostores/-/nanostores-0.11.3.tgz#8f66d341011ca97ffc38ba67a80c1a6b78ee63c6"
+  integrity sha512-TUes3xKIX33re4QzdxwZ6tdbodjmn3tWXCEc1uokiEmo14sI1EaGYNs2k3bU2pyyGNmBqFGAVl6jAGWd06AVIg==
 
 neotraverse@^0.6.18:
   version "0.6.18"
