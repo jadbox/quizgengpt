@@ -126,7 +126,7 @@ const { question } = Astro.props;
                     ? "al_incorrect"
                     : "al" + option.id
               }
-              for={option.id}
+              for={"a" + option.id}
             >
               {option.text}
             </label>
