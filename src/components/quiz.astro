@@ -22,19 +22,18 @@ export interface Props {
 }
 
 let answer: string | null = null;
-let badAnswer = false;
+let incorrectAnswer: string | null = null;
 
 if (Astro.request.method === "POST") {
   const body = await Astro.request.formData();
-  const selected = body.get("goal");
+  const selected = body.get("goal") as string;
   if (selected === Astro.props.question.correctAnswer) {
     console.log("Correct!");
-
     answer = selected;
-    badAnswer = false;
   } else {
-    badAnswer = true;
     console.log("Incorrect!");
+    incorrectAnswer = selected;
+    answer = Astro.props.question.correctAnswer;
   }
 }
 
@@ -44,6 +43,10 @@ const { question } = Astro.props;
 <style>
   #al_answer {
     color: #2ecc71;
+    font-weight: bold;
+  }
+  #al_incorrect {
+    color: #e74c3c;
     font-weight: bold;
   }
   #question {
@@ -102,33 +105,42 @@ const { question } = Astro.props;
               name="goal"
               value={option.id}
               tabindex={i}
-              checked={answer === option.id}
-              disabled={answer !== null}
+              checked={answer === option.id || incorrectAnswer === option.id}
+              disabled={answer !== null || incorrectAnswer !== null}
             />
             <label
-              id={"al" + (option.id === answer ? "_answer" : option.id)}
+              id={
+                option.id === answer
+                  ? "al_answer"
+                  : option.id === incorrectAnswer
+                    ? "al_incorrect"
+                    : "al" + option.id
+              }
               for={option.id}
             >
               {option.text}
             </label>
-            {option.id === answer && <span> - Correct!</span>}
+            {option.id === answer && !incorrectAnswer && (
+              <span> - Correct!</span>
+            )}
+            {option.id === incorrectAnswer && <span> - Incorrect</span>}
           </div>
         ))
       }
 
       {
-        !answer && (
-          <button id="submit" type="submit">
+        !answer && !incorrectAnswer && (
+          <button id="submit" type="submit" tabindex={question.options.length}>
             Submit
           </button>
         )
       }
 
       {
-        answer && (
+        (answer || incorrectAnswer) && (
           <div class="mt-4">
             <h3>Rationale</h3>
-            <h3>{question.rationale[answer]}</h3>
+            <p>{question.rationale[answer || ""]}</p>
             <h3>Next Steps</h3>
             <ul>
               {question.nextSteps.map((step) => (
@@ -143,13 +155,7 @@ const { question } = Astro.props;
         )
       }
     </form>
-    <p id="error-message" data-reason-bad={badAnswer ? "1" : "0"}>
-      {
-        badAnswer
-          ? "Invalid answer"
-          : "Please select an answer before submitting."
-      }'
-    </p>
+    <p id="error-message">Please select an answer before submitting.</p>
   </div>
 </RootElement>
 
@@ -159,10 +165,6 @@ const { question } = Astro.props;
     const errorMessage = document.getElementById(
       "error-message",
     ) as HTMLElement;
-    console.log(errorMessage.dataset.reasonBad);
-    if (errorMessage.dataset.reasonBad === "1") {
-      errorMessage.style.display = "block";
-    }
 
     form?.addEventListener("submit", (event) => {
       const selectedOption = form.querySelector('input[name="goal"]:checked');
