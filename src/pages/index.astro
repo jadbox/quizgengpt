@@ -63,6 +63,7 @@ const QUESTION = {
 
 <Layout title="Choose Your Goals" transition:animate="fade">
   <RootElement>
+    <div id="bannertop"></div>
     <h1 class="size-8 mx-auto">Quiz</h1>
     <p>Take the multichoice 5-option quiz to get started</p>
     <br />
@@ -74,4 +75,18 @@ const QUESTION = {
       // Any additional JavaScript logic can be added here if needed
     });
   </script>
+
+  <style>
+    #bannertop {
+      background-image: url("./banner.jpg");
+      background-size: cover;
+      background-position: center;
+
+      overflow: hidden;
+      margin-top: 1rem;
+      height: 24vh;
+      max-height: 350px;
+      width: 100%;
+    }
+  </style>
 </Layout>
