@@ -34,7 +34,8 @@ export async function promptClaude(query: string) {
 }
 
 export async function promptOpenAI(query: string) {
-  const openai = new OpenAI(process.env.OPENAI_API_KEY);
+  const openai = new OpenAI(import.meta.env.OPENAI_API_KEY);
+
   const resp = await openai.chat.completions.create({
     model: "gpt-4o",
     messages: [

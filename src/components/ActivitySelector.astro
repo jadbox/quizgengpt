@@ -1,8 +1,7 @@
 ---
-import { ActivityList, getActivities, getFeelings } from "../scripts/globals";
+import { ActivityList, FEELINGS } from "../scripts/globals";
 
-const activities: ActivityList =
-  Astro.props.activities || (await getActivities());
+const activities: ActivityList = Astro.props.activities || FEELINGS;
 ---
 
 <style>

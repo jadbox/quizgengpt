@@ -20,13 +20,16 @@ export type Comment = Tables<"messages">;
 export type Reaction = Tables<"reactions">;
 export type Profile = Tables<"profiles">;
 
-const serverkey = !globalThis.window && process.env.SUPABASE_SERVICE_KEY;
+const serverkey = !globalThis.window && import.meta.env.SUPABASE_SERVICE_KEY;
+
+if (!globalThis.window && !serverkey)
+  throw new Error("No SUPABASE_SERVICE_KEY key found");
 
 export const supabaseServer = !serverkey
   ? null
   : createClient<Database>(
       import.meta.env.PUBLIC_SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_KEY as string
+      import.meta.env.SUPABASE_SERVICE_KEY as string,
     );
 
 export const supabase = createClient<Database>(
@@ -40,7 +43,7 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
       persistSession: true,
     },
-  }
+  },
 );
 
 export function supabaseServerUserClient(cookies: AstroCookies) {
@@ -67,7 +70,7 @@ export function supabaseServerUserClient(cookies: AstroCookies) {
         },
         storageKey: "supabase.auth.token",
       },
-    }
+    },
   );
 }
 
@@ -90,6 +93,7 @@ export const setAstroSession = async (cookies: any) => {
 
     if (error) {
       console.error("Error:", error);
+      throw new Error(error.message);
       return { supabase, data: null, error, user: null };
       // return new Response(error.message, { status: 500 });
     }

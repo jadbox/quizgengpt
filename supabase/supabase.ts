@@ -186,13 +186,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "fk_message_id"
-            columns: ["message_id"]
-            isOneToOne: false
-            referencedRelation: "messages"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reactions_message_id_fkey"
             columns: ["message_id"]
             isOneToOne: false
@@ -226,19 +219,6 @@ export type Database = {
             }
             Returns: unknown
           }
-      get_nearest_profiles: {
-        Args: {
-          user_id: string
-          limit_count: number
-        }
-        Returns: {
-          id: string
-          username: string
-          last_post: string
-          status: string
-          distance: number
-        }[]
-      }
       get_nearest_profiles2: {
         Args: {
           user_id: string

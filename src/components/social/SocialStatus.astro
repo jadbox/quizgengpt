@@ -1,6 +1,6 @@
 ---
 import { listenKeys } from "nanostores";
-import { Comment, supabaseServer, setAstroSession } from "../../lib/supabase";
+import { Comment, setAstroSession } from "../../lib/supabase";
 // console.log("SocialStatus", Astro.props.comments);
 
 const { supabase } = await setAstroSession(Astro.cookies);
@@ -28,8 +28,6 @@ let people = nearBy || []; //  || [
 
 // populate goals from each profile in comments list
 const ids = people.map((p: any) => p.id); // ids [ "3bf547ef-150c-4195-8818-4fc1c1b25667", "0bbf6034-091b-4370-829d-31c67a8754aa" ]
-
-if (!supabaseServer) throw new Error("supabaseServer not found");
 
 // const goalsMatchingEachCommentProfileQ = await supabaseServer
 //   .from("goals")
