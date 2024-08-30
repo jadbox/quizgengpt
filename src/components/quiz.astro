@@ -22,6 +22,7 @@ export interface Props {
 }
 
 let answer: string | null = null;
+let badAnswer = false;
 
 if (Astro.request.method === "POST") {
   const body = await Astro.request.formData();
@@ -30,7 +31,9 @@ if (Astro.request.method === "POST") {
     console.log("Correct!");
 
     answer = selected;
+    badAnswer = false;
   } else {
+    badAnswer = true;
     console.log("Incorrect!");
   }
 }
@@ -86,74 +89,90 @@ const { question } = Astro.props;
   }
 </style>
 
-<div id="question">
-  <h2>{question.question}</h2>
-  <form id="answers" action="/" method="POST">
-    {
-      question.options.map((option, i) => (
-        <div>
-          <input
-            type="radio"
-            id={"a" + option.id}
-            name="goal"
-            value={option.id}
-            tabindex={i}
-            checked={answer === option.id}
-            disabled={answer !== null}
-          />
-          <label
-            id={"al" + (option.id === answer ? "_answer" : option.id)}
-            for={option.id}
-          >
-            {option.text}
-          </label>
-          {option.id === answer && <span> - Correct!</span>}
-        </div>
-      ))
-    }
+<RootElement>
+  <div id="question">
+    <h2>{question.question}</h2>
+    <form id="answers" action="/" method="POST">
+      {
+        question.options.map((option, i) => (
+          <div>
+            <input
+              type="radio"
+              id={"a" + option.id}
+              name="goal"
+              value={option.id}
+              tabindex={i}
+              checked={answer === option.id}
+              disabled={answer !== null}
+            />
+            <label
+              id={"al" + (option.id === answer ? "_answer" : option.id)}
+              for={option.id}
+            >
+              {option.text}
+            </label>
+            {option.id === answer && <span> - Correct!</span>}
+          </div>
+        ))
+      }
 
-    {
-      !answer && (
-        <button id="submit" type="submit">
-          Submit
-        </button>
-      )
-    }
-
-    {
-      answer && (
-        <div>
-          <h3>Rationale</h3>
-          <h3>{question.rationale[answer]}</h3>
-          <h3>Next Steps</h3>
-          <ul>
-            {question.nextSteps.map((step) => (
-              <li>{step}</li>
-            ))}
-          </ul>
-
-          <button id="submit" type="button">
-            Next
+      {
+        !answer && (
+          <button id="submit" type="submit">
+            Submit
           </button>
-        </div>
-      )
-    }
-  </form>
-  <p id="error-message">Please select an answer before submitting.</p>
-</div>
+        )
+      }
+
+      {
+        answer && (
+          <div class="mt-4">
+            <h3>Rationale</h3>
+            <h3>{question.rationale[answer]}</h3>
+            <h3>Next Steps</h3>
+            <ul>
+              {question.nextSteps.map((step) => (
+                <li>{step}</li>
+              ))}
+            </ul>
+
+            <button id="submit" type="button">
+              Next
+            </button>
+          </div>
+        )
+      }
+    </form>
+    <p id="error-message" data-reason-bad={badAnswer ? "1" : "0"}>
+      {
+        badAnswer
+          ? "Invalid answer"
+          : "Please select an answer before submitting."
+      }'
+    </p>
+  </div>
+</RootElement>
 
 <script>
-  const form = document.querySelector("form");
-  const errorMessage = document.getElementById("error-message") as HTMLElement;
-
-  form?.addEventListener("submit", (event) => {
-    const selectedOption = form.querySelector('input[name="goal"]:checked');
-
-    if (!selectedOption) {
-      event.preventDefault();
+  RootElement.ready(($, ctx) => {
+    const form = document.querySelector("form");
+    const errorMessage = document.getElementById(
+      "error-message",
+    ) as HTMLElement;
+    console.log(errorMessage.dataset.reasonBad);
+    if (errorMessage.dataset.reasonBad === "1") {
       errorMessage.style.display = "block";
-    } else {
-      errorMessage.style.display = "none";
     }
+
+    form?.addEventListener("submit", (event) => {
+      const selectedOption = form.querySelector('input[name="goal"]:checked');
+
+      if (!selectedOption) {
+        event.preventDefault();
+        errorMessage.style.display = "block";
+      } else {
+        errorMessage.style.display = "none";
+      }
+    });
   });
 </script>
