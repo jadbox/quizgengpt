@@ -10,6 +10,8 @@ Astro.request.headers.set("Cache-Control", "no-store");
 const { supabase, data, error } = await setAstroSession(Astro.cookies);
 if (error) return Astro.redirect("/api/auth/signout");
 
+var postedQuestion = Astro.request.method === "POST";
+
 const check = loginCheck(Astro);
 if (check) return check;
 ---
@@ -21,25 +23,30 @@ if (check) return check;
       <span>🌟</span> Training Practice <span>🌟</span>
     </h1>
 
-    <div
-      id="welcomeCard"
-      class="bg-white shadow-lg rounded-lg p-6 mt-4 mb-4 max-w-2xl mx-auto"
-    >
-      <h2 class="text-2xl font-bold mb-2 text-gray-800">
-        Welcome to the Practice Exam!
-      </h2>
-      <p class="text-gray-600 mb-4">
-        Ready to test your knowledge? Click the button below to start the quiz.
-      </p>
-      <button
-        id="startQuizBtn"
-        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
-      >
-        Start Quiz
-      </button>
-    </div>
+    {
+      !postedQuestion && (
+        <div
+          id="welcomeCard"
+          class="bg-white shadow-lg rounded-lg p-6 mt-4 mb-4 max-w-2xl mx-auto"
+        >
+          <h2 class="text-2xl font-bold mb-2 text-gray-800">
+            Welcome to the Practice Exam!
+          </h2>
+          <p class="text-gray-600 mb-4">
+            Ready to test your knowledge? Click the button below to start the
+            quiz.
+          </p>
+          <button
+            id="startQuizBtn"
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+          >
+            Start Quiz
+          </button>
+        </div>
+      )
+    }
 
-    <div id="quizSetContainer" class="hidden">
+    <div id="quizSetContainer" class={postedQuestion ? "" : "hidden"}>
       <QuizSet />
     </div>
   </RootElement>
