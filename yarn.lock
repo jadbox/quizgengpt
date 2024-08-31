@@ -1341,11 +1341,6 @@ almond.css@^1.2.2:
   resolved "https://registry.yarnpkg.com/almond.css/-/almond.css-1.2.2.tgz#a8133e781d04597b994a9f6efb62088f185f6d2c"
   integrity sha512-bAOvsWLyJ2sqXWT5VSFI+iLiygCx+aLDcINF3DKWG3A9QmuBoZFnncZ53BIeNh//PT4akrbDfAZRex8idNmuHw==
 
-animate.css@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/animate.css/-/animate.css-4.1.1.tgz#614ec5a81131d7e4dc362a58143f7406abd68075"
-  integrity sha512-+mRmCTv6SbCmtYJCN4faJMNFVNN5EuCTTprDTAo7YzIGji2KADmakjVA3+8mVDkZ2Bf09vayB35lSQIex2+QaQ==
-
 ansi-align@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.1.tgz#0cdf12e111ace773a86e9a1fad1225c43cb19a59"

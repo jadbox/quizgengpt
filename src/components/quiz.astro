@@ -50,10 +50,16 @@ const { question } = Astro.props;
     font-weight: bold;
   }
   #question {
-    margin: 0 auto;
+    margin: 1rem auto 1rem auto;
     text-align: left;
     overflow-wrap: break-word;
     word-break: break-word;
+    background-color: #fff;
+    border-radius: 8px;
+    width: auto;
+    padding: 1rem 1rem 1rem 1rem;
+    position: relative;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   }
 
   h2 {
@@ -70,6 +76,8 @@ const { question } = Astro.props;
   }
   #answers input[type="radio"] {
     margin-right: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1rem;
     transform: scale(1.5);
     cursor: pointer;
     font-size: 16px;
@@ -88,11 +96,18 @@ const { question } = Astro.props;
     background-color: #f39c12;
   }
 
-  #question_text {
+  .question_text {
+    font-family: "IBM Plex Mono", "Roboto";
+    letter-spacing: normal;
+    line-height: 24px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .question_text_sub {
     letter-spacing: normal;
     line-height: 24px;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 600;
   }
 
   #error-message {
@@ -102,9 +117,20 @@ const { question } = Astro.props;
   }
 </style>
 
-<RootElement>
-  <div id="question" class="w-full lg:max-w-5xl px-5 sm:px-12">
-    <div id="question_text">{question.question}</div>
+<RootElement class="px-5 sm:px-12 w-full">
+  <div id="question" class="lg:max-w-5xl">
+    <!-- Add mx-auto class to center the question block -->
+    <div class="flex items-center flex-col sm:flex-row space-x-6 space-y-4">
+      <img
+        src="./profile-58-male.png"
+        alt="Profile Picture"
+        class="w-28 h-28 rounded-smanimate__animated animate__fadeIn"
+      />
+      <div class="question_text">{question.clinicalScenario}</div>
+    </div>
+
+    <br />
+    <div class="question_text_sub">{question.question}</div>
     <form id="answers" action="/" method="POST">
       {
         question.options.map((option, i) => (
@@ -140,7 +166,12 @@ const { question } = Astro.props;
 
       {
         !answer && !incorrectAnswer && (
-          <button id="submit" type="submit" tabindex={question.options.length}>
+          <button
+            class="animate__animated animate__bounce"
+            id="submit"
+            type="submit"
+            tabindex={question.options.length}
+          >
             Submit
           </button>
         )
@@ -148,7 +179,7 @@ const { question } = Astro.props;
 
       {
         (answer || incorrectAnswer) && (
-          <div class="mt-4">
+          <div class="mt-4 mb-24">
             <h2>Rationale:</h2>
             <h3>{question.rationale[incorrectAnswer || answer || ""]}</h3>
             <h2 style="font-bold">Next Steps</h2>

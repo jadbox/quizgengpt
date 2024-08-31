@@ -34,16 +34,23 @@ const { title } = Astro.props;
         text-align: center;
         font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
         font-size: 1.1em;
+        -webkit-font-smoothing: antialiased;
+        font-weight: normal;
       }
     </style>
 
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
+    /> -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
     />
 
     <link
@@ -59,7 +66,7 @@ const { title } = Astro.props;
     <title>{title} | Hippo Creates</title>
     <ViewTransitions />
   </head>
-  <body class="min-h-screen h-full bg-gradient-to-b from-slate-400 to-blue-300">
+  <body class="min-h-screen h-full bg-gradient-to-b from-slate-300 to-blue-200">
     <AuthContext />
     {uid && <Nav />}
     <section id="page"><slot /></section>
