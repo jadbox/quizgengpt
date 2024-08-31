@@ -1,0 +1,78 @@
+---
+import Quiz from "./quiz.astro";
+
+const QUESTIONS = [
+  {
+    type: "clinicalVignette",
+    category: "Basic Science Concepts",
+    subcategory: "Ischemic Heart Disease",
+    difficulty: "moderate",
+    clinicalScenario:
+      "A 58-year-old man with a history of hypertension, hyperlipidemia, and type 2 diabetes presents to the clinic with a 6-month history of exertional chest pain. He describes the pain as a pressure-like sensation that occurs with moderate physical activity and is relieved by rest. He also reports occasional shortness of breath and fatigue. On physical examination, his blood pressure is 145/90 mmHg, heart rate is 85 bpm, and he appears overweight with a BMI of 30. Laboratory studies show elevated LDL cholesterol and HbA1c levels.",
+    question:
+      "Based on your understanding of the basic science concepts underlying ischemic heart disease, which of the following pathophysiological mechanisms is most likely contributing to this patient's symptoms?",
+    options: [
+      {
+        id: "A",
+        text: "Coronary artery spasm leading to transient myocardial ischemia",
+      },
+      {
+        id: "B",
+        text: "Plaque rupture and subsequent thrombus formation",
+      },
+      {
+        id: "C",
+        text: "Progressive atherosclerotic plaque formation leading to stable angina",
+      },
+      {
+        id: "D",
+        text: "Coronary artery embolism from a distant source",
+      },
+      {
+        id: "E",
+        text: "Myocardial inflammation and fibrosis",
+      },
+    ],
+    correctAnswer: "C",
+    rationale: {
+      A: "Coronary artery spasm can cause ischemia but is more characteristic of Prinzmetal angina, which presents with chest pain at rest rather than exertional pain.",
+      B: "Plaque rupture and subsequent thrombus formation are mechanisms underlying acute coronary syndromes, such as unstable angina or myocardial infarction, rather than stable angina.",
+      C: "This is the correct answer. Progressive atherosclerotic plaque formation results in narrowing of the coronary arteries, reducing blood flow during periods of increased demand, and leading to stable angina with exertion.",
+      D: "Coronary artery embolism is less common and typically presents with sudden onset of symptoms rather than a chronic, exertional pattern.",
+      E: "Myocardial inflammation and fibrosis are associated with cardiomyopathies rather than ischemic heart disease.",
+    },
+    nextSteps: [
+      "Diagnostic tests: Exercise stress test or coronary angiography to assess the severity and extent of coronary artery disease.",
+      "Medical management: Antiplatelet therapy (aspirin), statins, beta-blockers, nitrates, and ACE inhibitors.",
+      "Lifestyle modification: Smoking cessation, weight loss, diet, and exercise.",
+      "Referral: Consider referral to cardiology for further evaluation and possible revascularization if indicated.",
+    ],
+  },
+  // Add more questions here
+];
+
+const { currentQuestionIndex = 0 } = Astro.props;
+
+const totalQuestions = QUESTIONS.length;
+const currentQuestion = QUESTIONS[currentQuestionIndex];
+---
+
+<div class="quiz-set">
+  <div class="quiz-progress">
+    Question {currentQuestionIndex + 1} of {totalQuestions}
+  </div>
+  <Quiz question={currentQuestion} />
+</div>
+
+<style>
+  .quiz-set {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .quiz-progress {
+    text-align: center;
+    margin-bottom: 0rem;
+    font-weight: bold;
+  }
+</style>

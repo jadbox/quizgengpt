@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Quiz from "../components/quiz.astro";
+import QuizSet from "../components/quizset.astro";
 import { setAstroSession } from "../lib/supabase";
 import { loginCheck } from "@/lib/auth";
 
@@ -12,68 +12,52 @@ if (error) return Astro.redirect("/api/auth/signout");
 
 const check = loginCheck(Astro);
 if (check) return check;
-
-const QUESTION = {
-  type: "clinicalVignette",
-  category: "Basic Science Concepts",
-  subcategory: "Ischemic Heart Disease",
-  difficulty: "moderate",
-  clinicalScenario:
-    "A 58-year-old man with a history of hypertension, hyperlipidemia, and type 2 diabetes presents to the clinic with a 6-month history of exertional chest pain. He describes the pain as a pressure-like sensation that occurs with moderate physical activity and is relieved by rest. He also reports occasional shortness of breath and fatigue. On physical examination, his blood pressure is 145/90 mmHg, heart rate is 85 bpm, and he appears overweight with a BMI of 30. Laboratory studies show elevated LDL cholesterol and HbA1c levels.",
-  question:
-    "Based on your understanding of the basic science concepts underlying ischemic heart disease, which of the following pathophysiological mechanisms is most likely contributing to this patient's symptoms?",
-  options: [
-    {
-      id: "A",
-      text: "Coronary artery spasm leading to transient myocardial ischemia",
-    },
-    {
-      id: "B",
-      text: "Plaque rupture and subsequent thrombus formation",
-    },
-    {
-      id: "C",
-      text: "Progressive atherosclerotic plaque formation leading to stable angina",
-    },
-    {
-      id: "D",
-      text: "Coronary artery embolism from a distant source",
-    },
-    {
-      id: "E",
-      text: "Myocardial inflammation and fibrosis",
-    },
-  ],
-  correctAnswer: "C",
-  rationale: {
-    A: "Coronary artery spasm can cause ischemia but is more characteristic of Prinzmetal angina, which presents with chest pain at rest rather than exertional pain.",
-    B: "Plaque rupture and subsequent thrombus formation are mechanisms underlying acute coronary syndromes, such as unstable angina or myocardial infarction, rather than stable angina.",
-    C: "This is the correct answer. Progressive atherosclerotic plaque formation results in narrowing of the coronary arteries, reducing blood flow during periods of increased demand, and leading to stable angina with exertion.",
-    D: "Coronary artery embolism is less common and typically presents with sudden onset of symptoms rather than a chronic, exertional pattern.",
-    E: "Myocardial inflammation and fibrosis are associated with cardiomyopathies rather than ischemic heart disease.",
-  },
-  nextSteps: [
-    "Diagnostic tests: Exercise stress test or coronary angiography to assess the severity and extent of coronary artery disease.",
-    "Medical management: Antiplatelet therapy (aspirin), statins, beta-blockers, nitrates, and ACE inhibitors.",
-    "Lifestyle modification: Smoking cessation, weight loss, diet, and exercise.",
-    "Referral: Consider referral to cardiology for further evaluation and possible revascularization if indicated.",
-  ],
-};
 ---
 
 <Layout title="Choose Your Goals" transition:animate="fade">
   <RootElement>
     <div id="bannertop"></div>
     <h1 class="text-3xl mx-auto mt-2 font-bold text-gray-700">
-      <span>🌟</span> Practice Exam <span>🌟</span>
+      <span>🌟</span> Training Practice <span>🌟</span>
     </h1>
 
-    <Quiz question={QUESTION} />
+    <div
+      id="welcomeCard"
+      class="bg-white shadow-lg rounded-lg p-6 mt-4 mb-4 max-w-2xl mx-auto"
+    >
+      <h2 class="text-2xl font-bold mb-2 text-gray-800">
+        Welcome to the Practice Exam!
+      </h2>
+      <p class="text-gray-600 mb-4">
+        Ready to test your knowledge? Click the button below to start the quiz.
+      </p>
+      <button
+        id="startQuizBtn"
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+      >
+        Start Quiz
+      </button>
+    </div>
+
+    <div id="quizSetContainer" class="hidden">
+      <QuizSet />
+    </div>
   </RootElement>
 
   <script>
     RootElement.ready(($, ctx) => {
-      // Any additional JavaScript logic can be added here if needed
+      const welcomeCard = document.getElementById("welcomeCard") as HTMLElement;
+      const quizSetContainer = document.getElementById(
+        "quizSetContainer",
+      ) as HTMLElement;
+      const startQuizBtn = document.getElementById(
+        "startQuizBtn",
+      ) as HTMLElement;
+
+      startQuizBtn.addEventListener("click", () => {
+        welcomeCard.classList.add("hidden");
+        quizSetContainer.classList.remove("hidden");
+      });
     });
   </script>
 
@@ -82,7 +66,6 @@ const QUESTION = {
       background-image: url("./banner.jpg");
       background-size: cover;
       background-position: center;
-
       overflow: hidden;
       margin-top: 1rem;
       height: 24vh;
