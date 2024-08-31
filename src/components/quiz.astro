@@ -124,7 +124,7 @@ const { question } = Astro.props;
       <img
         src="./profile-58-male.png"
         alt="Profile Picture"
-        class="w-28 h-28 rounded-smanimate__animated animate__fadeIn"
+        class="w-28 h-28 rounded-sm animate__animated animate__fadeIn"
       />
       <div class="question_text">{question.clinicalScenario}</div>
     </div>
@@ -181,7 +181,7 @@ const { question } = Astro.props;
         (answer || incorrectAnswer) && (
           <div class="mt-4 mb-24">
             <h2>Rationale:</h2>
-            <h3 class="rational question_text">
+            <h3 class="rational question_text animate__animated animate__fadeIn">
               {question.rationale[incorrectAnswer || answer || ""]}
             </h3>
             <h2 class="mt-4">Next Steps</h2>
@@ -191,7 +191,12 @@ const { question } = Astro.props;
               ))}
             </ul>
 
-            <button id="submit" type="button">
+            <button
+              id="submit"
+              type="button"
+              class=""
+              onclick="window.location.reload();"
+            >
               Next
             </button>
           </div>
