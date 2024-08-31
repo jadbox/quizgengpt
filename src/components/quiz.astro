@@ -181,8 +181,10 @@ const { question } = Astro.props;
         (answer || incorrectAnswer) && (
           <div class="mt-4 mb-24">
             <h2>Rationale:</h2>
-            <h3>{question.rationale[incorrectAnswer || answer || ""]}</h3>
-            <h2 style="font-bold">Next Steps</h2>
+            <h3 class="rational question_text">
+              {question.rationale[incorrectAnswer || answer || ""]}
+            </h3>
+            <h2 class="mt-4">Next Steps</h2>
             <ul>
               {question.nextSteps.map((step) => (
                 <li>{step}</li>
