@@ -57,21 +57,21 @@ export function questionToJSON(text: string) {
 
     let currentSection = "";
 
+    const sectionHeaders: Record<string, string> = {
+      "Clinical Scenario:": "clinicalScenario",
+      "Question:": "question",
+      "Options:": "options",
+      "Rationale:": "rationale",
+      "Next Steps:": "nextSteps",
+    };
+
     lines.forEach((line) => {
       if (line.includes("Clinical Vignette Question:")) {
         result.subcategory = line.split(":")[1].trim();
-      } else if (line === "Clinical Scenario:") {
-        currentSection = "clinicalScenario";
-      } else if (line === "Question:") {
-        currentSection = "question";
-      } else if (line === "Options:") {
-        currentSection = "options";
+      } else if (sectionHeaders[line]) {
+        currentSection = sectionHeaders[line];
       } else if (line.startsWith("Correct Answer:")) {
         result.correctAnswer = line.split(":")[1].trim();
-      } else if (line === "Rationale:") {
-        currentSection = "rationale";
-      } else if (line === "Next Steps:") {
-        currentSection = "nextSteps";
       } else {
         switch (currentSection) {
           case "clinicalScenario":
@@ -89,7 +89,6 @@ export function questionToJSON(text: string) {
               const [id, ...textParts] = line.split(": ");
               result.rationale[id] = textParts.join(": ").trim();
             } else if (Object.keys(result.rationale).length > 0) {
-              // Append to the last rationale if it's a continuation
               const lastKey = Object.keys(result.rationale).pop()!;
               result.rationale[lastKey] += " " + line;
             }
