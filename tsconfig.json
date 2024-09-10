@@ -11,6 +11,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "skipLibCheck": true
   }
 }
