@@ -27,4 +27,4 @@ pnpm-debug.log*
 .idea/
 
 # do not version of question source itself
-src/lib/questions.ts
+# src/lib/questions.ts
